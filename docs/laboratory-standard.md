@@ -10,4 +10,4 @@ shared/services/exercises.js implementa llavors de 32 bits i codis TL-R1 amb com
 
 Cap dada d’alumne es desa o s’envia. Els codis d’accés i d’exercici són conceptes diferents. La validació externa d’accés no està implementada.
 
-Abans de publicar: comprovar càlculs i unitats, errors d’entrada, teclat, colors amb etiqueta textual, ajuda i mida petita de pantalla. En aquesta versió les proves de lògica passen; la revisió visual en navegador continua pendent.
+Abans de publicar: comprovar càlculs i unitats, errors d’entrada, teclat, colors amb etiqueta textual, ajuda i mida petita de pantalla. En aquesta versió les proves de lògica passen i s’ha revisat la navegació i la interacció en navegador d’ordinador. La revisió en mòbil continua pendent.

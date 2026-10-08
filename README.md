@@ -35,4 +35,4 @@ Settings → Pages: Deploy from a branch, main, / (root). Rutes relatives compat
 
 Codificació axial convencional; no s’inclouen 0 Ω, SMD ni variants militars o de fiabilitat. La conversió no arrodoneix i no garanteix disponibilitat comercial. Fonts tècniques enllaçades a Fonaments.
 
-17 proves automatitzades: càlcul, rangs, conversió, respostes, codis i estabilitat del generador R1. La prova visual en navegador d’aquesta versió queda pendent.
+17 proves automatitzades: càlcul, rangs, conversió, respostes, codis i estabilitat del generador R1. Revisió en navegador d’ordinador feta: portada, lectura de sis bandes, comprovació de resposta i retorn a la portada. La revisió en mòbil queda pendent.
