@@ -1,6 +1,6 @@
 # TecLab
 
-Laboratoris tècnics interactius · Prototip v0.1 · Català · Grafit i ambre.
+Laboratoris tècnics interactius · Portal v0.2 · LAB-001 v1.0.0.
 
 ## Provar en local
 
@@ -14,12 +14,25 @@ python3 -m http.server 8000
 
 Obre http://localhost:8000. No hi ha dependències npm.
 
-Portada, cerca, filtres i plantilla amb Laboratori, Fonaments i Ajuda. LAB-001 és una demostració de lectura de resistències; LAB-002 a LAB-004 estan en preparació. No es desen resultats. TECLAB-001 és un codi públic de distribució, sense protecció real.
+## Laboratoris
 
-Exercicis aleatoris, codis reproduïbles i comprovació de respostes: pendents.
+- LAB-001: portada pròpia, lectura de 4/5/6 bandes, conversió exacta de valor a colors, tolerància i interval, TCR, pràctica i resolució pas a pas.
+- LAB-002, LAB-003 i LAB-004: fitxes en preparació.
+
+Els codis TL-R1 reprodueixen un exercici concret; no identifiquen alumnes ni restringeixen l’accés. TECLAB-001 és un codi públic de distribució que localitza el LAB-001 al portal. No es desen respostes.
+
+## Estructura
+
+Cada carpeta labs conté la seva entrada i metadata.json. El LAB-001 té lab.js, lab.css, resistor.js i exercises.js. shared conté els estils comuns, el portal i el protocol de codis. scripts/build-catalog.js genera data/laboratories.json; no l’editeu manualment.
+
+Després de modificar metadades, executeu npm run build i incorporeu el catàleg al commit.
 
 ## GitHub Pages
 
-A Settings → Pages, selecciona Deploy from a branch, main i / (root), i desa. Les rutes relatives permeten servir el portal sota /TecLab/.
+Settings → Pages: Deploy from a branch, main, / (root). Rutes relatives compatibles amb /TecLab/.
 
-Després de modificar metadades, executa npm run build i incorpora data/laboratories.json al commit.
+## Abast i validació
+
+Codificació axial convencional; no s’inclouen 0 Ω, SMD ni variants militars o de fiabilitat. La conversió no arrodoneix i no garanteix disponibilitat comercial. Fonts tècniques enllaçades a Fonaments.
+
+17 proves automatitzades: càlcul, rangs, conversió, respostes, codis i estabilitat del generador R1. La prova visual en navegador d’aquesta versió queda pendent.
