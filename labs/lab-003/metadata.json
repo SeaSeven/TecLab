@@ -1,0 +1,15 @@
+{
+  "id": "LAB-003",
+  "title": "Codificació d’inductàncies",
+  "description": "Relaciona els codis de colors i els marcatges amb la inductància.",
+  "courses": [
+    "EE10",
+    "EE30",
+    "EEB0"
+  ],
+  "iconPath": "M5 30h10c0-25 12-25 12 0c0-25 12-25 12 0c0-25 12-25 12 0c0-25 12-25 12 0h10",
+  "version": "0.1.0",
+  "status": "planned",
+  "access": "public",
+  "entry": "labs/lab-003/"
+}

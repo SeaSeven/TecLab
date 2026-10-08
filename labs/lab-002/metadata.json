@@ -1,0 +1,15 @@
+{
+  "id": "LAB-002",
+  "title": "Codificació de condensadors",
+  "description": "Llegeix marcatges i treballa amb les unitats de capacitat.",
+  "courses": [
+    "EE10",
+    "EE30",
+    "EEB0"
+  ],
+  "iconPath": "M8 24h29m0-16v32m10-32v32m0-16h29",
+  "version": "0.1.0",
+  "status": "planned",
+  "access": "public",
+  "entry": "labs/lab-002/"
+}

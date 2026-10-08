@@ -1,0 +1,63 @@
+[
+  {
+    "id": "LAB-001",
+    "title": "Codificació de resistències",
+    "description": "Interpreta les bandes de colors i comprova el valor d’una resistència.",
+    "courses": [
+      "EE10",
+      "EE30",
+      "EEB0"
+    ],
+    "iconPath": "M12 24h15m40 0h15M27 13h40v22H27z",
+    "version": "0.1.0",
+    "status": "prototype",
+    "access": "public",
+    "entry": "labs/lab-001/"
+  },
+  {
+    "id": "LAB-002",
+    "title": "Codificació de condensadors",
+    "description": "Llegeix marcatges i treballa amb les unitats de capacitat.",
+    "courses": [
+      "EE10",
+      "EE30",
+      "EEB0"
+    ],
+    "iconPath": "M8 24h29m0-16v32m10-32v32m0-16h29",
+    "version": "0.1.0",
+    "status": "planned",
+    "access": "public",
+    "entry": "labs/lab-002/"
+  },
+  {
+    "id": "LAB-003",
+    "title": "Codificació d’inductàncies",
+    "description": "Relaciona els codis de colors i els marcatges amb la inductància.",
+    "courses": [
+      "EE10",
+      "EE30",
+      "EEB0"
+    ],
+    "iconPath": "M5 30h10c0-25 12-25 12 0c0-25 12-25 12 0c0-25 12-25 12 0c0-25 12-25 12 0h10",
+    "version": "0.1.0",
+    "status": "planned",
+    "access": "public",
+    "entry": "labs/lab-003/"
+  },
+  {
+    "id": "LAB-004",
+    "title": "Sistemes PWM",
+    "description": "Explora la freqüència, el període i el cicle de treball d’un senyal.",
+    "courses": [
+      "EE10",
+      "EE30",
+      "EEB0",
+      "Enginyeria"
+    ],
+    "iconPath": "M5 35h12V10h24v25h18V10h18",
+    "version": "0.1.0",
+    "status": "planned",
+    "access": "public",
+    "entry": "labs/lab-004/"
+  }
+]

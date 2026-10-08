@@ -1,0 +1,10 @@
+{
+  "name": "teclab",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-catalog.js",
+    "test": "node --test scripts/resistance.test.js"
+  }
+}

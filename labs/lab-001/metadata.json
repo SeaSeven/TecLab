@@ -1,0 +1,15 @@
+{
+  "id": "LAB-001",
+  "title": "Codificació de resistències",
+  "description": "Interpreta les bandes de colors i comprova el valor d’una resistència.",
+  "courses": [
+    "EE10",
+    "EE30",
+    "EEB0"
+  ],
+  "iconPath": "M12 24h15m40 0h15M27 13h40v22H27z",
+  "version": "0.1.0",
+  "status": "prototype",
+  "access": "public",
+  "entry": "labs/lab-001/"
+}

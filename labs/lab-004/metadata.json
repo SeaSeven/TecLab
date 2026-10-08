@@ -1,0 +1,16 @@
+{
+  "id": "LAB-004",
+  "title": "Sistemes PWM",
+  "description": "Explora la freqüència, el període i el cicle de treball d’un senyal.",
+  "courses": [
+    "EE10",
+    "EE30",
+    "EEB0",
+    "Enginyeria"
+  ],
+  "iconPath": "M5 35h12V10h24v25h18V10h18",
+  "version": "0.1.0",
+  "status": "planned",
+  "access": "public",
+  "entry": "labs/lab-004/"
+}
