@@ -1,6 +1,6 @@
 # TecLab
 
-Laboratoris tècnics interactius · Portal v0.2 · LAB-001 v1.0.0.
+Laboratoris tècnics interactius · Portal v0.3 · LAB-001 v1.1.0.
 
 ## Provar en local
 
