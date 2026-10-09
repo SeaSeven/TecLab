@@ -89,7 +89,7 @@
       "Enginyeria"
     ],
     "iconPath": "M5 24h15m0-8h30v16H20m30-8h30",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "status": "published",
     "access": "public",
     "entry": "labs/lab-005/",
