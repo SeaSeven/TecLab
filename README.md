@@ -16,6 +16,8 @@ Obre http://localhost:8000. No hi ha dependències npm.
 
 ## Laboratoris
 
+- LAB-005 v1.0.0: pràctica resistiva de 2 a 10 components, unitats seleccionables, correcció del 2 %, codis TL-CC1 i resolució amb esquemes equivalents.
+
 - LAB-001: portada pròpia, lectura de 4/5/6 bandes, conversió exacta de valor a colors, tolerància i interval, TCR, pràctica i resolució pas a pas.
 - LAB-002, LAB-003 i LAB-004: fitxes en preparació.
 
@@ -36,3 +38,4 @@ Settings → Pages: Deploy from a branch, main, / (root). Rutes relatives compat
 Codificació axial convencional; no s’inclouen 0 Ω, SMD ni variants militars o de fiabilitat. La conversió no arrodoneix i no garanteix disponibilitat comercial. Fonts tècniques enllaçades a Fonaments.
 
 17 proves automatitzades: càlcul, rangs, conversió, respostes, codis i estabilitat del generador R1. Revisió en navegador d’ordinador feta: portada, lectura de sis bandes, comprovació de resposta i retorn a la portada. La revisió en mòbil queda pendent.
+

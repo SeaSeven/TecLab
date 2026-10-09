@@ -77,5 +77,28 @@
     "status": "planned",
     "access": "public",
     "entry": "labs/lab-004/"
+  },
+  {
+    "id": "LAB-005",
+    "title": "Anàlisi de circuits en corrent continu",
+    "description": "Circuits resistius en sèrie, paral·lel i mixtos: càlcul, pràctica i resolució guiada.",
+    "courses": [
+      "EE10",
+      "EE30",
+      "EEB0",
+      "Enginyeria"
+    ],
+    "iconPath": "M5 24h15m0-8h30v16H20m30-8h30",
+    "version": "1.0.0",
+    "status": "published",
+    "access": "public",
+    "entry": "labs/lab-005/",
+    "tags": [
+      "circuits",
+      "corrent continu",
+      "resistències",
+      "Ohm",
+      "Kirchhoff"
+    ]
   }
 ]

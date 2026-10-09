@@ -11,3 +11,6 @@ shared/services/exercises.js implementa llavors de 32 bits i codis TL-R1 amb com
 Cap dada d’alumne es desa o s’envia. Els codis d’accés i d’exercici són conceptes diferents. La validació externa d’accés no està implementada.
 
 Abans de publicar: comprovar càlculs i unitats, errors d’entrada, teclat, colors amb etiqueta textual, ajuda i mida petita de pantalla. En aquesta versió les proves de lògica passen i s’ha revisat la navegació i la interacció en navegador d’ordinador. La revisió en mòbil continua pendent.
+
+
+LAB-005 separa càlcul i generació (circuit.js), interfície i esquemes (lab.js), i estils (lab.css). CC1 fixa la seqüència dels exercicis. La validació cobreix 900 circuits, Kirchhoff, potències, codis i respostes. La revisió visual d’aquesta incorporació queda pendent.
