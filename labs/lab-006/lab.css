@@ -1,2 +1,19 @@
 .osc-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(240px,1fr);gap:18px;align-items:start}.osc-case{background:#242b33;border:1px solid #526574;border-radius:14px;padding:18px}.osc-screen{display:block;width:100%;background:#071e27;border:9px solid #101c24;border-radius:10px}.osc-grid{stroke:#355866;stroke-width:.7}.osc-wave{stroke:#f5d34f;stroke-width:2.2;fill:none}.osc-control{margin:16px 0}.osc-control label{display:flex;justify-content:space-between;font-weight:bold}.osc-control input{width:100%;accent-color:#e1ac42}.osc-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}.osc-reading{display:grid;grid-template-columns:1fr 1fr;gap:12px}.osc-reading input{width:100%}.osc-reading label{display:grid;gap:6px}.osc-steps article{border-top:1px solid #5c6871;padding:10px 0}.osc-cover-art{width:100%;max-width:550px;display:block;margin:15px auto}@media(max-width:800px){.osc-layout,.osc-reading{grid-template-columns:1fr}.osc-case{padding:10px}}
 .osc-manager{margin-bottom:18px}.osc-generation{align-items:end}.osc-generation label{display:grid;gap:5px;min-width:180px}.osc-generation select{width:100%}.osc-code-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.osc-code-grid label{display:block;margin-bottom:7px;font-weight:600}.osc-code-row{display:flex;gap:8px;flex-wrap:wrap}.osc-code-row input{flex:1;min-width:135px}.osc-code-row button{white-space:nowrap}@media(max-width:800px){.osc-code-grid{grid-template-columns:1fr}}
+.osc-knobs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 12px;margin:24px 0}
+.osc-dial-unit{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;color:#f4efe5}
+.osc-dial-unit label{font-size:.82rem;font-weight:700;letter-spacing:.04em}
+.osc-dial-unit output{font-family:ui-monospace,monospace;color:#f6d26d;font-weight:650}
+.osc-dial{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;min-height:92px}
+.osc-dial button{min-width:34px;min-height:40px;border-radius:8px;padding:4px;color:#f0f0ee;background:#394651}
+.osc-dial input[type=range]{width:82px;height:82px;border-radius:50%;appearance:none;-webkit-appearance:none;cursor:pointer;flex:none;outline-offset:5px;border:5px solid #111c23;background:radial-gradient(circle at 38% 30%,#647682,#3c4c57 55%,#27323b 72%);box-shadow:inset 0 3px 5px #8999a544,0 3px 8px #03080c90}
+.osc-dial input[type=range]::-webkit-slider-runnable-track{height:0;background:transparent}
+.osc-dial input[type=range]::-moz-range-track{height:0;background:transparent}
+.osc-dial input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:5px;height:26px;border-radius:4px;background:#f2c454;box-shadow:0 0 0 1px #473a14;transform:rotate(var(--angle,0deg));transform-origin:50% 36px;margin-top:-36px}
+.osc-dial input[type=range]::-moz-range-thumb{width:5px;height:26px;border:0;border-radius:4px;background:#f2c454;transform:rotate(var(--angle,0deg));transform-origin:50% 36px}
+.osc-dial input[type=range]:focus-visible{outline:3px solid #f2c454}
+.osc-wave2{stroke:#72d9eb;stroke-width:2.1}
+.osc-unsynced{animation:osc-wander .55s ease-in-out infinite alternate}
+@keyframes osc-wander{from{transform:translateX(-12px);opacity:.6}to{transform:translateX(12px);opacity:1}}
+@media(prefers-reduced-motion:reduce){.osc-unsynced{animation:none;opacity:.45;stroke-dasharray:6 5}}
+@media(max-width:520px){.osc-dial{gap:3px}.osc-dial input[type=range]{width:66px;height:66px}.osc-knobs{gap:14px 5px}.osc-dial button{min-width:28px}}
