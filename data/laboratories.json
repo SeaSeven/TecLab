@@ -104,7 +104,7 @@
   {
     "id": "LAB-006",
     "title": "Mesures amb oscil·loscopi",
-    "description": "Ajusta VOLTS/DIV i TIME/DIV per visualitzar una ona i mesurar-ne la tensió i el període.",
+    "description": "Configura l’oscil·loscopi, genera ones sinusoidals, triangulars o quadrades i recupera exercicis per codi.",
     "courses": [
       "EE10",
       "EE30",
@@ -112,7 +112,7 @@
       "Enginyeria"
     ],
     "iconPath": "M4 25h10l8-15 12 30 12-30 12 30 12-15h10",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "status": "published",
     "access": "public",
     "entry": "labs/lab-006/",
@@ -121,7 +121,14 @@
       "mesures",
       "senyals",
       "tensió",
-      "freqüència"
+      "freqüència",
+      "generador d'ones"
+    ],
+    "features": [
+      "signal-generator",
+      "oscilloscope",
+      "practice",
+      "exercise-codes"
     ]
   }
 ]
