@@ -1,0 +1,30 @@
+{
+  "id": "LAB-006",
+  "title": "Mesures amb oscil·loscopi",
+  "description": "Configura l’oscil·loscopi, genera ones sinusoidals, triangulars o quadrades i recupera exercicis per codi.",
+  "courses": [
+    "EE10",
+    "EE30",
+    "EEB0",
+    "Enginyeria"
+  ],
+  "iconPath": "M4 25h10l8-15 12 30 12-30 12 30 12-15h10",
+  "version": "1.0.0",
+  "status": "published",
+  "access": "public",
+  "entry": "labs/lab-006/",
+  "tags": [
+    "oscil·loscopi",
+    "mesures",
+    "senyals",
+    "tensió",
+    "freqüència",
+    "generador d'ones"
+  ],
+  "features": [
+    "signal-generator",
+    "oscilloscope",
+    "practice",
+    "exercise-codes"
+  ]
+}
