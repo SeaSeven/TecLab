@@ -17,3 +17,5 @@
 @keyframes osc-wander{from{transform:translateX(-12px);opacity:.6}to{transform:translateX(12px);opacity:1}}
 @media(prefers-reduced-motion:reduce){.osc-unsynced{animation:none;opacity:.45;stroke-dasharray:6 5}}
 @media(max-width:520px){.osc-dial{gap:3px}.osc-dial input[type=range]{width:66px;height:66px}.osc-knobs{gap:14px 5px}.osc-dial button{min-width:28px}}
+
+.osc-dial input[type=range]{touch-action:none;user-select:none}
