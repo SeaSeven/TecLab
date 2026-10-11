@@ -27,7 +27,7 @@ export function generate(mode,seed){
  return {mode,seed,code,type,amplitude:pick(amplitudes),frequency:pick(frequencies)};
 }
 export function voltage(ex,t){
- const phase=((t*ex.frequency+(ex.phase||0)/360)%1+1)%1;
+ const phase=((t*ex.frequency-(ex.phase||0)/360)%1+1)%1;
  let factor;
  if(ex.type==='Q')factor=phase<.5?1:-1;
  else if(ex.type==='T')factor=1-4*Math.abs(phase-.25);
