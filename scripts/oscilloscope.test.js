@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {voltage,state,path,generate,codeOf,readCode,checkReading,triggerState,advancedAnswer} from '../labs/lab-006/signal.js';
+import {voltage,state,path,generate,codeOf,readCode,checkReading,triggerState,advancedAnswer,triggerOffset,cursorReadings,channelFits} from '../labs/lab-006/signal.js';
 test('senyal sinusoidal a quart de període',()=>{const ex={type:'S',amplitude:3,frequency:1000};assert.ok(Math.abs(voltage(ex,.00025)-3)<1e-9);assert.ok(Math.abs(voltage(ex,.00075)+3)<1e-9);});
-test('ones triangular i quadrada',()=>{for(const type of ['T','Q']){const ex={type,amplitude:2,frequency:1000};assert.ok(Math.abs(voltage(ex,.00025)-2)<1e-8);assert.ok(Math.abs(voltage(ex,.00075)+2)<1e-8);}});
+test('ones triangular i quadrada',()=>{for(const type of ['T','Q']){const ex={type,amplitude:2,frequency:1000};if(type==='T'){assert.ok(Math.abs(voltage(ex,.0005)-2)<1e-8);assert.ok(Math.abs(voltage(ex,0)+2)<1e-8);assert.ok(Math.abs(voltage(ex,.001)+2)<1e-8);}else{assert.ok(Math.abs(voltage(ex,.00025)-2)<1e-8);assert.ok(Math.abs(voltage(ex,.00075)+2)<1e-8);}}});
 test('configuració correcta',()=>{const ex={type:'S',amplitude:3,frequency:1000};assert.equal(state(ex,1,.0002).good,true);assert.equal(state(ex,.5,.0002).good,false);assert.equal(state(ex,1,.001).good,false);assert.equal(state(ex,1,.0001).good,false);});
 test('traçat finit',()=>{const ex={type:'S',amplitude:3,frequency:1000};assert.match(path(ex,1,.0002),/^M0 /);assert.ok(!path(ex,1,.0002).includes('NaN'));});
 test('codis recuperables i validats',()=>{for(const mode of ['A','S','T','Q'])for(const seed of [0,1,123456789,0xffffffff]){const ex=generate(mode,seed);assert.equal(readCode(ex.code).seed,seed);assert.deepEqual(generate(mode,seed),ex);assert.equal(codeOf(mode,seed),ex.code);assert.throws(()=>readCode(ex.code.slice(0,-1)+'Z'));}assert.throws(()=>readCode('TL-OSC1-A-ABC-0000'));});
@@ -12,3 +12,33 @@ test('el nivell del trigger estabilitza només dins de la tensió del canal 1',(
 test('exercicis avançats de dos canals reproduïbles',()=>{for(const seed of [0,1,23,9999,0xffffffff]){const ex=generate('D',seed);assert.equal(ex.code.startsWith('TL-OSC2-D-'),true);assert.deepEqual(ex,generate('D',readCode(ex.code).seed));assert.equal(ex.channel2.frequency,ex.frequency);assert.ok(ex.channel2.phase>0);assert.ok(advancedAnswer(ex).delayMs>0);assert.equal(readCode(ex.code).mode,'D');}});
 test('els codis de versió OSC1 continuen vàlids',()=>{for(const mode of ['A','S','T','Q']){const c=codeOf(mode,123456);assert.equal(readCode(c).mode,mode);assert.equal(generate(mode,123456).code,c);}});
 test('CH2 té un retard respecte de CH1',()=>{const a={type:'S',amplitude:1,frequency:1000},b={...a,phase:90};assert.ok(Math.abs(voltage(a,0))<1e-9);assert.ok(Math.abs(voltage(b,.00025))<1e-9);assert.ok(Math.abs(voltage(b,0)+1)<1e-9);});
+
+test('nivell intermedi amb codis propis i reproduïbles',()=>{
+ for(const seed of [0,1,12345,0xffffffff]){
+ const exercise=generate('I',seed);
+ assert.equal(exercise.mode,'I');
+ assert.ok(exercise.code.startsWith('TL-OSC3-I-'));
+ assert.deepEqual(generate(readCode(exercise.code).mode,readCode(exercise.code).seed),exercise);
+ assert.equal(readCode(exercise.code).code,exercise.code);
+ }
+ assert.throws(()=>readCode('TL-OSC2-I-1-0000'));
+});
+test('trigger ascendent ancorat a la tensió escollida',()=>{
+ const e={type:'S',amplitude:2,frequency:1000};
+ const offset=triggerOffset(e,1);
+ assert.ok(offset>0 && offset<.0005);
+ assert.ok(Math.abs(voltage(e,offset)-1)<.02);
+ assert.equal(triggerOffset(e,3),null);
+});
+test('posició vertical i cursors amb escales físiques',()=>{
+ const e={type:'S',amplitude:2,frequency:1000};
+ assert.equal(channelFits(e,1,0),true);
+ assert.equal(channelFits(e,.5,1),false);
+ const readings=cursorReadings(120,240,100,180,1,.0005);
+ assert.ok(Math.abs(readings.deltaMs-1)<1e-9);
+ assert.ok(Math.abs(readings.deltaV-2)<1e-9);
+ assert.ok(!path(e,1,.0002,0,2).includes('NaN'));
+});
+
+test('ona triangular contínua als extrems i linear per trams',()=>{const ex={type:'T',amplitude:3,frequency:500};for(let i=0;i<=100;i++){const t=i/100*.002;assert.ok(Math.abs(voltage(ex,t)-voltage(ex,t+.002))<1e-7);}assert.ok(Math.abs(voltage(ex,.002-1e-9)-voltage(ex,.002+1e-9))<1e-4);});
+test('noves activitats reproduïbles per nivell',()=>{for(const mode of ['M','N'])for(const seed of [0,1,997,0xffffffff]){const ex=generate(mode,seed);assert.equal(readCode(ex.code).mode,mode);assert.deepEqual(generate(mode,seed),ex);if(mode==='N')assert.ok(ex.channel2);}});
