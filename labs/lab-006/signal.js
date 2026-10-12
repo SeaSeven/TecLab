@@ -9,7 +9,7 @@ export function codeOf(mode,seed){
 }
 export function readCode(raw){
  const code=String(raw).trim().toUpperCase();
- const match=/^TL-(OSC1|OSC2|OSC3)-([ASTQDIMNRPH])-([0-9A-Z]{1,7})-([0-9A-F]{4})$/.exec(code);
+ const match=/^TL-(OSC1|OSC2|OSC3|OSC4)-([ASTQDIMNRPH])-([0-9A-Z]{1,7})-([0-9A-F]{4})$/.exec(code);
  if(!match)throw Error('Introdueix un codi TL-OSC1 vàlid.');
  const seed=parseInt(match[3],36),mode=match[2];
  if((['D','N'].includes(mode)?'OSC2':['I','M'].includes(mode)?'OSC3':'OSC1')!==match[1])throw Error('Versió de codi incompatible.');
