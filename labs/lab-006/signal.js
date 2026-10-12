@@ -69,7 +69,7 @@ export function signalLimits(ex){
  return {min,max:ex.amplitude,peakToPeak:ex.amplitude-min};
 }
 export function defaultTrigger(ex){
- return ex.type==='H'?ex.amplitude/2:0;
+ return ex.type==='H'?ex.amplitude/2:(ex.offset??0);
 }
 /** Tensió mitjana i lectura en funció de l'acoblament d'entrada. */
 export function meanVoltage(ex){
