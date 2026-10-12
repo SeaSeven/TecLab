@@ -115,12 +115,13 @@ test('exercicis aleatoris per nivell: es manté el mode i el variant',()=>{
  for(const [mode,options] of Object.entries(expected)){
   const found=new Set();
   for(let seed=0;seed<64;seed++){
-   const e=generate(mode,seed);
+   const randomSeed=Math.imul(seed+1,2654435761)>>>0;
+   const e=generate(mode,randomSeed);
    assert.equal(e.mode,mode);
    assert.ok(options.includes(e.variant));
    assert.equal(exerciseMode(e),e.variant);
    assert.equal(readCode(e.code).mode,mode);
-   assert.deepEqual(generate(mode,seed),e);
+   assert.deepEqual(generate(mode,randomSeed),e);
    found.add(e.variant);
   }
   assert.ok(found.size>1);
