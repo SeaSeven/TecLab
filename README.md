@@ -52,3 +52,10 @@ Codificació axial convencional; no s’inclouen 0 Ω, SMD ni variants militars 
 TecLab ha estat pensat, definit i creat per **Albert Marcet i Valdés**. El projecte encara **no té una llicència de reutilització publicada**. El codi es pot consultar públicament, però no s'ha d'interpretar aquesta accessibilitat com una autorització de còpia, modificació o redistribució. El peu de pàgina enllaça una fitxa d'estat.
 
 La proposta pendent d'aprovar és utilitzar MIT per al codi i CC BY-SA 4.0 per als continguts docents, un cop s'hagi comprovat qui és titular dels drets. Vegeu [Autoria i llicència](docs/autoria-i-llicencia.md).
+
+## LAB-006 v1.4 (pendent de revisió)
+
+- Ajuda ampliada amb vuit seccions il·lustrades: selecció, escales, trigger, cursors, doble canal, ones aplicades i recuperació.
+- Nivell «Aplicacions reals»: dent de serra, polsos PWM i sinusoide rectificada. Generació i recuperació mitjançant codis TL-OSC4; no s'alteren les sèries OSC1/2/3.
+- Retroacció de comprovació en panells amb missatges detallats i resultats diferenciats.
+- Les ones rectangulars i dent de serra presenten discontinuïtats intencionades. Els senyals triangulars continuen sent continus.
