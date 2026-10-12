@@ -1,11 +1,12 @@
 # Autoria i condicions de reutilització de TecLab
 
-**Estat: informació pendent de confirmar per la persona o entitat titular dels drets.**
+**Concepció, definició i creació de TecLab: Albert Marcet i Valdés.**
+
+**La llicència de reutilització està pendent de decisió.**
 
 El projecte TecLab disposa d'un repositori públic de codi font, però fer públic el repositori **no concedeix automàticament una llicència de reutilització**. Fins que se'n publiqui una, no s'afirma que sigui permès copiar-lo, modificar-lo o redistribuir-lo.
 
 Abans de publicar la informació definitiva cal confirmar:
-- El nom de la persona, equip o entitat que consta com a creador/a de TecLab.
 - La titularitat del codi i dels materials docents, incloent-hi possibles aportacions de tercers.
 - Si es vol una llicència única o dues llicències separades (codi i continguts).
 
