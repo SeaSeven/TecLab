@@ -174,7 +174,22 @@ function practice(root){
  if(!tr.stable)hints.push(tr.feedback);
  feedback('osc-status',good?'Visualització correcta':'Cal ajustar la visualització',good?'Les escales i el trigger permeten observar el senyal complet. Ara pots llegir les magnituds.':hints.join(' '),good);
  };
- root.querySelector('#osc-form').onsubmit=event=>{event.preventDefault();const inputs=event.target.elements;const v=checkReading(inputs.vpp.value,signalLimits(ex).peakToPeak)==='correct';const t=checkReading(inputs.period.value,1000/ex.frequency)==='correct';let message='Tensió: '+(v?'correcta':'revisa les divisions')+'. Període: '+(t?'correcte':'revisa la base de temps')+'.';if(ex.channel2){const expected=advancedAnswer(ex),p=checkReading(inputs.phase.value,expected.phase)==='correct',d=checkReading(inputs.delay.value,expected.delayMs)==='correct';message+=' Desfasament: '+(p?'correcte':'revisa la distància entre les ones')+'. Retard: '+(d?'correcte':'revisa el període')+'.';}const good=(state(ex,volts[vi],times[ti]).readable&&channelFits(ex,volts[vi],pos1))&&triggerState(ex,triggerLevel).stable&&(!ex.channel2||(state(ex.channel2,volts[v2i],times[ti]).readable&&channelFits(ex.channel2,volts[v2i],pos2)));feedback('osc-answer',v&&t&&(!ex.channel2||(message.includes('Desfasament: correcte')&&message.includes('Retard: correcte')))?'Lectures correctes':'Revisa les lectures',message+' '+(good?'La visualització és adequada.':'També cal revisar les escales o el trigger.'),v&&t&&good&&(!ex.channel2||(message.includes('Desfasament: correcte')&&message.includes('Retard: correcte'))));};
+ root.querySelector('#osc-form').onsubmit=event=>{
+   event.preventDefault();
+   const input=event.target.elements;
+   const correctV=checkReading(input.vpp.value,signalLimits(ex).peakToPeak)==='correct';
+   const correctT=checkReading(input.period.value,1000/ex.frequency)==='correct';
+   const measurements=[['Tensió pic a pic',correctV],['Període',correctT]];
+   if(ex.channel2){
+     const expected=advancedAnswer(ex);
+     measurements.push(['Desfasament',checkReading(input.phase.value,expected.phase)==='correct']);
+     measurements.push(['Retard temporal',checkReading(input.delay.value,expected.delayMs)==='correct']);
+   }
+   const valid=measurements.every(([,ok])=>ok);
+   const readable=state(ex,volts[vi],times[ti]).readable&&channelFits(ex,volts[vi],pos1)&&triggerState(ex,triggerLevel).stable&&(!ex.channel2||(state(ex.channel2,volts[v2i],times[ti]).readable&&channelFits(ex.channel2,volts[v2i],pos2)));
+   const details=measurements.map(([name,ok])=>name+': '+(ok?'correcte':'revisa les divisions i les unitats')).join('. ')+'. '+(readable?'La visualització és adequada.':'També cal revisar les escales o el trigger.');
+   feedback('osc-answer',valid&&readable?'Lectures correctes':valid?'Lectures correctes, visualització pendent':'Revisa les lectures',details,valid&&readable);
+ };
  const guide=steps(ex),draw=()=>{root.querySelector('#osc-steps').innerHTML=guide.slice(0,shown).map(step=>'<article><h3>'+step.title+'</h3><p>'+step.description+'</p>'+explanatoryFigure(ex,step.kind)+'</article>').join('');root.querySelector('#osc-progress').textContent=shown+' de '+guide.length+' passos';root.querySelector('#osc-next').disabled=shown===guide.length;};
  root.querySelector('#osc-next').onclick=()=>{shown=Math.min(shown+1,guide.length);draw();};root.querySelector('#osc-hide').onclick=()=>{shown=0;draw();};display();draw();
 }
