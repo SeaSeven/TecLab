@@ -59,3 +59,12 @@ La proposta pendent d'aprovar és utilitzar MIT per al codi i CC BY-SA 4.0 per a
 - Nivell «Aplicacions reals»: dent de serra, polsos PWM i sinusoide rectificada. Generació i recuperació mitjançant codis TL-OSC4; no s'alteren les sèries OSC1/2/3.
 - Retroacció de comprovació en panells amb missatges detallats i resultats diferenciats.
 - Les ones rectangulars i dent de serra presenten discontinuïtats intencionades. Els senyals triangulars continuen sent continus.
+
+## LAB-006 v1.5 (branca en revisió)
+
+- Exercici PWM: mesurar el cicle de treball d'un pols i recuperar-lo pel codi TL-OSC5-W.
+- Acoblament DC/AC/GND del CH1: observar l'ona amb o sense component contínua i amb la referència a zero (TL-OSC5-C).
+- Diagnosi de senyals: identificar retallament de pics, ondulació harmònica o soroll determinista superposat (TL-OSC5-F).
+- Ajuda amb exemples de PWM, acoblament i diagnosi. La resta de codis OSC1-OSC4 mantenen el mateix generador.
+
+**Limitació del model:** el filtratge AC es representa mitjançant eliminació exacta de la mitjana; no s'hi simulen transitoris ni freqüència de tall d'un condensador d'acoblament. Les anomalies són senyals de prova didàctics.
