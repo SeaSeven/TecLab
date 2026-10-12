@@ -176,8 +176,9 @@ function practice(root){
  const one=state(ex,volts[vi],times[ti]);
  const two=ex.channel2?state(ex.channel2,volts[v2i],times[ti]):null;
  const tr=triggerState(ex,triggerLevel);
- const good=one.readable&&channelFits(ex,volts[vi],pos1,coupling)&&tr.stable&&(!two||(two.readable&&channelFits(ex.channel2,volts[v2i],pos2)));
+ const good=coupling!=='GND'&&one.readable&&channelFits(ex,volts[vi],pos1,coupling)&&tr.stable&&(!two||(two.readable&&channelFits(ex.channel2,volts[v2i],pos2)));
  const hints=[];
+ if(coupling==='GND')hints.push('GND només mostra la referència de zero volts. Selecciona DC o AC per mesurar el senyal.');
  if(!one.readable)hints.push(one.feedback);
  if(!channelFits(ex,volts[vi],pos1))hints.push('CH1 queda retallat: augmenta VOLTS/DIV o centra la posició vertical.');
  if(two&&!channelFits(ex.channel2,volts[v2i],pos2))hints.push('CH2 queda retallat: revisa VOLTS/DIV i la posició del segon canal.');
@@ -199,7 +200,7 @@ function practice(root){
      measurements.push(['Retard temporal',checkReading(input.delay.value,expected.delayMs)==='correct']);
    }
    const valid=measurements.every(([,ok])=>ok);
-   const readable=state(ex,volts[vi],times[ti]).readable&&channelFits(ex,volts[vi],pos1)&&triggerState(ex,triggerLevel).stable&&(!ex.channel2||(state(ex.channel2,volts[v2i],times[ti]).readable&&channelFits(ex.channel2,volts[v2i],pos2)));
+   const readable=coupling!=='GND'&&state(ex,volts[vi],times[ti]).readable&&channelFits(ex,volts[vi],pos1,coupling)&&triggerState(ex,triggerLevel).stable&&(!ex.channel2||(state(ex.channel2,volts[v2i],times[ti]).readable&&channelFits(ex.channel2,volts[v2i],pos2)));
    const details=measurements.map(([name,ok])=>name+': '+(ok?'correcte':'revisa les divisions i les unitats')).join('. ')+'. '+(readable?'La visualització és adequada.':'També cal revisar les escales o el trigger.');
    feedback('osc-answer',valid&&readable?'Lectures correctes':valid?'Lectures correctes, visualització pendent':'Revisa les lectures',details,valid&&readable);
  };
