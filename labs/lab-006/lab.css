@@ -19,3 +19,31 @@
 @media(max-width:520px){.osc-dial{gap:3px}.osc-dial input[type=range]{width:66px;height:66px}.osc-knobs{gap:14px 5px}.osc-dial button{min-width:28px}}
 
 .osc-dial input[type=range]{touch-action:none;user-select:none}
+
+/* LAB-006: pantalla permanentment visible mentre s'ajusten els controls. */
+.osc-layout{grid-template-columns:minmax(0,1fr)}
+.osc-case{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(285px,1fr);gap:16px;align-items:start}
+.osc-case>h2{grid-column:1/-1;margin-bottom:0}
+.osc-display-container{position:sticky;top:12px;align-self:start;min-width:0;z-index:2}
+.osc-display-container .osc-screen{box-sizing:border-box;max-width:100%;height:auto}
+.osc-display-container #osc-periods{margin:8px 0 0;font-size:.85rem}
+.osc-controls-container{min-width:0}
+.osc-knobs{margin:0 0 12px;gap:14px 4px}
+.osc-dial{gap:4px;min-height:98px}
+.osc-knob-body{position:relative;display:block;flex:none;width:82px;height:82px}
+.osc-knob-body input[type=range]{display:block;position:absolute;inset:0;margin:0;width:100%;height:100%;box-sizing:border-box}
+.osc-pointer{position:absolute;pointer-events:none;z-index:1;left:calc(50% - 2px);top:9px;width:4px;height:23px;border-radius:3px;background:#f2c454;box-shadow:0 0 0 1px #473a14;transform-origin:50% 32px;transform:rotate(var(--angle,0deg))}
+.osc-knob-body input[type=range]::-webkit-slider-thumb{opacity:0;width:0;height:0;box-shadow:none}
+.osc-knob-body input[type=range]::-moz-range-thumb{opacity:0;width:0;height:0;border:0;box-shadow:none}
+@media(max-width:1000px){
+ .osc-case{grid-template-columns:minmax(0,1fr)}
+ .osc-display-container{top:0;background:#242b33;padding:5px 0 10px}
+ .osc-knobs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){
+ .osc-knob-body{width:66px;height:66px}
+ .osc-dial{min-height:78px}
+ .osc-pointer{top:8px;height:19px;transform-origin:50% 25px}
+ .osc-case{padding:10px}
+ .osc-display-container{top:0}
+}
