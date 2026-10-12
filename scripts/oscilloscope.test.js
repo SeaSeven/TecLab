@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {voltage,state,path,generate,codeOf,readCode,checkReading,triggerState,advancedAnswer,triggerOffset,cursorReadings,channelFits,signalLimits,defaultTrigger,dutyCycle,meanVoltage,displayVoltage,signalBounds,readingVpp,faultLabel} from '../labs/lab-006/signal.js';
+import {voltage,state,path,generate,codeOf,readCode,checkReading,triggerState,advancedAnswer,triggerOffset,cursorReadings,channelFits,signalLimits,defaultTrigger,dutyCycle,meanVoltage,displayVoltage,signalBounds,readingVpp,faultLabel,exerciseMode} from '../labs/lab-006/signal.js';
 test('senyal sinusoidal a quart de període',()=>{const ex={type:'S',amplitude:3,frequency:1000};assert.ok(Math.abs(voltage(ex,.00025)-3)<1e-9);assert.ok(Math.abs(voltage(ex,.00075)+3)<1e-9);});
 test('ones triangular i quadrada',()=>{for(const type of ['T','Q']){const ex={type,amplitude:2,frequency:1000};if(type==='T'){assert.ok(Math.abs(voltage(ex,.0005)-2)<1e-8);assert.ok(Math.abs(voltage(ex,0)+2)<1e-8);assert.ok(Math.abs(voltage(ex,.001)+2)<1e-8);}else{assert.ok(Math.abs(voltage(ex,.00025)-2)<1e-8);assert.ok(Math.abs(voltage(ex,.00075)+2)<1e-8);}}});
 test('configuració correcta',()=>{const ex={type:'S',amplitude:3,frequency:1000};assert.equal(state(ex,1,.0002).good,true);assert.equal(state(ex,.5,.0002).good,false);assert.equal(state(ex,1,.001).good,false);assert.equal(state(ex,1,.0001).good,false);});
@@ -108,4 +108,23 @@ test('avaries deterministes amb formes de senyal reconeixibles',()=>{
  const base={type:'S',amplitude:2,frequency:1000};
  const ripple={...base,fault:'ripple'};
  assert.ok(Math.abs(voltage(base,.0001)-voltage(ripple,.0001))>.05);
+});
+
+test('exercicis aleatoris per nivell: es manté el mode i el variant',()=>{
+ const expected={J:['I','M'],K:['D','N'],L:['R','P','H','W','C','F']};
+ for(const [mode,options] of Object.entries(expected)){
+  const found=new Set();
+  for(let seed=0;seed<64;seed++){
+   const randomSeed=Math.imul(seed+1,2654435761)>>>0;
+   const e=generate(mode,randomSeed);
+   assert.equal(e.mode,mode);
+   assert.ok(options.includes(e.variant));
+   assert.equal(exerciseMode(e),e.variant);
+   assert.equal(readCode(e.code).mode,mode);
+   assert.deepEqual(generate(mode,randomSeed),e);
+   found.add(e.variant);
+  }
+  assert.ok(found.size>1);
+ }
+ for(const mode of ['A','S','T','Q','I','M','D','N','R','P','H','W','C','F'])assert.equal(exerciseMode(generate(mode,42)),mode);
 });
