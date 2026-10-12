@@ -1,7 +1,7 @@
 {
   "id": "LAB-006",
   "title": "Mesures amb oscil·loscopi",
-  "description": "Oscil·loscopi interactiu amb nivells i activitats, cursors, trigger, dos canals i fonaments il·lustrats.",
+  "description": "Oscil·loscopi interactiu amb formes d’ona bàsiques i aplicades, cursors, trigger, dos canals i ajuda visual.",
   "courses": [
     "EE10",
     "EE30",
@@ -9,7 +9,7 @@
     "Enginyeria"
   ],
   "iconPath": "M4 25h10l8-15 12 30 12-30 12 30 12-15h10",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "status": "published",
   "access": "public",
   "entry": "labs/lab-006/",
@@ -24,7 +24,10 @@
     "trigger",
     "fase",
     "cursors",
-    "nivells"
+    "nivells",
+    "dent de serra",
+    "PWM",
+    "rectificació"
   ],
   "features": [
     "signal-generator",
@@ -38,6 +41,9 @@
     "measurement-cursors",
     "level-options",
     "illustrated-foundations",
-    "graphical-steps"
+    "graphical-steps",
+    "applied-waveforms",
+    "illustrated-help",
+    "enhanced-feedback"
   ]
 }
