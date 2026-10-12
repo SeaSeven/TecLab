@@ -104,7 +104,7 @@
   {
     "id": "LAB-006",
     "title": "Mesures amb oscil·loscopi",
-    "description": "Oscil·loscopi interactiu amb formes d’ona bàsiques i aplicades, cursors, trigger, dos canals i ajuda visual.",
+    "description": "Oscil·loscopi interactiu amb PWM, acoblament AC/DC/GND, diagnosi de senyals i mesures de dos canals.",
     "courses": [
       "EE10",
       "EE30",
@@ -112,7 +112,7 @@
       "Enginyeria"
     ],
     "iconPath": "M4 25h10l8-15 12 30 12-30 12 30 12-15h10",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "status": "published",
     "access": "public",
     "entry": "labs/lab-006/",
@@ -130,7 +130,10 @@
       "nivells",
       "dent de serra",
       "PWM",
-      "rectificació"
+      "rectificació",
+      "AC/DC",
+      "diagnosi",
+      "cicle de treball"
     ],
     "features": [
       "signal-generator",
@@ -147,7 +150,10 @@
       "graphical-steps",
       "applied-waveforms",
       "illustrated-help",
-      "enhanced-feedback"
+      "enhanced-feedback",
+      "duty-cycle",
+      "ac-dc-coupling",
+      "signal-fault-diagnosis"
     ]
   }
 ]

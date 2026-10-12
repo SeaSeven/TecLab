@@ -93,3 +93,12 @@
 .osc-feedback-attention{border-color:#e6aa75;background:#3d2d22}
 .osc-feedback:focus-visible{outline:3px solid #e5b85e;outline-offset:3px}
 @media(max-width:850px){.osc-help-grid{grid-template-columns:1fr}}
+
+/* LAB-006 v1.5: acoblament i formes d'ona aplicades */
+.osc-coupling{display:grid;gap:5px;margin:12px 0;padding:12px;border:1px solid #496070;border-radius:8px;background:#1c303a;color:#f4efe5}
+.osc-coupling label{font-weight:650;font-size:.85rem}
+.osc-coupling select{width:100%;min-height:42px}
+.osc-coupling p{margin:3px 0 0;color:#d6e8ee;font-size:.86rem;line-height:1.5}
+.osc-reading select{width:100%}
+.osc-help-grid .osc-wave-examples{grid-template-columns:1fr}
+.osc-help-grid .osc-wave-examples .osc-figure{max-width:370px}
