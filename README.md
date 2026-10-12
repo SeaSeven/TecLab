@@ -49,6 +49,6 @@ Codificació axial convencional; no s’inclouen 0 Ω, SMD ni variants militars 
 
 ## Autoria i reutilització
 
-El projecte encara **no té una llicència de reutilització concedida** ni una declaració d'autoria definitiva al repositori. El codi es pot consultar públicament, però no s'ha d'interpretar aquesta accessibilitat com una autorització de còpia, modificació o redistribució. El peu de pàgina enllaça una fitxa d'estat.
+TecLab ha estat pensat, definit i creat per **Albert Marcet i Valdés**. El projecte encara **no té una llicència de reutilització publicada**. El codi es pot consultar públicament, però no s'ha d'interpretar aquesta accessibilitat com una autorització de còpia, modificació o redistribució. El peu de pàgina enllaça una fitxa d'estat.
 
 La proposta pendent d'aprovar és utilitzar MIT per al codi i CC BY-SA 4.0 per als continguts docents, un cop s'hagi comprovat qui és titular dels drets. Vegeu [Autoria i llicència](docs/autoria-i-llicencia.md).
