@@ -5,6 +5,14 @@ const format=x=>Number(x.toPrecision(4)).toLocaleString('ca-ES');
 const tlabel=t=>t<.001?format(t*1e6)+' µs/div':format(t*1e3)+' ms/div';
 let vi=3,v2i=3,ti=3,triggerLevel=0,pos1=0,pos2=0,shown=0,exercise=null,selectedMode='A';
 let cursors={x1:150,x2:300,y1:110,y2:210},cursorsOn=false;
+const exerciseLevels={
+ inicial:[['A','Ona aleatòria'],['S','Sinusoidal'],['T','Triangular'],['Q','Quadrada']],
+ intermedi:[['I','Sincronització amb trigger'],['M','Mesures amb cursors']],
+ avancat:[['D','Dos canals · desfasament'],['N','Dos canals · amplitud i fase']]
+};
+const levelOf=mode=>['I','M'].includes(mode)?'intermedi':['D','N'].includes(mode)?'avancat':'inicial';
+const levelOptions=level=>exerciseLevels[level].map(([mode,label])=>'<option value="'+mode+'">'+label+'</option>').join('');
+
 function steps(ex){
  const initial=[
  ['Identifica el senyal','La forma d’ona és '+types[ex.type].toLowerCase()+'. Cerca màxims, mínims i períodes complets.'],
@@ -26,10 +34,10 @@ function practice(root){
  <p class="eyebrow">LAB-006 / PRÀCTICA</p><h1>Mesures amb oscil·loscopi</h1>
  <nav class="tabs" aria-label="Apartats"><a href="${href('practica')}" class="active">Laboratori</a><a href="${href('fonaments')}">Fonaments</a><a href="${href('ajuda')}">Ajuda</a></nav>
  <section class="panel osc-manager"><h2>Gestió de l’exercici</h2>
- <div class="osc-actions osc-generation"><label>Tipus de senyal<select id="osc-type"><option value="A">Inicial · Aleatori</option><option value="I">Intermedi · Trigger</option><option value="D">Avançat · Dos canals</option><option value="S">Inicial · Sinusoidal</option><option value="T">Inicial · Triangular</option><option value="Q">Inicial · Quadrat</option></select></label><button class="primary" type="button" id="osc-new">Nou exercici</button></div>
+ <div class="osc-actions osc-generation"><label for="osc-level">Nivell<select id="osc-level"><option value="inicial">Inicial</option><option value="intermedi">Intermedi</option><option value="avancat">Avançat</option></select></label><label for="osc-type">Tipus d’exercici<select id="osc-type"></select></label><button class="primary" type="button" id="osc-new">Nou exercici</button></div>
  <div class="osc-code-grid"><div><label for="osc-current">Codi de l’exercici</label><div class="osc-code-row"><input id="osc-current" readonly value="${ex.code}"><button id="osc-copy" type="button">Copiar codi</button><button id="osc-link" type="button">Copiar enllaç</button></div></div>
  <form id="osc-load"><label for="osc-code">Recuperar un exercici</label><div class="osc-code-row"><input id="osc-code" placeholder="TL-OSC1-…" required><button type="submit">Obrir codi</button></div></form></div><p id="osc-code-status" role="status"></p></section>
- <section class="panel"><h2>Objectiu · ${ex.channel2?'Avançat · Dos canals':ex.mode==='I'?'Intermedi · Trigger':'Inicial · '+types[ex.type]}</h2><p>El generador té una ona fixa mentre dura l’exercici. Ajusta VOLTS/DIV i TIME/DIV perquè es vegin entre dos i quatre períodes complets, sense retallament vertical. ${ex.mode==='I'?'Recupera la sincronització ajustant el nivell de trigger.':''} Després llegeix les magnituds a la retícula. ${ex.channel2?"Compara els canals per calcular el desfasament i el retard.":""}</p></section>
+ <section class="panel"><h2>Objectiu · ${ex.channel2?'Avançat · Dos canals':ex.mode==='I'?'Intermedi · Trigger':ex.mode==='M'?'Intermedi · Cursors':'Inicial · '+types[ex.type]}</h2><p>El generador té una ona fixa mentre dura l’exercici. Ajusta VOLTS/DIV i TIME/DIV perquè es vegin entre dos i quatre períodes complets, sense retallament vertical. ${ex.mode==='I'?'Recupera la sincronització ajustant el nivell de trigger.':ex.mode==='M'?'Utilitza els cursors per mesurar la tensió i el temps.':''} Després llegeix les magnituds a la retícula. ${ex.channel2?"Compara els canals per calcular el desfasament i el retard.":""}</p></section>
  <div class="osc-layout"><section class="osc-case" aria-label="Instrument simulat"><h2>Oscil·loscopi · ${ex.channel2?"CH1 i CH2":"CH1"}</h2><div class="osc-display-container">${screen(Boolean(ex.channel2))}<p id="osc-periods" role="status"></p><div class="osc-cursor-tools"><label><input id="osc-cursors-toggle" type="checkbox"> Activar cursors de mesura</label><div id="osc-cursor-controls" hidden><label>X1 <input type="range" id="osc-x1" min="0" max="600" step="1" value="${cursors.x1}"></label><label>X2 <input type="range" id="osc-x2" min="0" max="600" step="1" value="${cursors.x2}"></label><label>Y1 <input type="range" id="osc-y1" min="0" max="320" step="1" value="${cursors.y1}"></label><label>Y2 <input type="range" id="osc-y2" min="0" max="320" step="1" value="${cursors.y2}"></label><output id="osc-cursor-readout" aria-live="polite"></output></div></div></div>
  <div class="osc-controls-container"><div class="osc-knobs">
  <div class="osc-dial-unit"><label for="osc-v">CH1 · VOLTS/DIV</label><div class="osc-dial" data-knob="osc-v"><button type="button" class="osc-minus" aria-label="Reduir VOLTS/DIV CH1">−</button><span class="osc-knob-body"><input id="osc-v" type="range" min="0" max="${volts.length-1}" value="${vi}" step="1"><span class="osc-pointer" aria-hidden="true"></span></span><button type="button" class="osc-plus" aria-label="Augmentar VOLTS/DIV CH1">+</button></div><output id="osc-vout"></output></div>
@@ -47,6 +55,8 @@ function practice(root){
  <section class="panel"><h2>Resolució guiada</h2><div class="osc-steps" id="osc-steps"></div><p id="osc-progress" role="status"></p>
  <div class="osc-actions"><button class="primary" id="osc-next">Mostrar un pas</button><button id="osc-hide">Amagar solució</button></div></section>
  <p>No es desen ni s’envien respostes. El codi permet recuperar exactament el senyal de l’exercici.</p>`;
+ root.querySelector('#osc-level').value=levelOf(selectedMode);
+ root.querySelector('#osc-type').innerHTML=levelOptions(levelOf(selectedMode));
  root.querySelector('#osc-type').value=selectedMode;
  const display=()=>{
  const v=volts[vi],t=times[ti],tr=triggerState(ex,triggerLevel);
@@ -85,6 +95,7 @@ function practice(root){
  for(const id of ['x1','x2','y1','y2'])root.querySelector('#osc-'+id).oninput=event=>{cursors[id]=Number(event.target.value);display();};
  dial('osc-v',value=>vi=value);dial('osc-t',value=>ti=value);dial('osc-trigger',value=>triggerLevel=value);if(ex.channel2)dial('osc-v2',value=>v2i=value);
  const replaceEx=(next)=>{exercise=next;vi=3;v2i=3;ti=3;triggerLevel=next.mode==='I'?8:0;pos1=0;pos2=0;cursorsOn=false;shown=0;practice(root);};
+ root.querySelector('#osc-level').onchange=e=>{const type=root.querySelector('#osc-type');type.innerHTML=levelOptions(e.target.value);selectedMode=exerciseLevels[e.target.value][0][0];type.value=selectedMode;};
  root.querySelector('#osc-type').onchange=e=>selectedMode=e.target.value;
  root.querySelector('#osc-new').onclick=()=>replaceEx(generate(selectedMode,randomSeed()));
  root.querySelector('#osc-load').onsubmit=e=>{e.preventDefault();try{const decoded=readCode(root.querySelector('#osc-code').value);selectedMode=decoded.mode;replaceEx(generate(decoded.mode,decoded.seed));}catch(err){root.querySelector('#osc-code-status').textContent=err.message;}};
