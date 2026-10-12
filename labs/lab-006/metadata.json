@@ -1,7 +1,7 @@
 {
   "id": "LAB-006",
   "title": "Mesures amb oscil·loscopi",
-  "description": "Oscil·loscopi interactiu amb PWM, acoblament AC/DC/GND, diagnosi de senyals i mesures de dos canals.",
+  "description": "Oscil·loscopi amb exercicis aleatoris per nivell, PWM, acoblament AC/DC/GND i diagnosi de senyals.",
   "courses": [
     "EE10",
     "EE30",
@@ -9,7 +9,7 @@
     "Enginyeria"
   ],
   "iconPath": "M4 25h10l8-15 12 30 12-30 12 30 12-15h10",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "status": "published",
   "access": "public",
   "entry": "labs/lab-006/",
@@ -50,6 +50,7 @@
     "enhanced-feedback",
     "duty-cycle",
     "ac-dc-coupling",
-    "signal-fault-diagnosis"
+    "signal-fault-diagnosis",
+    "random-per-level"
   ]
 }
