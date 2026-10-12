@@ -3,24 +3,32 @@ export const volts=[.1,.2,.5,1,2,5,10],times=[.00005,.0001,.0002,.0005,.001,.002
 const amplitudes=[.5,1,1.5,2,3,4,6],frequencies=[100,200,250,500,1000,2000,5000];
 export const types={S:'Sinusoidal',T:'Triangular',Q:'Quadrada'};
 export function codeOf(mode,seed){
- if(!['A','S','T','Q','D','I'].includes(mode)||!Number.isInteger(seed)||seed<0||seed>0xffffffff)throw Error('Paràmetres de codi no vàlids.');
- const body='TL-'+(mode==='D'?'OSC2':mode==='I'?'OSC3':'OSC1')+'-'+mode+'-'+seed.toString(36).toUpperCase();
+ if(!['A','S','T','Q','D','I','M','N'].includes(mode)||!Number.isInteger(seed)||seed<0||seed>0xffffffff)throw Error('Paràmetres de codi no vàlids.');
+ const body='TL-'+(['D','N'].includes(mode)?'OSC2':['I','M'].includes(mode)?'OSC3':'OSC1')+'-'+mode+'-'+seed.toString(36).toUpperCase();
  return body+'-'+checksum(body);
 }
 export function readCode(raw){
  const code=String(raw).trim().toUpperCase();
- const match=/^TL-(OSC1|OSC2|OSC3)-([ASTQDI])-([0-9A-Z]{1,7})-([0-9A-F]{4})$/.exec(code);
+ const match=/^TL-(OSC1|OSC2|OSC3)-([ASTQDIMN])-([0-9A-Z]{1,7})-([0-9A-F]{4})$/.exec(code);
  if(!match)throw Error('Introdueix un codi TL-OSC1 vàlid.');
  const seed=parseInt(match[3],36),mode=match[2];
- if((mode==='D'?'OSC2':mode==='I'?'OSC3':'OSC1')!==match[1])throw Error('Versió de codi incompatible.');
+ if((['D','N'].includes(mode)?'OSC2':['I','M'].includes(mode)?'OSC3':'OSC1')!==match[1])throw Error('Versió de codi incompatible.');
  if(codeOf(mode,seed)!==code)throw Error('El codi conté un error de transcripció.');
  return {mode,seed,code};
 }
 export function generate(mode,seed){
  const code=codeOf(mode,seed),rng=seededRandom(seed);
  const pick=a=>a[Math.floor(rng()*a.length)];
+ if(mode==='M'){
+  return {mode,seed,code,type:pick(['S','T','Q']),amplitude:pick([.5,1,1.5,2,3]),frequency:pick([100,200,250,500,1000,2000])};
+ }
  if(mode==='I'){
   return {mode,seed,code,type:pick(['S','T','Q']),amplitude:pick([1,2,3,4]),frequency:pick([100,200,250,500,1000,2000])};
+ }
+ if(mode==='N'){
+  const frequency=pick([100,200,250,500,1000,2000]);
+  const amp=pick([1,2,3]);
+  return {mode,seed,code,type:'S',amplitude:amp,frequency,channel2:{type:'S',amplitude:pick([.5,1,1.5,2,3]),frequency,phase:pick([15,30,45,75,90,135,150])}};
  }
  if(mode==='D'){
   const frequency=pick([100,200,250,500,1000,2000]);
@@ -33,7 +41,7 @@ export function voltage(ex,t){
  const phase=((t*ex.frequency-(ex.phase||0)/360)%1+1)%1;
  let factor;
  if(ex.type==='Q')factor=phase<.5?1:-1;
- else if(ex.type==='T')factor=1-4*Math.abs(phase-.25);
+ else if(ex.type==='T')factor=1-4*Math.abs(phase-.5);
  else factor=Math.sin(2*Math.PI*phase);
  return ex.amplitude*factor;
 }
