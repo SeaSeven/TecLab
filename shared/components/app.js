@@ -9,10 +9,10 @@ function catalog(){app.innerHTML=`<div class="eyebrow">ENTORN DE PRÀCTICA TÈCN
 function credits(){
  document.title='Autoria i reutilització | TecLab';
  app.innerHTML=`<a class="back" href="#">← Catàleg</a><p class="eyebrow">INFORMACIÓ DEL PROJECTE</p><h1>Autoria i reutilització</h1>
- <section class="panel"><h2>Estat actual</h2><p>TecLab és un projecte de laboratoris tècnics interactius. El nom de la persona o entitat titular dels drets està pendent de confirmar.</p>
+ <section class="panel"><h2>Estat actual</h2><p>TecLab és un projecte de laboratoris tècnics interactius. TecLab ha estat pensat, definit i creat per <strong>Albert Marcet i Valdés</strong>.</p>
  <p>El repositori és públic, però encara no hi ha cap llicència de reutilització publicada. Per tant, la consulta del codi no s'ha d'interpretar com una autorització general per copiar-lo, modificar-lo o redistribuir-lo.</p>
  <h2>Proposta pendent d'aprovació</h2><p>Per al codi: llicència MIT. Per als continguts docents: Creative Commons Reconeixement–CompartirIgual 4.0 Internacional (CC BY-SA 4.0).</p>
- <p>La llicència i l'autoria definitives s'indicaran aquí quan s'hagin confirmat els drets corresponents.</p>
+ <p>Les llicències definitives s'indicaran aquí quan s'hagin confirmat els drets i les condicions de reutilització.</p>
  <p><a href="https://github.com/SeaSeven/TecLab/blob/main/README.md" target="_blank" rel="noopener noreferrer">Consultar el repositori de TecLab</a></p></section>`;
 }
 function upcoming(id,section='laboratori') {
