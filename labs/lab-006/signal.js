@@ -12,7 +12,7 @@ export function readCode(raw){
  const match=/^TL-(OSC1|OSC2|OSC3|OSC4|OSC5)-([ASTQDIMNRPHWCF])-([0-9A-Z]{1,7})-([0-9A-F]{4})$/.exec(code);
  if(!match)throw Error('Introdueix un codi TL-OSC1 vàlid.');
  const seed=parseInt(match[3],36),mode=match[2];
- if((['D','N'].includes(mode)?'OSC2':['I','M'].includes(mode)?'OSC3':['R','P','H'].includes(mode)?'OSC4':'OSC1')!==match[1])throw Error('Versió de codi incompatible.');
+ if((['D','N'].includes(mode)?'OSC2':['I','M'].includes(mode)?'OSC3':['W','C','F'].includes(mode)?'OSC5':['R','P','H'].includes(mode)?'OSC4':'OSC1')!==match[1])throw Error('Versió de codi incompatible.');
  if(codeOf(mode,seed)!==code)throw Error('El codi conté un error de transcripció.');
  return {mode,seed,code};
 }
