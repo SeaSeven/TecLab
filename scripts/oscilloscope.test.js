@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {voltage,state,path,generate,codeOf,readCode,checkReading,triggerState,advancedAnswer,triggerOffset,cursorReadings,channelFits} from '../labs/lab-006/signal.js';
+import {voltage,state,path,generate,codeOf,readCode,checkReading,triggerState,advancedAnswer,triggerOffset,cursorReadings,channelFits,signalLimits,defaultTrigger} from '../labs/lab-006/signal.js';
 test('senyal sinusoidal a quart de període',()=>{const ex={type:'S',amplitude:3,frequency:1000};assert.ok(Math.abs(voltage(ex,.00025)-3)<1e-9);assert.ok(Math.abs(voltage(ex,.00075)+3)<1e-9);});
 test('ones triangular i quadrada',()=>{for(const type of ['T','Q']){const ex={type,amplitude:2,frequency:1000};if(type==='T'){assert.ok(Math.abs(voltage(ex,.0005)-2)<1e-8);assert.ok(Math.abs(voltage(ex,0)+2)<1e-8);assert.ok(Math.abs(voltage(ex,.001)+2)<1e-8);}else{assert.ok(Math.abs(voltage(ex,.00025)-2)<1e-8);assert.ok(Math.abs(voltage(ex,.00075)+2)<1e-8);}}});
 test('configuració correcta',()=>{const ex={type:'S',amplitude:3,frequency:1000};assert.equal(state(ex,1,.0002).good,true);assert.equal(state(ex,.5,.0002).good,false);assert.equal(state(ex,1,.001).good,false);assert.equal(state(ex,1,.0001).good,false);});
@@ -42,3 +42,26 @@ test('posició vertical i cursors amb escales físiques',()=>{
 
 test('ona triangular contínua als extrems i linear per trams',()=>{const ex={type:'T',amplitude:3,frequency:500};for(let i=0;i<=100;i++){const t=i/100*.002;assert.ok(Math.abs(voltage(ex,t)-voltage(ex,t+.002))<1e-7);}assert.ok(Math.abs(voltage(ex,.002-1e-9)-voltage(ex,.002+1e-9))<1e-4);});
 test('noves activitats reproduïbles per nivell',()=>{for(const mode of ['M','N'])for(const seed of [0,1,997,0xffffffff]){const ex=generate(mode,seed);assert.equal(readCode(ex.code).mode,mode);assert.deepEqual(generate(mode,seed),ex);if(mode==='N')assert.ok(ex.channel2);}});
+
+test('ones periòdiques aplicades: dent de serra, PWM i rectificada',()=>{
+ for(const mode of ['R','P','H'])for(const seed of [0,1,1234,0xffffffff]){
+  const ex=generate(mode,seed);
+  assert.equal(ex.type,mode);
+  assert.equal(readCode(ex.code).mode,mode);
+  assert.deepEqual(generate(mode,seed),ex);
+  assert.equal(ex.code.startsWith('TL-OSC4-'),true);
+ }
+ const saw={type:'R',amplitude:2,frequency:1000};
+ assert.ok(Math.abs(voltage(saw,.00025)+1)<1e-8);
+ assert.ok(Math.abs(voltage(saw,.00075)-1)<1e-8);
+ const pwm={type:'P',amplitude:3,frequency:1000,duty:30};
+ assert.equal(voltage(pwm,.0002),3);
+ assert.equal(voltage(pwm,.0006),-3);
+ const rect={type:'H',amplitude:4,frequency:1000};
+ assert.equal(signalLimits(rect).peakToPeak,4);
+ assert.ok(Math.abs(voltage(rect,.0005)-4)<1e-8);
+ assert.ok(Math.abs(voltage(rect,0))<1e-8);
+ assert.equal(defaultTrigger(rect),2);
+ assert.equal(triggerState(rect,2).stable,true);
+ assert.equal(triggerState(rect,-1).stable,false);
+});

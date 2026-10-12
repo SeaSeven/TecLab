@@ -76,3 +76,20 @@
 .osc-generation label{flex:1;min-width:160px}
 .osc-generation label select{width:100%}
 @media(max-width:780px){.osc-theory{grid-template-columns:minmax(0,1fr)}}
+
+/* Ajuda ampliada i retroacció visible als controls de comprovació */
+.osc-help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.osc-help-grid .panel{height:100%}
+.osc-help-grid .panel p{margin:12px 0;font-size:1rem;line-height:1.75}
+.osc-help-grid .panel h2{font-size:1.3rem}
+.osc-help-grid .osc-figure{max-width:440px}
+.osc-wave-examples{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.osc-wave-examples h3{font-size:.92rem}
+.osc-feedback{display:block;margin:15px 0 8px;padding:17px 19px;border:2px solid #cb9876;border-left-width:6px;background:#30291f;border-radius:9px;font-size:1.05rem;line-height:1.55;color:#fff5e7}
+.osc-feedback[hidden]{display:none!important}
+.osc-feedback strong{display:block;font-size:1.15rem;letter-spacing:.01em;margin-bottom:5px}
+.osc-feedback p{font-size:1rem;margin:0;line-height:1.6;color:inherit}
+.osc-feedback-ok{border-color:#67bfa7;background:#173f3a}
+.osc-feedback-attention{border-color:#e6aa75;background:#3d2d22}
+.osc-feedback:focus-visible{outline:3px solid #e5b85e;outline-offset:3px}
+@media(max-width:850px){.osc-help-grid{grid-template-columns:1fr}}

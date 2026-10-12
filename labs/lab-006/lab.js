@@ -1,4 +1,4 @@
-import {volts,times,state,path,generate,readCode,checkReading,types,triggerState,advancedAnswer,triggerOffset,cursorReadings,channelFits} from './signal.js';
+import {volts,times,state,path,generate,readCode,checkReading,types,triggerState,advancedAnswer,triggerOffset,cursorReadings,channelFits,voltage,signalLimits,defaultTrigger} from './signal.js';
 import {randomSeed} from '../../shared/services/exercises.js';
 const href=s=>'#lab-006'+(s?'/'+s:'');
 const format=x=>Number(x.toPrecision(4)).toLocaleString('ca-ES');
@@ -7,10 +7,11 @@ let vi=3,v2i=3,ti=3,triggerLevel=0,pos1=0,pos2=0,shown=0,exercise=null,selectedM
 let cursors={x1:150,x2:300,y1:110,y2:210},cursorsOn=false;
 const exerciseLevels={
  inicial:[['A','Ona aleatòria'],['S','Sinusoidal'],['T','Triangular'],['Q','Quadrada']],
+ aplicat:[['R','Dent de serra'],['P','Polsos PWM · cicle de treball variable'],['H','Sinusoide rectificada · unipolar']],
  intermedi:[['I','Sincronització amb trigger'],['M','Mesures amb cursors']],
  avancat:[['D','Dos canals · desfasament'],['N','Dos canals · amplitud i fase']]
 };
-const levelOf=mode=>['I','M'].includes(mode)?'intermedi':['D','N'].includes(mode)?'avancat':'inicial';
+const levelOf=mode=>['R','P','H'].includes(mode)?'aplicat':['I','M'].includes(mode)?'intermedi':['D','N'].includes(mode)?'avancat':'inicial';
 const levelOptions=level=>exerciseLevels[level].map(([mode,label])=>'<option value="'+mode+'">'+label+'</option>').join('');
 
 function explanatoryFigure(ex,kind){
@@ -19,7 +20,7 @@ function explanatoryFigure(ex,kind){
  Array.from({length:5},(_,i)=>'<path d="M30 '+(10+i*35)+'h420" stroke="#355866" stroke-width=".7"/>').join('');
  const sample=(phase=0,amp=38)=>Array.from({length:421},(_,i)=>{
  const p=(((i/period-phase)%1)+1)%1;
- const val=ex.type==='Q'?(p<.5?1:-1):ex.type==='T'?(1-4*Math.abs(p-.5)):Math.sin(2*Math.PI*p);
+ const val=voltage({...ex,amplitude:1,frequency:1},p);
  return (i?'L':'M')+(cx+i)+' '+(cy-val*amp);
  }).join(' ');
  let marks='';
@@ -43,13 +44,29 @@ function foundations(){
  <section class="panel"><h2>6. Dos canals i desfasament</h2>${explanatoryFigure({type:'S',channel2:{phase:90}},'channels')}<p>CH1 i CH2 comparteixen TIME/DIV, però cadascun té VOLTS/DIV i posició vertical independents. El desfasament es calcula amb φ = (Δt/T) · 360°. Un retard de 0,5 ms en un senyal de període 2 ms representa 90°. Desplaçar verticalment un canal ajuda a separar les traces, però no altera el retard temporal.</p></section>
  </div><p><a href="${href('practica')}">Tornar a l’oscil·loscopi →</a></p>`;
 }
+function helpPage(){
+ const example={type:'S',amplitude:2,frequency:500};
+ return `<a class="back" href="${href('practica')}">← Tornar a la pràctica</a>
+ <p class="eyebrow">LAB-006 / GUIA D'ÚS</p><h1>Ajuda de l’oscil·loscopi</h1>
+ <p class="intro">Segueix aquesta guia per preparar un exercici, ajustar l’instrument, interpretar les lectures i recuperar una pràctica anterior. Cada control té un efecte directe sobre la pantalla.</p>
+ <div class="osc-help-grid">
+ <section class="panel"><h2>1. Escull l’activitat</h2>${explanatoryFigure(example,'shape')}<p>Al menú <strong>Nivell</strong> pots escollir Inicial, Intermedi, Avançat o Aplicacions reals. El segon desplegable mostra només els exercicis d’aquell grup. Prem <strong>Nou exercici</strong> per generar-ne un altre.</p><p>El generador fixa la forma d'ona i les magnituds de l’exercici. Aquests valors no es modifiquen quan gires els comandaments.</p></section>
+ <section class="panel"><h2>2. Ajusta VOLTS/DIV</h2>${explanatoryFigure(example,'vertical')}<p>Comença comprovant que els màxims i mínims es vegin dins la retícula. Amb una escala massa petita, l'ona surt de la pantalla. Augmenta VOLTS/DIV per reduir-ne l’alçada visual.</p><p>Exemple: 4 divisions verticals a 1 V/div indiquen 4 V de diferència. La <strong>posició vertical</strong> desplaça la traça, però no modifica la tensió real.</p></section>
+ <section class="panel"><h2>3. Ajusta TIME/DIV</h2>${explanatoryFigure(example,'period')}<p>Canvia la base de temps fins a veure entre dos i quatre períodes. Una divisió representa el temps indicat a TIME/DIV. Per obtenir el període, multiplica les divisions d’un cicle per aquest valor.</p><p>Si T és 2 ms, la freqüència és 1/0,002 = 500 Hz.</p></section>
+ <section class="panel"><h2>4. Estabilitza amb el trigger</h2>${explanatoryFigure(example,'trigger')}<p>La línia horitzontal de color salmó indica el nivell de trigger de CH1. Ajusta aquest nivell perquè l’ona el creui en sentit ascendent. Si queda fora del rang de la tensió, no s’obté un dispar vàlid.</p><p>Quan l’indicador mostra <strong>TRIG</strong>, l’inici de la traça està alineat amb aquest creuament. En absència de dispar, la simulació indica <strong>AUTO</strong> i representa la manca de sincronització.</p></section>
+ <section class="panel"><h2>5. Mesura amb cursors</h2>${explanatoryFigure(example,'cursors')}<p>Activa <strong>Cursors de mesura</strong>. X1 i X2 són línies verticals per llegir un interval temporal Δt; Y1 i Y2 són línies horitzontals per llegir ΔV de CH1.</p><p>Col·loca X1 i X2 a dos màxims consecutius per mesurar el període, o Y1 i Y2 als extrems del senyal per obtenir Vpp. Els cursors no canvien el senyal.</p></section>
+ <section class="panel"><h2>6. Dos canals</h2>${explanatoryFigure({...example,channel2:{phase:90}},'channels')}<p>CH1 apareix en groc i CH2 en blau. Cada canal té el seu VOLTS/DIV i la seva posició vertical, però comparteixen TIME/DIV. Si les ones se superposen, separa-les amb els controls de posició.</p><p>Mesura el retard Δt entre punts equivalents; el desfasament és φ = 360° · Δt/T.</p></section>
+ <section class="panel"><h2>7. Ones periòdiques no bàsiques</h2><div class="osc-wave-examples"><div><h3>Dent de serra</h3>${explanatoryFigure({type:'R'},'shape')}</div><div><h3>Polsos PWM</h3>${explanatoryFigure({type:'P',duty:30},'shape')}</div><div><h3>Rectificada</h3>${explanatoryFigure({type:'H'},'shape')}</div></div><p>La dent de serra puja linealment i es reinicia bruscament. Els polsos PWM alternen entre dos nivells: el cicle de treball és el percentatge de temps en nivell alt. La sinusoide rectificada és unipolar, de manera que Vpp coincideix amb el seu màxim.</p><p>Els salts verticals de la dent de serra i del PWM <strong>sí que formen part del senyal</strong>; no s’han de confondre amb un defecte de dibuix.</p></section>
+ <section class="panel"><h2>8. Comprovacions i codi d’exercici</h2><p>Prem <strong>Comprovar visualització</strong> per saber si l’escala i la sincronització són adequades. El resultat apareix just al costat del botó en un panell ampli. Si cal corregir alguna cosa, s’indica el control responsable.</p><p>Introdueix Vpp, el període i, si escau, el desfasament. <strong>Comprovar lectures</strong> valida cada resposta per separat.</p><p>Per tornar al mateix exercici, copia’n el codi o l’enllaç. Quan el recuperis, el generador reconstruirà els mateixos valors, sense emmagatzemar dades personals.</p></section>
+ </div><p><a href="${href('practica')}">Tornar a l’instrument →</a></p>`;
+}
 function steps(ex){
  const initial=[
- ['Identifica el senyal','La forma d’ona és '+types[ex.type].toLowerCase()+'. Cerca màxims, mínims i períodes complets.'],
- ['Escala vertical','L’amplitud de CH1 és '+format(ex.amplitude)+' V. L’escala vertical ha de ser com a mínim '+format(ex.amplitude/4)+' V/div si la posició és zero.'],
+ ['Identifica el senyal','La forma d’ona és '+types[ex.type].toLowerCase()+(ex.type==='P'?' amb un cicle de treball del '+ex.duty+' %.':'')+'. Cerca màxims, mínims i períodes complets.'],
+ ['Escala vertical','L’extrem superior de CH1 és '+format(ex.amplitude)+' V. L’extrem inferior és '+format(signalLimits(ex).min)+' V. L’escala vertical ha de ser com a mínim '+format(ex.amplitude/4)+' V/div si la posició és zero.'],
  ['Escala horitzontal','El període és '+format(1000/ex.frequency)+' ms; ajusta TIME/DIV per mostrar entre dos i quatre períodes.'],
  ['Mesures amb cursors','Activa els cursors i col·loca X1 i X2 a dos punts equivalents per llegir Δt. Situa Y1 i Y2 als pics per llegir ΔV de CH1.'],
- ['Comprovació','Vpp de CH1 = '+format(2*ex.amplitude)+' V; T = '+format(1000/ex.frequency)+' ms; f = '+format(ex.frequency)+' Hz.']
+ ['Comprovació','Vpp de CH1 = '+format(signalLimits(ex).peakToPeak)+' V; T = '+format(1000/ex.frequency)+' ms; f = '+format(ex.frequency)+' Hz.']
  ];
  if(ex.mode==='I')initial.splice(1,0,['Sincronitza el trigger','La línia horitzontal indica el nivell del trigger. Mou-la dins de l’interval de ±'+format(ex.amplitude)+' V, on hi ha un creuament ascendent.']);
  if(ex.channel2)initial.push(['Dos canals','CH2 té un desfasament de '+ex.channel2.phase+'°. Separa les traces amb POSITION i mesura Δt = '+format(advancedAnswer(ex).delayMs)+' ms.']);
@@ -64,10 +81,10 @@ function practice(root){
  <p class="eyebrow">LAB-006 / PRÀCTICA</p><h1>Mesures amb oscil·loscopi</h1>
  <nav class="tabs" aria-label="Apartats"><a href="${href('practica')}" class="active">Laboratori</a><a href="${href('fonaments')}">Fonaments</a><a href="${href('ajuda')}">Ajuda</a></nav>
  <section class="panel osc-manager"><h2>Gestió de l’exercici</h2>
- <div class="osc-actions osc-generation"><label for="osc-level">Nivell<select id="osc-level"><option value="inicial">Inicial</option><option value="intermedi">Intermedi</option><option value="avancat">Avançat</option></select></label><label for="osc-type">Tipus d’exercici<select id="osc-type"></select></label><button class="primary" type="button" id="osc-new">Nou exercici</button></div>
+ <div class="osc-actions osc-generation"><label for="osc-level">Nivell<select id="osc-level"><option value="inicial">Inicial</option><option value="intermedi">Intermedi</option><option value="avancat">Avançat</option><option value="aplicat">Aplicacions reals</option></select></label><label for="osc-type">Tipus d’exercici<select id="osc-type"></select></label><button class="primary" type="button" id="osc-new">Nou exercici</button></div>
  <div class="osc-code-grid"><div><label for="osc-current">Codi de l’exercici</label><div class="osc-code-row"><input id="osc-current" readonly value="${ex.code}"><button id="osc-copy" type="button">Copiar codi</button><button id="osc-link" type="button">Copiar enllaç</button></div></div>
  <form id="osc-load"><label for="osc-code">Recuperar un exercici</label><div class="osc-code-row"><input id="osc-code" placeholder="TL-OSC1-…" required><button type="submit">Obrir codi</button></div></form></div><p id="osc-code-status" role="status"></p></section>
- <section class="panel"><h2>Objectiu · ${ex.channel2?'Avançat · Dos canals':ex.mode==='I'?'Intermedi · Trigger':ex.mode==='M'?'Intermedi · Cursors':'Inicial · '+types[ex.type]}</h2><p>El generador té una ona fixa mentre dura l’exercici. Ajusta VOLTS/DIV i TIME/DIV perquè es vegin entre dos i quatre períodes complets, sense retallament vertical. ${ex.mode==='I'?'Recupera la sincronització ajustant el nivell de trigger.':ex.mode==='M'?'Utilitza els cursors per mesurar la tensió i el temps.':''} Després llegeix les magnituds a la retícula. ${ex.channel2?"Compara els canals per calcular el desfasament i el retard.":""}</p></section>
+ <section class="panel"><h2>Objectiu · ${ex.channel2?'Avançat · Dos canals':ex.mode==='I'?'Intermedi · Trigger':ex.mode==='M'?'Intermedi · Cursors':levelOf(ex.mode)==='aplicat'?'Aplicacions reals · '+types[ex.type]:'Inicial · '+types[ex.type]}</h2><p>El generador té una ona fixa mentre dura l’exercici. Ajusta VOLTS/DIV i TIME/DIV perquè es vegin entre dos i quatre períodes complets, sense retallament vertical. ${ex.mode==='I'?'Recupera la sincronització ajustant el nivell de trigger.':ex.mode==='M'?'Utilitza els cursors per mesurar la tensió i el temps.':''} Després llegeix les magnituds a la retícula. ${ex.type==='P'?'El cicle de treball del generador varia entre exercicis.':ex.type==='H'?'El senyal està rectificat i només pren valors no negatius.':''} ${ex.channel2?"Compara els canals per calcular el desfasament i el retard.":""}</p></section>
  <div class="osc-layout"><section class="osc-case" aria-label="Instrument simulat"><h2>Oscil·loscopi · ${ex.channel2?"CH1 i CH2":"CH1"}</h2><div class="osc-display-container">${screen(Boolean(ex.channel2))}<p id="osc-periods" role="status"></p><div class="osc-cursor-tools"><label><input id="osc-cursors-toggle" type="checkbox"> Activar cursors de mesura</label><div id="osc-cursor-controls" hidden><label>X1 <input type="range" id="osc-x1" min="0" max="600" step="1" value="${cursors.x1}"></label><label>X2 <input type="range" id="osc-x2" min="0" max="600" step="1" value="${cursors.x2}"></label><label>Y1 <input type="range" id="osc-y1" min="0" max="320" step="1" value="${cursors.y1}"></label><label>Y2 <input type="range" id="osc-y2" min="0" max="320" step="1" value="${cursors.y2}"></label><output id="osc-cursor-readout" aria-live="polite"></output></div></div></div>
  <div class="osc-controls-container"><div class="osc-knobs">
  <div class="osc-dial-unit"><label for="osc-v">CH1 · VOLTS/DIV</label><div class="osc-dial" data-knob="osc-v"><button type="button" class="osc-minus" aria-label="Reduir VOLTS/DIV CH1">−</button><span class="osc-knob-body"><input id="osc-v" type="range" min="0" max="${volts.length-1}" value="${vi}" step="1"><span class="osc-pointer" aria-hidden="true"></span></span><button type="button" class="osc-plus" aria-label="Augmentar VOLTS/DIV CH1">+</button></div><output id="osc-vout"></output></div>
@@ -79,9 +96,9 @@ function practice(root){
  </div><p id="osc-trigger-status" role="status"></p>
  <div class="osc-actions"><button id="osc-reset" type="button">Restablir controls</button></div></div></section>
  <section class="panel"><h2>Comprovació</h2><p>Fes servir les divisions de la pantalla per llegir el senyal.</p>
- <button class="primary" id="osc-check" type="button">Comprovar visualització</button><p id="osc-status" role="status"></p>
+ <button class="primary" id="osc-check" type="button">Comprovar visualització</button><div id="osc-status" class="osc-feedback" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden></div>
  <form id="osc-form"><div class="osc-reading"><label>Tensió pic a pic (V)<input name="vpp" inputmode="decimal" required></label><label>Període (ms)<input name="period" inputmode="decimal" required></label>${ex.channel2?`<label>Desfasament CH2 (°)<input name="phase" inputmode="decimal" required></label><label>Retard temporal (ms)<input name="delay" inputmode="decimal" required></label>`:""}</div>
- <div class="osc-actions"><button class="primary">Comprovar lectures</button></div><p id="osc-answer" role="status"></p></form></section></div>
+ <div class="osc-actions"><button class="primary">Comprovar lectures</button></div><div id="osc-answer" class="osc-feedback" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden></div></form></section></div>
  <section class="panel"><h2>Resolució guiada</h2><div class="osc-steps" id="osc-steps"></div><p id="osc-progress" role="status"></p>
  <div class="osc-actions"><button class="primary" id="osc-next">Mostrar un pas</button><button id="osc-hide">Amagar solució</button></div></section>
  <p>No es desen ni s’envien respostes. El codi permet recuperar exactament el senyal de l’exercici.</p>`;
@@ -109,13 +126,25 @@ function practice(root){
  line.setAttribute('y2',160-(triggerLevel/v+pos1)*40);
  root.querySelector('#osc-display').textContent='CH1 '+format(v)+' V/div | '+tlabel(t)+(tr.stable?' | TRIG':' | AUTO');
  root.querySelector('#osc-periods').textContent='Períodes dins la pantalla: '+format(state(ex,v,t).periods);
- root.querySelector('#osc-status').textContent='';
+ root.querySelector('#osc-status').hidden=true;
  root.querySelectorAll('.osc-dial input').forEach(el=>{const lo=Number(el.min),hi=Number(el.max);el.closest('.osc-knob-body').style.setProperty('--angle',((Number(el.value)-lo)/(hi-lo)*270-135)+'deg');});
  if(cursorsOn)root.querySelector('#osc-cursor-overlay').removeAttribute('hidden');else root.querySelector('#osc-cursor-overlay').setAttribute('hidden','');
  for(const [id,coord,axis] of [['x1',cursors.x1,'x'],['x2',cursors.x2,'x'],['y1',cursors.y1,'y'],['y2',cursors.y2,'y']]){
  const el=root.querySelector('#osc-line-'+id);el.setAttribute(axis==='x'?'x1':'y1',coord);el.setAttribute(axis==='x'?'x2':'y2',coord);}
  const measured=cursorReadings(cursors.x1,cursors.x2,cursors.y1,cursors.y2,v,t);
  root.querySelector('#osc-cursor-readout').textContent='Δt = '+format(measured.deltaMs)+' ms · ΔV CH1 = '+format(measured.deltaV)+' V';
+ };
+ const feedback=(id,title,details,correct)=>{
+   const el=root.querySelector('#'+id);
+   el.hidden=false;
+   el.classList.toggle('osc-feedback-ok',correct);
+   el.classList.toggle('osc-feedback-attention',!correct);
+   const icon=correct?'✓':'!';
+   el.replaceChildren();
+   const heading=document.createElement('strong');heading.textContent=icon+' '+title;
+   const text=document.createElement('p');text.textContent=details;
+   el.append(heading,text);
+   el.scrollIntoView({block:'nearest',behavior:'auto'});
  };
  const dial=(id,change)=>{const el=root.querySelector('#'+id),wrap=el.closest('.osc-dial');el.oninput=()=>{change(Number(el.value));display();};for(const [selector,d] of [['.osc-minus',-1],['.osc-plus',1]])wrap.querySelector(selector).onclick=()=>{el.value=Math.max(Number(el.min),Math.min(Number(el.max),Number(el.value)+d*Number(el.step)));el.dispatchEvent(new Event('input',{bubbles:true}));};wrap.addEventListener('wheel',event=>{event.preventDefault();el.value=Math.max(Number(el.min),Math.min(Number(el.max),Number(el.value)+(event.deltaY<0?1:-1)*Number(el.step)));el.dispatchEvent(new Event('input',{bubbles:true}));},{passive:false});const rotate=event=>{const box=el.getBoundingClientRect(),dx=event.clientX-(box.left+box.width/2),dy=event.clientY-(box.top+box.height/2);let angle=Math.atan2(dx,-dy)*180/Math.PI;angle=Math.max(-135,Math.min(135,angle));const lo=Number(el.min),hi=Number(el.max),step=Number(el.step);el.value=Math.max(lo,Math.min(hi,Math.round((lo+(angle+135)/270*(hi-lo)-lo)/step)*step+lo));el.dispatchEvent(new Event('input',{bubbles:true}));};el.addEventListener('pointerdown',event=>{if(event.button!==0)return;el.setPointerCapture(event.pointerId);rotate(event);event.preventDefault();el.focus();});el.addEventListener('pointermove',event=>{if(el.hasPointerCapture(event.pointerId))rotate(event);});};
  for(const [id,update] of [['osc-pos1',v=>pos1=v],['osc-pos2',v=>pos2=v]]){const input=root.querySelector('#'+id);if(input)input.oninput=()=>{update(Number(input.value));display();};}
@@ -124,7 +153,7 @@ function practice(root){
  root.querySelector('#osc-cursors-toggle').onchange=event=>{cursorsOn=event.target.checked;root.querySelector('#osc-cursor-controls').hidden=!cursorsOn;display();};
  for(const id of ['x1','x2','y1','y2'])root.querySelector('#osc-'+id).oninput=event=>{cursors[id]=Number(event.target.value);display();};
  dial('osc-v',value=>vi=value);dial('osc-t',value=>ti=value);dial('osc-trigger',value=>triggerLevel=value);if(ex.channel2)dial('osc-v2',value=>v2i=value);
- const replaceEx=(next)=>{exercise=next;vi=3;v2i=3;ti=3;triggerLevel=next.mode==='I'?8:0;pos1=0;pos2=0;cursorsOn=false;shown=0;practice(root);};
+ const replaceEx=(next)=>{exercise=next;vi=3;v2i=3;ti=3;triggerLevel=next.mode==='I'?8:defaultTrigger(next);pos1=0;pos2=0;cursorsOn=false;shown=0;practice(root);};
  root.querySelector('#osc-level').onchange=e=>{const type=root.querySelector('#osc-type');type.innerHTML=levelOptions(e.target.value);selectedMode=exerciseLevels[e.target.value][0][0];type.value=selectedMode;};
  root.querySelector('#osc-type').onchange=e=>selectedMode=e.target.value;
  root.querySelector('#osc-new').onclick=()=>replaceEx(generate(selectedMode,randomSeed()));
@@ -132,10 +161,36 @@ function practice(root){
  const copy=async value=>{try{await navigator.clipboard.writeText(value);root.querySelector('#osc-code-status').textContent='Copiat al porta-retalls.';}catch{root.querySelector('#osc-code-status').textContent='No s’ha pogut copiar automàticament. Selecciona el codi i copia’l manualment.';}};
  root.querySelector('#osc-copy').onclick=()=>copy(ex.code);
  root.querySelector('#osc-link').onclick=()=>copy(location.href.split('#')[0]+href('practica')+'?code='+encodeURIComponent(ex.code));
- root.querySelector('#osc-reset').onclick=()=>{vi=3;v2i=3;ti=3;triggerLevel=ex.mode==='I'?8:0;pos1=0;pos2=0;for(const [id,value] of [['osc-v',vi],['osc-v2',v2i],['osc-t',ti],['osc-trigger',triggerLevel],['osc-pos1',pos1],['osc-pos2',pos2]]){const element=root.querySelector('#'+id);if(element)element.value=value;}display();};
- root.querySelector('#osc-check').onclick=()=>{const one=state(ex,volts[vi],times[ti]);const two=ex.channel2?state(ex.channel2,volts[v2i],times[ti]):null;const tr=triggerState(ex,triggerLevel);root.querySelector('#osc-status').textContent=one.feedback+(!channelFits(ex,volts[vi],pos1)?' CH1 queda fora de pantalla per la posició vertical.':'')+(two&&!channelFits(ex.channel2,volts[v2i],pos2)?' CH2 queda retallat: augmenta VOLTS/DIV de CH2.':'')+(tr.stable?'':' '+tr.feedback);};
- root.querySelector('#osc-form').onsubmit=event=>{event.preventDefault();const inputs=event.target.elements;const v=checkReading(inputs.vpp.value,2*ex.amplitude)==='correct';const t=checkReading(inputs.period.value,1000/ex.frequency)==='correct';let message='Tensió: '+(v?'correcta':'revisa les divisions')+'. Període: '+(t?'correcte':'revisa la base de temps')+'.';if(ex.channel2){const expected=advancedAnswer(ex),p=checkReading(inputs.phase.value,expected.phase)==='correct',d=checkReading(inputs.delay.value,expected.delayMs)==='correct';message+=' Desfasament: '+(p?'correcte':'revisa la distància entre les ones')+'. Retard: '+(d?'correcte':'revisa el període')+'.';}const good=(state(ex,volts[vi],times[ti]).readable&&channelFits(ex,volts[vi],pos1))&&triggerState(ex,triggerLevel).stable&&(!ex.channel2||(state(ex.channel2,volts[v2i],times[ti]).readable&&channelFits(ex.channel2,volts[v2i],pos2)));root.querySelector('#osc-answer').textContent=message+' '+(good?'Visualització adequada.':'Encara has de millorar la visualització.');};
+ root.querySelector('#osc-reset').onclick=()=>{vi=3;v2i=3;ti=3;triggerLevel=ex.mode==='I'?8:defaultTrigger(ex);pos1=0;pos2=0;for(const [id,value] of [['osc-v',vi],['osc-v2',v2i],['osc-t',ti],['osc-trigger',triggerLevel],['osc-pos1',pos1],['osc-pos2',pos2]]){const element=root.querySelector('#'+id);if(element)element.value=value;}display();};
+ root.querySelector('#osc-check').onclick=()=>{
+ const one=state(ex,volts[vi],times[ti]);
+ const two=ex.channel2?state(ex.channel2,volts[v2i],times[ti]):null;
+ const tr=triggerState(ex,triggerLevel);
+ const good=one.readable&&channelFits(ex,volts[vi],pos1)&&tr.stable&&(!two||(two.readable&&channelFits(ex.channel2,volts[v2i],pos2)));
+ const hints=[];
+ if(!one.readable)hints.push(one.feedback);
+ if(!channelFits(ex,volts[vi],pos1))hints.push('CH1 queda retallat: augmenta VOLTS/DIV o centra la posició vertical.');
+ if(two&&!channelFits(ex.channel2,volts[v2i],pos2))hints.push('CH2 queda retallat: revisa VOLTS/DIV i la posició del segon canal.');
+ if(!tr.stable)hints.push(tr.feedback);
+ feedback('osc-status',good?'Visualització correcta':'Cal ajustar la visualització',good?'Les escales i el trigger permeten observar el senyal complet. Ara pots llegir les magnituds.':hints.join(' '),good);
+ };
+ root.querySelector('#osc-form').onsubmit=event=>{
+   event.preventDefault();
+   const input=event.target.elements;
+   const correctV=checkReading(input.vpp.value,signalLimits(ex).peakToPeak)==='correct';
+   const correctT=checkReading(input.period.value,1000/ex.frequency)==='correct';
+   const measurements=[['Tensió pic a pic',correctV],['Període',correctT]];
+   if(ex.channel2){
+     const expected=advancedAnswer(ex);
+     measurements.push(['Desfasament',checkReading(input.phase.value,expected.phase)==='correct']);
+     measurements.push(['Retard temporal',checkReading(input.delay.value,expected.delayMs)==='correct']);
+   }
+   const valid=measurements.every(([,ok])=>ok);
+   const readable=state(ex,volts[vi],times[ti]).readable&&channelFits(ex,volts[vi],pos1)&&triggerState(ex,triggerLevel).stable&&(!ex.channel2||(state(ex.channel2,volts[v2i],times[ti]).readable&&channelFits(ex.channel2,volts[v2i],pos2)));
+   const details=measurements.map(([name,ok])=>name+': '+(ok?'correcte':'revisa les divisions i les unitats')).join('. ')+'. '+(readable?'La visualització és adequada.':'També cal revisar les escales o el trigger.');
+   feedback('osc-answer',valid&&readable?'Lectures correctes':valid?'Lectures correctes, visualització pendent':'Revisa les lectures',details,valid&&readable);
+ };
  const guide=steps(ex),draw=()=>{root.querySelector('#osc-steps').innerHTML=guide.slice(0,shown).map(step=>'<article><h3>'+step.title+'</h3><p>'+step.description+'</p>'+explanatoryFigure(ex,step.kind)+'</article>').join('');root.querySelector('#osc-progress').textContent=shown+' de '+guide.length+' passos';root.querySelector('#osc-next').disabled=shown===guide.length;};
  root.querySelector('#osc-next').onclick=()=>{shown=Math.min(shown+1,guide.length);draw();};root.querySelector('#osc-hide').onclick=()=>{shown=0;draw();};display();draw();
 }
-export function renderLab006(root,parts=[]){const section=(parts[0]||'practica').split('?')[0];document.title='Mesures amb oscil·loscopi | TecLab';document.body.classList.remove('lab-cover');document.body.classList.add('lab-active');if(section==='practica'||section==='laboratori'||section==='portada'){const code=location.hash.match(/[?&]code=([^&]+)/)?.[1];if(code){try{const decoded=readCode(decodeURIComponent(code));if(exercise?.code!==decoded.code){exercise=generate(decoded.mode,decoded.seed);selectedMode=decoded.mode;shown=0;triggerLevel=exercise.mode==='I'?8:0;pos1=0;pos2=0;}}catch{ /* L'usuari també pot recuperar el codi manualment. */ }}practice(root);return;}if(section==='fonaments'){root.innerHTML=foundations();return;}if(section==='ajuda'){root.innerHTML='<a class="back" href="'+href('practica')+'">← Tornar a la pràctica</a><h1>Ajuda</h1><section class="panel"><h2>Com fer servir l’instrument</h2><p>Selecciona el nivell i el tipus d’exercici als dos desplegables. Ajusta escales, trigger i posicions amb els comandaments i els botons +/−; també pots emprar el teclat. Per recuperar un exercici, enganxa’n el codi TL-OSC i selecciona «Obrir codi».</p><p>Activa els cursors per mesurar Δt i ΔV. Si un senyal queda fora de la pantalla, augmenta VOLTS/DIV o corregeix-ne la posició. La resolució guiada mostra un pas i una imatge cada vegada.</p></section>';return;}practice(root);}
+export function renderLab006(root,parts=[]){const section=(parts[0]||'practica').split('?')[0];document.title='Mesures amb oscil·loscopi | TecLab';document.body.classList.remove('lab-cover');document.body.classList.add('lab-active');if(section==='practica'||section==='laboratori'||section==='portada'){const code=location.hash.match(/[?&]code=([^&]+)/)?.[1];if(code){try{const decoded=readCode(decodeURIComponent(code));if(exercise?.code!==decoded.code){exercise=generate(decoded.mode,decoded.seed);selectedMode=decoded.mode;shown=0;triggerLevel=exercise.mode==='I'?8:defaultTrigger(exercise);pos1=0;pos2=0;}}catch{ /* L'usuari també pot recuperar el codi manualment. */ }}practice(root);return;}if(section==='fonaments'){root.innerHTML=foundations();return;}if(section==='ajuda'){root.innerHTML=helpPage();return;}practice(root);}
