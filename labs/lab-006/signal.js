@@ -3,13 +3,13 @@ export const volts=[.1,.2,.5,1,2,5,10],times=[.00005,.0001,.0002,.0005,.001,.002
 const amplitudes=[.5,1,1.5,2,3,4,6],frequencies=[100,200,250,500,1000,2000,5000];
 export const types={S:'Sinusoidal',T:'Triangular',Q:'Quadrada',R:'Dent de serra',P:'Polsos PWM',H:'Sinusoide rectificada'};
 export function codeOf(mode,seed){
- if(!['A','S','T','Q','D','I','M','N','R','P','H','W','C','F'].includes(mode)||!Number.isInteger(seed)||seed<0||seed>0xffffffff)throw Error('Paràmetres de codi no vàlids.');
- const body='TL-'+(['D','N'].includes(mode)?'OSC2':['I','M'].includes(mode)?'OSC3':['W','C','F'].includes(mode)?'OSC5':['R','P','H'].includes(mode)?'OSC4':'OSC1')+'-'+mode+'-'+seed.toString(36).toUpperCase();
+ if(!['A','S','T','Q','D','I','M','N','R','P','H','W','C','F','J','K','L'].includes(mode)||!Number.isInteger(seed)||seed<0||seed>0xffffffff)throw Error('Paràmetres de codi no vàlids.');
+ const body='TL-'+(['D','N'].includes(mode)?'OSC2':['I','M'].includes(mode)?'OSC3':['J','K','L'].includes(mode)?'OSC6':['W','C','F'].includes(mode)?'OSC5':['R','P','H'].includes(mode)?'OSC4':'OSC1')+'-'+mode+'-'+seed.toString(36).toUpperCase();
  return body+'-'+checksum(body);
 }
 export function readCode(raw){
  const code=String(raw).trim().toUpperCase();
- const match=/^TL-(OSC1|OSC2|OSC3|OSC4|OSC5)-([ASTQDIMNRPHWCF])-([0-9A-Z]{1,7})-([0-9A-F]{4})$/.exec(code);
+ const match=/^TL-(OSC1|OSC2|OSC3|OSC4|OSC5|OSC6)-([ASTQDIMNRPHWCFJKL])-([0-9A-Z]{1,7})-([0-9A-F]{4})$/.exec(code);
  if(!match)throw Error('Introdueix un codi TL-OSC1 vàlid.');
  const seed=parseInt(match[3],36),mode=match[2];
  if((['D','N'].includes(mode)?'OSC2':['I','M'].includes(mode)?'OSC3':['W','C','F'].includes(mode)?'OSC5':['R','P','H'].includes(mode)?'OSC4':'OSC1')!==match[1])throw Error('Versió de codi incompatible.');
@@ -19,6 +19,12 @@ export function readCode(raw){
 export function generate(mode,seed){
  const code=codeOf(mode,seed),rng=seededRandom(seed);
  const pick=a=>a[Math.floor(rng()*a.length)];
+ if(['J','K','L'].includes(mode)){
+  const options=mode==='J'?['I','M']:mode==='K'?['D','N']:['R','P','H','W','C','F'];
+  const variant=pick(options);
+  const generated=generate(variant,seed);
+  return {...generated,mode,variant,code};
+ }
  if(mode==='W'){
   return {mode,seed,code,type:'P',amplitude:pick([1,2,3,4]),frequency:pick([100,200,250,500,1000]),duty:pick([15,25,35,45,55,65,75,85])};
  }
@@ -48,6 +54,7 @@ export function generate(mode,seed){
  if(type==='P')exercise.duty=pick([20,30,40,60,70,80]);
  return exercise;
 }
+export function exerciseMode(ex){return ex.variant??ex.mode;}
 export function voltage(ex,t){
  const phase=((t*ex.frequency-(ex.phase||0)/360)%1+1)%1;
  let factor;
