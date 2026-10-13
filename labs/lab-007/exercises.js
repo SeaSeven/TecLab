@@ -8,7 +8,7 @@ export const levelKinds={
 const levels=Object.keys(levelKinds);
 export function codeOf(level,kind,seed){
  if(!levels.includes(level)||!levelKinds[level].some(([id])=>id===kind)||!Number.isInteger(seed)||seed<0||seed>0xffffffff)throw Error('Paràmetres no vàlids.');
- const body='TL-MM1-'+level+'-'+kind+'-'+seed.toString(36).toUpperCase();
+ const body='TL-MM1-'+level.toUpperCase()+'-'+kind+'-'+seed.toString(36).toUpperCase();
  return body+'-'+checksum(body);
 }
 export function fromCode(input){
