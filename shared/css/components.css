@@ -7,3 +7,10 @@
 .lab-section-nav a:hover,.lab-section-nav button:hover{border-color:#a78b63}
 .lab-section-nav a:focus-visible,.lab-section-nav button:focus-visible{outline:3px solid #f2c454;outline-offset:2px}
 @media(max-width:480px){.lab-section-nav{gap:4px;margin:18px 0 24px}.lab-section-nav a,.lab-section-nav button{flex:1;padding:9px 8px;text-align:center}}
+
+
+/* Patró de pestanyes compartit per LAB-001, LAB-005, LAB-006 i LAB-007. */
+.tabs:not(.lab-tabs){background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:7px;gap:6px;width:fit-content;max-width:100%;margin:26px 0 22px}
+.tabs:not(.lab-tabs) a,.tabs:not(.lab-tabs) button{font-size:13px;min-height:39px;padding:9px 15px;margin:0;border-radius:7px}
+.tabs:not(.lab-tabs) a.active,.tabs:not(.lab-tabs) button.active{background:var(--accent-soft);border-color:#936e3f;color:var(--amber)}
+@media(max-width:480px){.tabs:not(.lab-tabs){width:100%}.tabs:not(.lab-tabs) a,.tabs:not(.lab-tabs) button{flex:1;text-align:center;padding:9px 8px}}
