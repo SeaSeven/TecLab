@@ -67,3 +67,19 @@ button,select,input{font-size:13px;padding:8px 12px}
 .lesson-grid{gap:15px}.lesson-grid .panel p{font-size:14px;line-height:1.7}
 @media(max-width:850px){.workspace{grid-template-columns:1fr}}
 @media(max-width:520px){main{padding:18px 12px 40px}.panel{padding:14px}.dial-choice{min-width:35px!important;font-size:10px}.rotary{min-height:245px}.manager-row label,.code-row label{flex:1 1 130px}.task-card{padding:14px}}
+
+
+/* Ajust final: el bloc d'activitats replica la densitat de LAB-006. */
+.lab-tabs.tabs{margin:26px 0 22px!important;padding:7px;border:1px solid #405464;background:#1c2b34;border-radius:10px;width:fit-content;max-width:100%}
+.lab-tabs.tabs .tab{margin:0;min-width:110px;padding:9px 15px;font-size:13px}
+.manager-row{display:grid;grid-template-columns:minmax(150px,1fr) minmax(180px,1.3fr) auto;align-items:end;gap:10px}
+.code-row{display:grid;grid-template-columns:minmax(180px,1fr) auto minmax(180px,1fr) auto;align-items:end;gap:9px}
+.manager-row label,.code-row label{display:grid;gap:5px;min-width:0;margin:0;font-size:12px}
+.manager-row button,.code-row button{white-space:nowrap}
+.objective-section{margin:18px 0 15px;padding:17px 20px 12px;background:#1c2b34;border:1px solid #52626b;border-radius:12px}
+.objective-section h2{font-size:18px;margin:0 0 8px}
+.objective-section .task-card{margin:0 0 4px;font-size:14px}
+.objective-section .task-card strong{font-size:15px}
+.dial-loading{color:#f3c88c;text-align:center;padding-top:35%;font-size:13px}
+@media(max-width:840px){.manager-row{grid-template-columns:1fr 1fr}.manager-row button{grid-column:1/-1;justify-self:start}.code-row{grid-template-columns:minmax(170px,1fr) auto}.code-row label:nth-of-type(2){grid-column:1}.code-row #recover{grid-column:2}}
+@media(max-width:500px){.manager-row{grid-template-columns:1fr}.manager-row button{grid-column:1}.code-row{grid-template-columns:1fr auto}.lab-tabs.tabs{width:100%}.lab-tabs.tabs .tab{min-width:0;flex:1;padding:9px 8px}}
