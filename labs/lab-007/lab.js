@@ -24,19 +24,28 @@ function circuit(){
 }
 function dial(){
  const start=-165,span=330,n=ranges.length,angle=i=>start+i*span/(n-1);
- const groups=[...new Set(ranges.map(r=>r.group))].filter(g=>g!=='OFF');
- const headings=groups.map(group=>{
-  const indexes=ranges.flatMap((r,i)=>r.group===group?[i]:[]);
-  const a=(angle((indexes[0]+indexes[indexes.length-1])/2))*Math.PI/180;
-  const x=50+Math.sin(a)*30,y=50-Math.cos(a)*30;
-  return '<span class="dial-group" style="left:'+x+'%;top:'+y+'%" aria-hidden="true">'+group+'</span>';
+ const groups=['V⎓','V~','A⎓','Ω'];
+ const angles=groups.map(group=>{
+  const ix=ranges.flatMap((r,i)=>r.group===group?[i]:[]);
+  return {group,first:ix[0],last:ix[ix.length-1]};
+ });
+ const sectors=angles.map(({group,first,last})=>{
+  const a=angle((first+last)/2)*Math.PI/180;
+  const x=50+Math.sin(a)*26,y=50-Math.cos(a)*26;
+  const cls={'V⎓':'vdc','V~':'vac','A⎓':'adc','Ω':'ohm'}[group];
+  return '<span class="dial-group dial-group-'+cls+'" style="left:'+x+'%;top:'+y+'%" aria-hidden="true">'+group+'</span>';
+ }).join('');
+ const dividers=angles.slice(1).map(({first})=>{
+  const a=angle(first-.5)*Math.PI/180;
+  const x1=50+Math.sin(a)*34,y1=50-Math.cos(a)*34,x2=50+Math.sin(a)*48,y2=50-Math.cos(a)*48;
+  return '<svg class="dial-divider" viewBox="0 0 100 100" aria-hidden="true"><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#e6d6a9" stroke-width=".7" stroke-dasharray="1.3 1.1"/></svg>';
  }).join('');
  const choices=ranges.map((r,i)=>{
   const a=angle(i)*Math.PI/180,x=50+Math.sin(a)*44,y=50-Math.cos(a)*44;
-  return '<button type="button" data-range="'+r.id+'" aria-pressed="'+(s.range===r.id)+'" aria-label="'+r.group+' escala '+r.label+'" class="dial-choice '+(s.range===r.id?'chosen':'')+'" data-group="'+r.mode+'" style="left:'+x+'%;top:'+y+'%">'+r.label+'</button>';
+  return '<button type="button" data-range="'+r.id+'" aria-pressed="'+(s.range===r.id)+'" aria-label="'+r.group+' · escala '+r.label+'" class="dial-choice '+(s.range===r.id?'chosen':'')+'" data-group="'+r.mode+'" style="left:'+x+'%;top:'+y+'%">'+r.label+'</button>';
  }).join('');
  const pointer=angle(ranges.findIndex(r=>r.id===s.range));
- return '<div class="dial-surface">'+headings+choices+'<div class="dial-body" style="--turn:'+pointer+'deg"><span class="dial-arrow"></span></div><span class="dial-caption">SELECTOR</span></div>';
+ return '<div class="dial-surface">'+dividers+sectors+choices+'<div class="dial-body" style="--turn:'+pointer+'deg"><span class="dial-arrow"></span></div><span class="dial-caption">SELECTOR</span></div>';
 }
 function renderJacks(){
  document.querySelectorAll('[data-jack]').forEach(b=>{
@@ -61,7 +70,7 @@ function connectJack(jack){
 function feedback(message,type=''){const el=$('feedback');el.textContent=message;el.className='feedback '+(type?'feedback-'+type:'');}
 function reading(){const m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2});$('reading').textContent=m.display;$('unit').textContent=m.unit;return m;}
 function render(){
- $('circuit').innerHTML=circuit();$('rotary').innerHTML=dial();
+ $('circuit').innerHTML=circuit();$('rotary').innerHTML=dial();const selected=ranges.find(r=>r.id===s.range);$('dialSelection').textContent='Posició seleccionada: '+(selected.mode==='OFF'?'OFF':selected.group+' · '+selected.label);
  $('circuit').querySelectorAll('[data-node]').forEach(el=>{
  const connect=()=>{s[s.probe+'Node']=el.dataset.node;render();feedback(reading().status);};
  el.onclick=connect;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();connect();}};
@@ -80,7 +89,7 @@ function kinds(level,selected){$('kind').innerHTML=levelKinds[level].map(([k,t])
 function load(v){
  ex=v;s.redNode=null;s.blackNode=null;s.range='VDC20';s.redJack='VΩmA';s.blackJack='COM';
  $('level').value=v.level;kinds(v.level,v.kind);$('exerciseCode').value=v.code;
- $('task').innerHTML='<strong>'+v.text+'</strong><span>Col·loca la punta vermella al node '+v.red+' i la negra al node '+v.black+'. Selecciona V⎓, comprova els borns i tria una escala que permeti obtenir una lectura.</span>';
+ $('task').innerHTML='<strong>'+v.text+'</strong><p>Treballa amb la font i les dues resistències representades al circuit. Decideix on situar les puntes, quins borns utilitzar i quin rang del multímetre permet fer la mesura.</p>';
  $('explanation').innerHTML='<h3>Resolució guiada</h3><p>Intensitat del divisor: I = U/(R1+R2) = '+fmt(v.voltage/(v.r1+v.r2)*1000,3)+' mA.</p><p>Potencials: A = '+fmt(v.voltage,3)+' V, B = '+fmt(v.voltage*v.r2/(v.r1+v.r2),3)+' V i C = 0 V. Lectura: V('+v.red+') − V('+v.black+') = '+fmt(v.expected,3)+' V. Rang mínim apropiat: '+ranges.find(r=>r.id===v.range).label+' V⎓.</p>';
  $('explanation').hidden=true;$('codeStatus').textContent='Codi reproduïble: '+v.code;render();feedback('Configura el multímetre i connecta les puntes.');
 }
