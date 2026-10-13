@@ -3,7 +3,7 @@ import {generate,fromCode,levelKinds} from './exercises.js';
 const $=id=>document.getElementById(id);
 const fmt=(n,d=2)=>Number(n).toLocaleString('ca-ES',{maximumFractionDigits:d});
 let ex=generate('inicial','R2',12345);
-let s={range:'VDC20',redJack:'VΩ',blackJack:'COM',redNode:null,blackNode:null,probe:'red',view:'schema'};
+let s={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:null,blackNode:null,probe:'red',view:'schema'};
 const points=[['A',75,44],['B',405,44],['C',405,246]];
 function markings(){
  return points.map(([id,x,y])=>['red','black'].filter(p=>s[p+'Node']===id).map((p,i)=>{
@@ -23,12 +23,41 @@ function circuit(){
  return '<svg viewBox="0 0 500 300" role="group" aria-label="Circuit divisor de tensió">'+(s.view==='schema'?schema:physical)+labels+markings()+'</svg>';
 }
 function dial(){
- const start=-145,span=290,n=ranges.length;
- return '<div class="dial-surface">'+ranges.map((r,i)=>{
- const angle=(start+i*span/(n-1))*Math.PI/180,x=50+Math.sin(angle)*39,y=50-Math.cos(angle)*39;
- return '<button type="button" data-range="'+r.id+'" aria-pressed="'+(s.range===r.id)+'" title="'+r.id+'" class="dial-choice '+(s.range===r.id?'chosen':'')+'" style="left:'+x+'%;top:'+y+'%">'+r.label+'</button>';
- }).join('')+'<div class="dial-body" style="--turn:'+(start+ranges.findIndex(r=>r.id===s.range)*span/(n-1))+'deg"><span class="dial-arrow"></span></div><span class="dial-caption">SELECTOR</span></div>';
+ const start=-165,span=330,n=ranges.length,angle=i=>start+i*span/(n-1);
+ const groups=[...new Set(ranges.map(r=>r.group))].filter(g=>g!=='OFF');
+ const headings=groups.map(group=>{
+  const indexes=ranges.flatMap((r,i)=>r.group===group?[i]:[]);
+  const a=(angle((indexes[0]+indexes[indexes.length-1])/2))*Math.PI/180;
+  const x=50+Math.sin(a)*30,y=50-Math.cos(a)*30;
+  return '<span class="dial-group" style="left:'+x+'%;top:'+y+'%" aria-hidden="true">'+group+'</span>';
+ }).join('');
+ const choices=ranges.map((r,i)=>{
+  const a=angle(i)*Math.PI/180,x=50+Math.sin(a)*44,y=50-Math.cos(a)*44;
+  return '<button type="button" data-range="'+r.id+'" aria-pressed="'+(s.range===r.id)+'" aria-label="'+r.group+' escala '+r.label+'" class="dial-choice '+(s.range===r.id?'chosen':'')+'" data-group="'+r.mode+'" style="left:'+x+'%;top:'+y+'%">'+r.label+'</button>';
+ }).join('');
+ const pointer=angle(ranges.findIndex(r=>r.id===s.range));
+ return '<div class="dial-surface">'+headings+choices+'<div class="dial-body" style="--turn:'+pointer+'deg"><span class="dial-arrow"></span></div><span class="dial-caption">SELECTOR</span></div>';
 }
+function renderJacks(){
+ document.querySelectorAll('[data-jack]').forEach(b=>{
+  const j=b.dataset.jack,red=s.redJack===j,black=s.blackJack===j;
+  b.classList.toggle('plug-red',red);b.classList.toggle('plug-black',black);
+  b.setAttribute('aria-pressed',String((s.probe==='red'?red:black)));
+  b.title=(red?'Punta vermella':black?'Punta negra':'Born lliure')+' · '+j;
+ });
+ $('jackStatus').textContent='Vermella: '+(s.redJack||'sense born')+' · Negra: '+(s.blackJack||'sense born')+'.';
+}
+function connectJack(jack){
+ const other=s.probe==='red'?'black':'red';
+ if(s[other+'Jack']===jack){
+  feedback('El born '+jack+' ja està ocupat per la punta '+(other==='red'?'vermella':'negra')+'. Tria un altre born.','error');
+  return;
+ }
+ s[s.probe+'Jack']=jack;
+ renderJacks();reading();
+ feedback('Punta '+(s.probe==='red'?'vermella':'negra')+' connectada al born '+jack+'. '+reading().status);
+}
+
 function feedback(message,type=''){const el=$('feedback');el.textContent=message;el.className='feedback '+(type?'feedback-'+type:'');}
 function reading(){const m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2});$('reading').textContent=m.display;$('unit').textContent=m.unit;return m;}
 function render(){
@@ -42,16 +71,16 @@ function render(){
  el.onkeydown=e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();let i=ranges.findIndex(r=>r.id===s.range);s.range=ranges[(i+(e.key==='ArrowRight'?1:-1)+ranges.length)%ranges.length].id;render();$('rotary').querySelector('[data-range="'+s.range+'"]').focus();}};
  });
  $('redNode').textContent=s.redNode||'sense connectar';$('blackNode').textContent=s.blackNode||'sense connectar';
- ['red','black'].forEach(p=>$(p+'Probe').classList.toggle('selected',p===s.probe));
+ ['red','black'].forEach(p=>$(p+'Probe').classList.toggle('selected',p===s.probe));renderJacks();
  ['schema','physical'].forEach(v=>$(v).classList.toggle('active',v===s.view));
  $('circuitInfo').textContent='Font '+fmt(ex.voltage)+' V CC · R1 '+fmt(ex.r1,0)+' Ω · R2 '+fmt(ex.r2,0)+' Ω.';
  reading();
 }
 function kinds(level,selected){$('kind').innerHTML=levelKinds[level].map(([k,t])=>'<option value="'+k+'">'+t+'</option>').join('');if(selected)$('kind').value=selected;}
 function load(v){
- ex=v;s.redNode=null;s.blackNode=null;s.range='VDC20';s.redJack='VΩ';s.blackJack='COM';$('redJack').value='VΩ';$('blackJack').value='COM';
+ ex=v;s.redNode=null;s.blackNode=null;s.range='VDC20';s.redJack='VΩmA';s.blackJack='COM';
  $('level').value=v.level;kinds(v.level,v.kind);$('exerciseCode').value=v.code;
- $('task').innerHTML='<strong>'+v.text+'</strong><span>Col·loca la punta vermella al node '+v.red+' i la negra al node '+v.black+'. Selecciona V⎓, comprova els connectors i tria una escala que permeti obtenir una lectura.</span>';
+ $('task').innerHTML='<strong>'+v.text+'</strong><span>Col·loca la punta vermella al node '+v.red+' i la negra al node '+v.black+'. Selecciona V⎓, comprova els borns i tria una escala que permeti obtenir una lectura.</span>';
  $('explanation').innerHTML='<h3>Resolució guiada</h3><p>Intensitat del divisor: I = U/(R1+R2) = '+fmt(v.voltage/(v.r1+v.r2)*1000,3)+' mA.</p><p>Potencials: A = '+fmt(v.voltage,3)+' V, B = '+fmt(v.voltage*v.r2/(v.r1+v.r2),3)+' V i C = 0 V. Lectura: V('+v.red+') − V('+v.black+') = '+fmt(v.expected,3)+' V. Rang mínim apropiat: '+ranges.find(r=>r.id===v.range).label+' V⎓.</p>';
  $('explanation').hidden=true;$('codeStatus').textContent='Codi reproduïble: '+v.code;render();feedback('Configura el multímetre i connecta les puntes.');
 }
@@ -62,7 +91,7 @@ function illustration(type){
 }
 const theory=[
  ['1. Què mesura el multímetre?','Un multímetre permet mesurar tensió, intensitat i resistència, segons la funció seleccionada. El voltímetre calcula la diferència de potencial entre les dues puntes. En corrent continu, invertir-les canvia el signe de la lectura.','parallel'],
- ['2. Connexió del voltímetre','Per mesurar tensió es connecta l’instrument en paral·lel entre els dos punts. El cable negre ha d’estar a COM i el vermell a VΩ. El circuit no s’interromp. Si els dos punts tenen el mateix potencial, la lectura és zero.','parallel'],
+ ['2. Connexió del voltímetre','Per mesurar tensió es connecta l’instrument en paral·lel entre els dos punts. El cable negre ha d’estar a COM i el vermell a VΩmA. El circuit no s’interromp. Si els dos punts tenen el mateix potencial, la lectura és zero.','parallel'],
  ['3. Escales manuals','El selector circular ofereix escales de tensió contínua de 200 mV, 2 V, 20 V, 200 V i 600 V. Per a una tensió de 8 V, l’escala de 2 V mostra OL perquè és insuficient; la de 20 V és adequada. Si es desconeix el valor, es comença amb una escala alta.','range'],
  ['4. Com es mesura la intensitat?','L’amperímetre s’insereix en sèrie, obrint abans el circuit amb l’alimentació desconnectada. No s’ha de connectar una entrada d’intensitat directament en paral·lel amb una font perquè pot provocar un curtcircuit. Aquesta inserció encara no està simulada.','series'],
  ['5. Resistència i continuïtat','Cal desconnectar la font i comprovar l’absència de tensió abans de mesurar una resistència. Sovint convé aïllar el component per evitar lectures alterades per camins en paral·lel. Les funcions de resistència i continuïtat queden preparades per a una ampliació posterior.','range'],
@@ -72,7 +101,7 @@ const help=[
  ['1. Preparar l’exercici','Selecciona un nivell i un tipus. Cada nivell té activitats específiques i una opció aleatòria. Prem Nou exercici per generar nous valors de font i resistències.','range'],
  ['2. Alternar les dues representacions','Els botons Esquema elèctric i Muntatge físic canvien la vista del mateix circuit. Els nodes A, B i C corresponen als mateixos punts; les puntes conserven les connexions quan canvies de vista.','parallel'],
  ['3. Fer servir el selector','Fes clic sobre un valor del dial o utilitza les fletxes del teclat per moure la selecció. V⎓ és tensió contínua, V~ alterna, Ω resistència i mA intensitat. Si apareix OL, cal augmentar el rang.','range'],
- ['4. Connectar les puntes','Tria Punta vermella o Punta negra i després un punt blau del circuit. Pots canviar cada punta de node tantes vegades com vulguis. Per mesurar tensió, verifica COM al cable negre i VΩ al vermell.','parallel'],
+ ['4. Connectar les puntes','Tria Punta vermella o Punta negra i després un punt blau del circuit. Pots canviar cada punta de node tantes vegades com vulguis. Per mesurar tensió, verifica COM al cable negre i VΩmA al vermell.','parallel'],
  ['5. Comprovació i explicació','Prem Comprova la mesura. La resposta correcta es mostra en verd, i una mesura incorrecta en vermell amb una explicació que roman visible. Pots obrir Mostra l’explicació per veure els càlculs i els potencials.','range'],
  ['6. Recuperar pràctiques','El codi TL-MM1 permet reproduir exactament el mateix exercici, inclosos els valors aleatoris. Copia’l al camp Recuperar codi i prem Recuperar. Aquest codi no conté dades d’alumnes.','parallel']
 ];
@@ -82,14 +111,14 @@ lessons('tab-ajuda','Ajuda del laboratori','Guia pràctica amb exemples gràfics
 document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{['laboratori','fonaments','ajuda'].forEach(k=>{$('tab-'+k).hidden=k!==b.dataset.section;document.querySelector('[data-section="'+k+'"]').classList.toggle('active',k===b.dataset.section);document.querySelector('[data-section="'+k+'"]').setAttribute('aria-current',k===b.dataset.section?'page':'false');});});
 ['schema','physical'].forEach(v=>$(v).onclick=()=>{s.view=v;render();});
 ['red','black'].forEach(v=>$(v+'Probe').onclick=()=>{s.probe=v;render();});
-['redJack','blackJack'].forEach(v=>$(v).onchange=e=>{s[v]=e.target.value;render();feedback(reading().status);});
+document.querySelectorAll('[data-jack]').forEach(b=>b.onclick=()=>connectJack(b.dataset.jack));
 $('reset').onclick=()=>{s.redNode=null;s.blackNode=null;render();feedback('Puntes desconnectades.');};
 $('level').onchange=e=>kinds(e.target.value);
 $('newExercise').onclick=()=>load(generate($('level').value,$('kind').value));
 $('copyExercise').onclick=()=>{const code=$('exerciseCode').value;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(code).then(()=>{$('codeStatus').textContent='Codi copiat: '+code;}).catch(()=>{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';});}else{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';}};
 $('recover').onclick=()=>{try{let p=fromCode($('recoverCode').value);load(generate(p.level,p.kind,p.seed));$('codeStatus').textContent='Exercici recuperat: '+ex.code;}catch(e){$('codeStatus').textContent='Error: '+e.message;}};
 $('check').onclick=()=>{const ok=isCorrect({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2},ex),m=reading(),strict=ex.strictRange&&s.range!==ex.range;
- feedback(ok&&!strict?'Correcte: has mesurat '+fmt(m.value,3)+' V entre '+ex.red+' i '+ex.black+' amb connexions i rang adequats.':ok&&strict?'Els nodes són correctes, però l’exercici demana el rang més petit possible. Selecciona '+ranges.find(r=>r.id===ex.range).label+' V⎓.':'Mesura incorrecta. Comprova V⎓, COM i VΩ, les puntes '+ex.red+' (vermella) i '+ex.black+' (negra) i un rang sense OL. '+m.status,ok&&!strict?'ok':'error');
+ feedback(ok&&!strict?'Correcte: has mesurat '+fmt(m.value,3)+' V entre '+ex.red+' i '+ex.black+' amb connexions i rang adequats.':ok&&strict?'Els nodes són correctes, però l’exercici demana el rang més petit possible. Selecciona '+ranges.find(r=>r.id===ex.range).label+' V⎓.':'Mesura incorrecta. Comprova V⎓, COM i VΩmA, les puntes '+ex.red+' (vermella) i '+ex.black+' (negra) i un rang sense OL. '+m.status,ok&&!strict?'ok':'error');
 };
 $('helpToggle').onclick=()=>{$('explanation').hidden=!$('explanation').hidden;};
 load(ex);
