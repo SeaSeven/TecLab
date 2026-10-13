@@ -160,7 +160,7 @@
   {
     "id": "LAB-007",
     "title": "Mesures amb multímetre",
-    "description": "Multímetre amb selector agrupat per magnitud, enunciats independents, comprovació i resolució separades, fonaments i ajuda il·lustrats.",
+    "description": "Mesures amb multímetre: selector circular alineat per magnituds, tres borns, reptes diferenciats per nivell i ajuda il·lustrada.",
     "courses": [
       "EE10",
       "EE30",
@@ -168,8 +168,8 @@
       "Enginyeria"
     ],
     "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
-    "version": "0.5.0",
-    "status": "planned",
+    "version": "0.6.0",
+    "status": "published",
     "access": "public",
     "entry": "labs/lab-007/",
     "tags": [
@@ -190,7 +190,9 @@
       "illustrated-help",
       "enhanced-feedback",
       "three-jacks",
-      "grouped-rotary-ranges"
+      "grouped-rotary-ranges",
+      "aligned-dial-sectors",
+      "expanded-exercise-levels"
     ]
   }
 ]
