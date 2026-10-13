@@ -108,3 +108,28 @@ button,select,input{font-size:13px;padding:8px 12px}
 .jack-socket.plug-black .socket-hole::after{background:#101820}
 #jackStatus{font-size:12px!important;min-height:18px}
 @media(max-width:520px){.rotary{width:min(100%,360px);min-height:270px}.dial-choice{width:35px;font-size:9px;padding:4px 0!important}.dial-group{font-size:11px}.socket-hole{width:34px;height:34px}.socket-name{font-size:12px}}
+
+
+/* v0.5: enunciat independent; sectors explícits i figures llegibles */
+.objective-section{margin:18px 0 16px;padding:17px 20px;background:#1b2d36;border:1px solid #647985;border-radius:12px}
+.objective-section .eyebrow{margin:0 0 6px;color:#e8ba73;font-size:11px;letter-spacing:.12em}
+.objective-section h2{font-size:19px;margin:0 0 10px}
+.objective-section .task-card{margin:0;padding:15px 18px;border-left:5px solid #f2c177;background:#112631}
+.objective-section .task-card strong{font-size:16px;line-height:1.6}
+.objective-section .task-card p{font-size:14px;line-height:1.7;color:#e1eaf0;margin:8px 0 0}
+.dial-selection{margin:2px 0 8px!important;font-size:13px!important;color:#f9dcaa!important;font-weight:650;text-align:center}
+.dial-surface{isolation:isolate}
+.dial-group{min-width:41px;min-height:27px;display:grid;place-items:center;padding:3px 6px;border-radius:7px;border:1.5px solid #ead69f;font-size:14px;font-weight:800;background:#10232ef0;z-index:3;box-shadow:0 1px 4px #000a}
+.dial-group-vdc{color:#ffde8c;border-color:#ffde8c}
+.dial-group-vac{color:#a5e7fa;border-color:#a5e7fa}
+.dial-group-adc{color:#fec1a0;border-color:#fec1a0}
+.dial-group-ohm{color:#bdeeb0;border-color:#bdeeb0}
+.dial-divider{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.dial-choice{z-index:4}
+.dial-body{z-index:2}
+.edu-figure{margin:14px auto 19px;width:100%;max-width:480px;background:#10232d;border:1px solid #617d89;border-radius:10px;padding:6px;overflow:hidden}
+.edu-figure svg{width:100%;height:auto;display:block}
+.edu-figure figcaption{text-align:center;color:#d9e8ed;font-size:12px;line-height:1.55;margin:7px 8px 5px}
+.lesson-grid .panel{overflow:hidden}
+.lesson-grid .panel p{line-height:1.75}
+@media(max-width:480px){.dial-group{font-size:11px;min-width:31px;min-height:23px;padding:2px}.objective-section{padding:14px}.objective-section .task-card{padding:12px}}
