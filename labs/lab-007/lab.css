@@ -31,3 +31,39 @@
 .edu-figure{width:100%;max-width:440px;display:block;margin:12px auto 16px;background:#10232d;border:1px solid #506576;border-radius:9px}
 @media(max-width:850px){.lesson-grid{grid-template-columns:1fr}}
 @media(max-width:440px){.dial-choice{min-width:39px;font-size:.59rem;padding:4px 1px}.rotary{width:100%}.manager-row label,.code-row label{flex:1 1 100%}}
+
+/* LAB-007 v0.3: dimensions i densitat coherents amb LAB-006 */
+body{font-size:14px;line-height:1.6}
+main{max-width:1180px;padding:30px 24px 64px}
+main h1{font-size:clamp(30px,4vw,43px);letter-spacing:-1.2px;line-height:1.13;margin:10px 0 14px}
+main h2,.panel h2{font-size:19px;margin:0 0 12px}
+main h3,.panel h3,.lesson-grid h3{font-size:16px;margin:10px 0}
+main .intro{font-size:15px;max-width:800px;line-height:1.6}
+main p,.panel p{font-size:14px;line-height:1.65}
+.panel{padding:18px 20px}
+button,select,input{font-size:13px;padding:8px 12px}
+.lab-tabs{margin:23px 0 28px!important}
+.lab-tabs .tab{font-size:13px}
+.manager{padding:15px 18px;margin:0 0 18px}
+.manager-row,.code-row{display:flex;align-items:end;gap:8px;flex-wrap:wrap;margin:8px 0}
+.manager-row label,.code-row label{font-size:12px;flex:1 1 170px;margin:0;min-width:0}
+.manager-row select,.code-row input{height:40px;min-height:40px;padding:7px 9px;font-size:13px}
+.manager-row button,.code-row button{min-height:40px;margin:0}
+.code-row{margin-top:8px}
+.code-row label{flex:1 1 210px}
+.code-row input{font:12px ui-monospace,monospace}
+.manager #codeStatus{font-size:12px;margin:6px 0 0}
+.toolbar{margin:15px 0;gap:8px}
+.workspace{grid-template-columns:minmax(0,1.2fr) minmax(320px,.95fr);gap:15px}
+.meter{max-width:410px;padding:14px}
+.rotary{width:100%;max-width:340px;height:auto;aspect-ratio:1;display:block;flex:none;overflow:visible;position:relative;min-height:260px;margin:10px auto}
+.dial-surface{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}
+.dial-choice{min-width:40px!important;max-width:55px;min-height:27px;padding:4px 2px!important;font-size:11px;white-space:nowrap}
+.dial-body{z-index:1}.dial-caption{z-index:1}
+.activity-panel{margin-top:18px}
+.task-card{padding:17px 20px;margin:12px 0 18px;border-left:5px solid #e3ba6b;border-radius:7px;background:#142b37;color:#f5f0e4;font-size:15px;line-height:1.65}
+.task-card strong{display:block;color:#f3ca81;margin-bottom:4px}
+.feedback{font-size:14px;line-height:1.6;padding:14px 17px}
+.lesson-grid{gap:15px}.lesson-grid .panel p{font-size:14px;line-height:1.7}
+@media(max-width:850px){.workspace{grid-template-columns:1fr}}
+@media(max-width:520px){main{padding:18px 12px 40px}.panel{padding:14px}.dial-choice{min-width:35px!important;font-size:10px}.rotary{min-height:245px}.manager-row label,.code-row label{flex:1 1 130px}.task-card{padding:14px}}
