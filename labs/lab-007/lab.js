@@ -5,10 +5,10 @@ const spots=[{id:'A',x:75,y:44},{id:'B',x:405,y:44},{id:'C',x:405,y:246}];
 const dot=(n,x,y)=>`<g class="node" role="button" tabindex="0" aria-label="Node ${n}" data-node="${n}"><circle cx="${x}" cy="${y}" r="11"/><text x="${x+16}" y="${y+5}">${n}</text></g>`;
 function schema(){
  return `<svg viewBox="0 0 500 300" role="group" aria-label="Esquema del divisor de tensió">
- <path class="wire" d="M75 44H405V92 M405 126V164 M405 198V246H75V170 M75 105V44"/>
+ <path class="wire" d="M75 44H221 M261 44H405V164 M405 198V246H75V170 M75 105V44"/>
  <path d="M75 105v18m-14 0h28m-23 12h18m-9 0v35" stroke="#e4ca84" stroke-width="4" fill="none"/>
- <rect class="resistor" x="390" y="92" width="30" height="34" rx="3"/><rect class="resistor" x="390" y="164" width="30" height="34" rx="3"/>
- <g fill="#eaf2f5" font-size="18"><text x="91" y="131">12 V</text><text x="314" y="113">R1 1 kΩ</text><text x="314" y="187">R2 2 kΩ</text><text x="46" y="120">+</text><text x="46" y="164">−</text></g>
+ <rect class="resistor" x="221" y="30" width="40" height="28" rx="3"/><rect class="resistor" x="390" y="164" width="30" height="34" rx="3"/>
+ <g fill="#eaf2f5" font-size="18"><text x="91" y="131">12 V</text><text x="203" y="20">R1 1 kΩ</text><text x="314" y="187">R2 2 kΩ</text><text x="46" y="120">+</text><text x="46" y="164">−</text></g>
  ${spots.map(s=>dot(s.id,s.x,s.y)).join('')}${probeMarks(spots)}</svg>`;
 }
 function physical(){
@@ -18,12 +18,12 @@ function physical(){
  <rect x="16" y="85" width="128" height="110" rx="12" fill="#3f5058" stroke="#b3b9bd" stroke-width="4"/>
  <text x="30" y="111" fill="#f2d68e" font-size="18">FONT CC</text><text x="33" y="147" fill="white" font-size="25">12.0 V</text>
  <circle cx="54" cy="173" r="7" fill="#ee5858"/><circle cx="108" cy="173" r="7" fill="#242424" stroke="white"/>
- <path d="M54 173C54 20 170 44 210 44H405M108 173C108 280 220 246 405 246" fill="none" stroke="#ec5353" stroke-width="5"/>
- <path d="M405 44V87M405 132V157M405 202V246" stroke="#38555e" stroke-width="5" fill="none"/>
+ <path d="M54 173C54 20 170 44 210 44H275M320 44H405M108 173C108 280 220 246 405 246" fill="none" stroke="#ec5353" stroke-width="5"/>
+ <path d="M405 44V157M405 202V246" stroke="#38555e" stroke-width="5" fill="none"/>
  <rect x="393" y="87" width="24" height="45" rx="8" fill="#e1c18c" stroke="#7a5f3e" stroke-width="2"/>
  <rect x="393" y="157" width="24" height="45" rx="8" fill="#e1c18c" stroke="#7a5f3e" stroke-width="2"/>
- ${[95,103,111,119,165,173,181,189].map(y=>`<path d="M393 ${y}h24" stroke="${y%2?'#b54e42':'#8b663c'}" stroke-width="3"/>`).join('')}
- <g fill="#233642" font-size="14"><text x="261" y="106">R1 · 1 kΩ</text><text x="261" y="181">R2 · 2 kΩ</text></g>
+ ${[165,173,181,189].map(y=>`<path d="M393 ${y}h24" stroke="${y%2?'#b54e42':'#8b663c'}" stroke-width="3"/>`).join('')}
+ <g fill="#233642" font-size="14"><text x="264" y="25">R1 · 1 kΩ</text><text x="261" y="181">R2 · 2 kΩ</text></g>
  ${spots.map(s=>dot(s.id,s.x,s.y)).join('')}${probeMarks(spots)}</svg>`;
 }
 function probeMarks(points){
