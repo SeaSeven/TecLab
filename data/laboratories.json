@@ -160,7 +160,7 @@
   {
     "id": "LAB-007",
     "title": "Mesures amb multímetre",
-    "description": "Prototip de multímetre amb selector circular, rangs manuals, exercicis per nivell, circuits amb doble representació i ajuda il·lustrada.",
+    "description": "Multímetre amb tres borns seleccionables (COM, 10A i VΩmA), selector circular agrupat per magnitud i exercicis per nivell.",
     "courses": [
       "EE10",
       "EE30",
@@ -168,7 +168,7 @@
       "Enginyeria"
     ],
     "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
-    "version": "0.2.0",
+    "version": "0.4.0",
     "status": "planned",
     "access": "public",
     "entry": "labs/lab-007/",
@@ -188,7 +188,9 @@
       "random-per-level",
       "illustrated-foundations",
       "illustrated-help",
-      "enhanced-feedback"
+      "enhanced-feedback",
+      "three-jacks",
+      "grouped-rotary-ranges"
     ]
   }
 ]
