@@ -51,7 +51,7 @@ function kinds(level,selected){$('kind').innerHTML=levelKinds[level].map(([k,t])
 function load(v){
  ex=v;s.redNode=null;s.blackNode=null;s.range='VDC20';s.redJack='VΩ';s.blackJack='COM';$('redJack').value='VΩ';$('blackJack').value='COM';
  $('level').value=v.level;kinds(v.level,v.kind);$('exerciseCode').value=v.code;
- $('task').textContent=v.text+' Connecta la punta vermella al node '+v.red+' i la negra al node '+v.black+'.';
+ $('task').innerHTML='<strong>'+v.text+'</strong><span>Col·loca la punta vermella al node '+v.red+' i la negra al node '+v.black+'. Selecciona V⎓, comprova els connectors i tria una escala que permeti obtenir una lectura.</span>';
  $('explanation').innerHTML='<h3>Resolució guiada</h3><p>Intensitat del divisor: I = U/(R1+R2) = '+fmt(v.voltage/(v.r1+v.r2)*1000,3)+' mA.</p><p>Potencials: A = '+fmt(v.voltage,3)+' V, B = '+fmt(v.voltage*v.r2/(v.r1+v.r2),3)+' V i C = 0 V. Lectura: V('+v.red+') − V('+v.black+') = '+fmt(v.expected,3)+' V. Rang mínim apropiat: '+ranges.find(r=>r.id===v.range).label+' V⎓.</p>';
  $('explanation').hidden=true;$('codeStatus').textContent='Codi reproduïble: '+v.code;render();feedback('Configura el multímetre i connecta les puntes.');
 }
@@ -79,13 +79,14 @@ const help=[
 function lessons(id,title,lead,items){$(id).innerHTML='<h2>'+title+'</h2><p class="intro">'+lead+'</p><div class="lesson-grid">'+items.map(([t,b,fig])=>'<article class="panel"><h3>'+t+'</h3>'+illustration(fig)+'<p>'+b+'</p></article>').join('')+'</div>';}
 lessons('tab-fonaments','Fonaments de mesura','Explicacions i esquemes per comprendre les connexions, els rangs i els resultats.',theory);
 lessons('tab-ajuda','Ajuda del laboratori','Guia pràctica amb exemples gràfics de cada operació.',help);
-document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{['laboratori','fonaments','ajuda'].forEach(k=>{$('tab-'+k).hidden=k!==b.dataset.section;document.querySelector('[data-section="'+k+'"]').classList.toggle('active',k===b.dataset.section);});});
+document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{['laboratori','fonaments','ajuda'].forEach(k=>{$('tab-'+k).hidden=k!==b.dataset.section;document.querySelector('[data-section="'+k+'"]').classList.toggle('active',k===b.dataset.section);document.querySelector('[data-section="'+k+'"]').setAttribute('aria-current',k===b.dataset.section?'page':'false');});});
 ['schema','physical'].forEach(v=>$(v).onclick=()=>{s.view=v;render();});
 ['red','black'].forEach(v=>$(v+'Probe').onclick=()=>{s.probe=v;render();});
 ['redJack','blackJack'].forEach(v=>$(v).onchange=e=>{s[v]=e.target.value;render();feedback(reading().status);});
 $('reset').onclick=()=>{s.redNode=null;s.blackNode=null;render();feedback('Puntes desconnectades.');};
 $('level').onchange=e=>kinds(e.target.value);
 $('newExercise').onclick=()=>load(generate($('level').value,$('kind').value));
+$('copyExercise').onclick=()=>{const code=$('exerciseCode').value;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(code).then(()=>{$('codeStatus').textContent='Codi copiat: '+code;}).catch(()=>{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';});}else{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';}};
 $('recover').onclick=()=>{try{let p=fromCode($('recoverCode').value);load(generate(p.level,p.kind,p.seed));$('codeStatus').textContent='Exercici recuperat: '+ex.code;}catch(e){$('codeStatus').textContent='Error: '+e.message;}};
 $('check').onclick=()=>{const ok=isCorrect({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2},ex),m=reading(),strict=ex.strictRange&&s.range!==ex.range;
  feedback(ok&&!strict?'Correcte: has mesurat '+fmt(m.value,3)+' V entre '+ex.red+' i '+ex.black+' amb connexions i rang adequats.':ok&&strict?'Els nodes són correctes, però l’exercici demana el rang més petit possible. Selecciona '+ranges.find(r=>r.id===ex.range).label+' V⎓.':'Mesura incorrecta. Comprova V⎓, COM i VΩ, les puntes '+ex.red+' (vermella) i '+ex.black+' (negra) i un rang sense OL. '+m.status,ok&&!strict?'ok':'error');
