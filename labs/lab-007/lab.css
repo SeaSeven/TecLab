@@ -1,0 +1,155 @@
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#101b23;color:#eaf2f5;font:16px/1.55 system-ui,sans-serif}main{max-width:1190px;margin:auto;padding:25px 24px 60px}.head{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid #38505c;font-size:.85rem}.head a{color:#eed093;text-decoration:none}h1{font-size:clamp(2rem,4vw,3.3rem);margin:.1em 0}h2{font-size:1.2rem}p{margin:.6em 0 1em}.intro{color:#b4c9d3}.eyebrow{letter-spacing:.12em;color:#e5b96f;font-size:.78rem}.toolbar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:24px 0}.toolbar>div{display:flex;gap:8px}.workspace{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(310px,.9fr);gap:18px;margin-bottom:18px}.panel{background:#1c2b34;border:1px solid #37505b;border-radius:16px;padding:22px;min-width:0}button,select{font:inherit;cursor:pointer;padding:10px 13px;border:1px solid #627986;border-radius:9px;color:#edf6f8;background:#283b46}button:hover,button:focus-visible,select:focus-visible{outline:2px solid #f2c37c;outline-offset:2px}.active,.selected,.primary{background:#bb8443;color:#0b1720;border-color:#f0c785;font-weight:700}#circuit{border:1px solid #445d68;background:#101e27;border-radius:10px;min-height:275px;display:grid;place-items:center}#circuit svg{display:block;width:100%;max-height:330px}.node{cursor:pointer;outline:none}.node circle{fill:#35aed9;stroke:white;stroke-width:2}.node:hover circle,.node:focus circle{stroke:#ffc76c;stroke-width:5}.node text{fill:#fff;font-weight:700;font-size:16px}.wire{fill:none;stroke:#bdd1d9;stroke-width:4;stroke-linejoin:round}.resistor{fill:#e8ad64;stroke:#b27732;stroke-width:2}.meter{max-width:430px;background:#35454e;border:4px solid #56636a;border-radius:20px;padding:18px;margin:auto}.lcd{background:#b0d4c1;color:#142a28;border:8px solid #202d33;border-radius:12px;padding:12px;text-align:right;min-height:115px}.lcd output{display:block;font:clamp(2.4rem,5vw,4rem) monospace;letter-spacing:.03em}.rotary{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin:22px 0}.rotary button{min-width:60px}.jacks,.probes{display:grid;gap:9px}.jacks label{display:flex;align-items:center;justify-content:space-between;gap:8px}.probes button:first-child{border-left:6px solid #ec5858}.probes button:last-child{border-left:6px solid #242424}.help{font-size:.86rem;color:#b8cbd1}.feedback{padding:13px;background:#102430;border-left:4px solid #e5b96f;border-radius:5px;min-height:54px}#check{margin-right:8px}#explanation{margin-top:18px;border-top:1px solid #48616d;padding-top:8px}footer{padding:20px;text-align:center;font-size:.8rem;color:#b6c7cc}@media(max-width:760px){.workspace{grid-template-columns:1fr}main{padding:18px 12px}.panel{padding:15px}.toolbar>div{flex-wrap:wrap}}
+
+/* LAB-007 v0.2 */
+[hidden]{display:none!important}
+.lab-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0;border-bottom:1px solid #526673;padding-bottom:12px}
+.lab-tabs .tab{min-width:120px}
+.manager{margin:16px 0 18px}
+.manager-row,.code-row{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin:12px 0}
+.manager-row label,.code-row label{display:grid;gap:5px;flex:1 1 190px;font-weight:650}
+.manager-row select,.code-row input{width:100%;min-height:45px;border-radius:8px;background:#11232d;border:1px solid #738995;color:#fff;padding:9px;font:inherit}
+.code-row label{flex:1 1 250px}
+.activity-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.feedback{font-size:1.06rem;line-height:1.6;padding:17px 20px;border:2px solid #668293;border-left-width:6px;border-radius:10px;margin:14px 0;background:#172e39;color:#f0f8fc}
+.feedback-ok{background:#153d35;border-color:#72d6a9;color:#e2fff0}
+.feedback-error{background:#4b252a;border-color:#ff8b90;color:#fff0f0}
+#explanation{margin-top:18px;border-top:1px solid #546a78;padding-top:14px;line-height:1.7}
+.dial-panel{display:flex;flex-direction:column;align-items:center;padding:8px 0 14px}
+.rotary{display:block;position:relative;width:min(100%,350px);aspect-ratio:1;min-width:0;min-height:0;margin:10px auto}
+.dial-surface{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,#273842 0 31%,#42545d 32% 36%,#26353f 37% 65%,#17242e 66%);border:3px solid #718691;box-shadow:inset 0 5px 15px #070f15,0 5px 15px #060a0d}
+.dial-choice{position:absolute;transform:translate(-50%,-50%);border:1px solid transparent;background:#142630;color:#dce7ed;min-width:48px;min-height:29px;border-radius:6px;font-size:clamp(.63rem,1.15vw,.82rem);padding:4px 3px;line-height:1.1;z-index:2}
+.dial-choice.chosen{background:#e8b75f;color:#141e23;border-color:#ffe3a4}
+.dial-choice:hover,.dial-choice:focus-visible{border-color:#fff;outline:2px solid #f3d190;outline-offset:2px}
+.dial-body{position:absolute;left:33%;top:33%;width:34%;height:34%;border-radius:50%;background:radial-gradient(circle at 36% 28%,#8396a2,#475964 60%,#28343e);box-shadow:0 4px 8px #05090baa,inset 0 2px 4px #ffffff33;border:4px solid #1b2830;transform:rotate(var(--turn));pointer-events:none}
+.dial-arrow{position:absolute;left:calc(50% - 3px);top:6%;width:6px;height:34%;border-radius:4px;background:#f6c05e;box-shadow:0 0 0 1px #564320}
+.dial-caption{position:absolute;top:61%;left:50%;transform:translateX(-50%);color:#c5d3da;font-size:.7rem;pointer-events:none}
+.dial-instruction{color:#c5d2d9;text-align:center;font-size:.85rem;margin:0}
+.lesson-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.lesson-grid .panel{height:100%}
+.lesson-grid .panel p{line-height:1.75}
+.lesson-grid h3{font-size:1.2rem}
+.edu-figure{width:100%;max-width:440px;display:block;margin:12px auto 16px;background:#10232d;border:1px solid #506576;border-radius:9px}
+@media(max-width:850px){.lesson-grid{grid-template-columns:1fr}}
+@media(max-width:440px){.dial-choice{min-width:39px;font-size:.59rem;padding:4px 1px}.rotary{width:100%}.manager-row label,.code-row label{flex:1 1 100%}}
+
+/* LAB-007 v0.3: dimensions i densitat coherents amb LAB-006 */
+body{font-size:14px;line-height:1.6}
+main{max-width:1180px;padding:30px 24px 64px}
+main h1{font-size:clamp(30px,4vw,43px);letter-spacing:-1.2px;line-height:1.13;margin:10px 0 14px}
+main h2,.panel h2{font-size:19px;margin:0 0 12px}
+main h3,.panel h3,.lesson-grid h3{font-size:16px;margin:10px 0}
+main .intro{font-size:15px;max-width:800px;line-height:1.6}
+main p,.panel p{font-size:14px;line-height:1.65}
+.panel{padding:18px 20px}
+button,select,input{font-size:13px;padding:8px 12px}
+.lab-tabs{margin:23px 0 28px!important}
+.lab-tabs .tab{font-size:13px}
+.manager{padding:15px 18px;margin:0 0 18px}
+.manager-row,.code-row{display:flex;align-items:end;gap:8px;flex-wrap:wrap;margin:8px 0}
+.manager-row label,.code-row label{font-size:12px;flex:1 1 170px;margin:0;min-width:0}
+.manager-row select,.code-row input{height:40px;min-height:40px;padding:7px 9px;font-size:13px}
+.manager-row button,.code-row button{min-height:40px;margin:0}
+.code-row{margin-top:8px}
+.code-row label{flex:1 1 210px}
+.code-row input{font:12px ui-monospace,monospace}
+.manager #codeStatus{font-size:12px;margin:6px 0 0}
+.toolbar{margin:15px 0;gap:8px}
+.workspace{grid-template-columns:minmax(0,1.2fr) minmax(320px,.95fr);gap:15px}
+.meter{max-width:410px;padding:14px}
+.rotary{width:100%;max-width:340px;height:auto;aspect-ratio:1;display:block;flex:none;overflow:visible;position:relative;min-height:260px;margin:10px auto}
+.dial-surface{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}
+.dial-choice{min-width:40px!important;max-width:55px;min-height:27px;padding:4px 2px!important;font-size:11px;white-space:nowrap}
+.dial-body{z-index:1}.dial-caption{z-index:1}
+.activity-panel{margin-top:18px}
+.task-card{padding:17px 20px;margin:12px 0 18px;border-left:5px solid #e3ba6b;border-radius:7px;background:#142b37;color:#f5f0e4;font-size:15px;line-height:1.65}
+.task-card strong{display:block;color:#f3ca81;margin-bottom:4px}
+.feedback{font-size:14px;line-height:1.6;padding:14px 17px}
+.lesson-grid{gap:15px}.lesson-grid .panel p{font-size:14px;line-height:1.7}
+@media(max-width:850px){.workspace{grid-template-columns:1fr}}
+@media(max-width:520px){main{padding:18px 12px 40px}.panel{padding:14px}.dial-choice{min-width:35px!important;font-size:10px}.rotary{min-height:245px}.manager-row label,.code-row label{flex:1 1 130px}.task-card{padding:14px}}
+
+
+/* Ajust final: el bloc d'activitats replica la densitat de LAB-006. */
+.lab-tabs.tabs{margin:26px 0 22px!important;padding:7px;border:1px solid #405464;background:#1c2b34;border-radius:10px;width:fit-content;max-width:100%}
+.lab-tabs.tabs .tab{margin:0;min-width:110px;padding:9px 15px;font-size:13px}
+.manager-row{display:grid;grid-template-columns:minmax(150px,1fr) minmax(180px,1.3fr) auto;align-items:end;gap:10px}
+.code-row{display:grid;grid-template-columns:minmax(180px,1fr) auto minmax(180px,1fr) auto;align-items:end;gap:9px}
+.manager-row label,.code-row label{display:grid;gap:5px;min-width:0;margin:0;font-size:12px}
+.manager-row button,.code-row button{white-space:nowrap}
+.objective-section{margin:18px 0 15px;padding:17px 20px 12px;background:#1c2b34;border:1px solid #52626b;border-radius:12px}
+.objective-section h2{font-size:18px;margin:0 0 8px}
+.objective-section .task-card{margin:0 0 4px;font-size:14px}
+.objective-section .task-card strong{font-size:15px}
+.dial-loading{color:#f3c88c;text-align:center;padding-top:35%;font-size:13px}
+@media(max-width:840px){.manager-row{grid-template-columns:1fr 1fr}.manager-row button{grid-column:1/-1;justify-self:start}.code-row{grid-template-columns:minmax(170px,1fr) auto}.code-row label:nth-of-type(2){grid-column:1}.code-row #recover{grid-column:2}}
+@media(max-width:500px){.manager-row{grid-template-columns:1fr}.manager-row button{grid-column:1}.code-row{grid-template-columns:1fr auto}.lab-tabs.tabs{width:100%}.lab-tabs.tabs .tab{min-width:0;flex:1;padding:9px 8px}}
+
+
+/* LAB-007 v0.4: sectors de funció i tres borns físics interactius. */
+.rotary{max-width:370px;min-height:300px;aspect-ratio:1}
+.dial-surface{background:radial-gradient(circle at center,#2b3d49 0 21%,transparent 22%),conic-gradient(from 195deg,#344851 0deg 93deg,#495264 93deg 130deg,#394a3f 130deg 223deg,#55463d 223deg 314deg,#263640 314deg 360deg);border:3px solid #718691}
+.dial-choice{width:43px;min-width:0!important;max-width:none;font-size:10px;padding:5px 0!important;min-height:26px;white-space:nowrap;background:#162832ed;box-shadow:0 1px 3px #0b1117a8}
+.dial-choice.chosen{background:#f0c46b;box-shadow:0 0 0 2px #fee8b2}
+.dial-group{position:absolute;transform:translate(-50%,-50%);font-weight:750;font-size:13px;color:#f9e3b8;text-shadow:0 1px 3px #08121b;pointer-events:none;z-index:1}
+.dial-body{left:37%;top:37%;width:26%;height:26%;z-index:1}
+.dial-caption{top:64%;font-size:9px}
+.jack-instruction{font-size:12px!important;color:#cad8dd;margin-bottom:8px}
+.jack-board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:10px 0}
+.jack-socket{display:flex;flex-direction:column;align-items:center;gap:7px;margin:0!important;padding:11px 5px 9px;border-radius:12px;background:#273640;border:1px solid #697986;min-width:0}
+.jack-socket:hover{border-color:#e6c38b}
+.socket-hole{display:block;width:38px;height:38px;border-radius:50%;border:7px solid #8c959d;background:radial-gradient(circle,#070d12 0 45%,#293b46 48% 60%,#09151e 62%);box-shadow:inset 0 3px 7px #000c,0 2px 4px #10161a;position:relative}
+.jack-socket[data-jack="10A"] .socket-hole{border-color:#d46c5d}
+.jack-socket[data-jack="VΩmA"] .socket-hole{border-color:#d46c5d}
+.socket-name{font-size:13px;font-weight:750;white-space:nowrap;color:#eaf0f3}
+.jack-socket.plug-red{border-color:#ff9185;background:#492e32}
+.jack-socket.plug-black{border-color:#c5d4dc;background:#283f48}
+.jack-socket.plug-red .socket-hole::after,.jack-socket.plug-black .socket-hole::after{content:'';position:absolute;inset:2px;border-radius:50%;box-shadow:0 0 0 2px #fff6}
+.jack-socket.plug-red .socket-hole::after{background:#e95955}
+.jack-socket.plug-black .socket-hole::after{background:#101820}
+#jackStatus{font-size:12px!important;min-height:18px}
+@media(max-width:520px){.rotary{width:min(100%,360px);min-height:270px}.dial-choice{width:35px;font-size:9px;padding:4px 0!important}.dial-group{font-size:11px}.socket-hole{width:34px;height:34px}.socket-name{font-size:12px}}
+
+
+/* v0.5: enunciat independent; sectors explícits i figures llegibles */
+.objective-section{margin:18px 0 16px;padding:17px 20px;background:#1b2d36;border:1px solid #647985;border-radius:12px}
+.objective-section .eyebrow{margin:0 0 6px;color:#e8ba73;font-size:11px;letter-spacing:.12em}
+.objective-section h2{font-size:19px;margin:0 0 10px}
+.objective-section .task-card{margin:0;padding:15px 18px;border-left:5px solid #f2c177;background:#112631}
+.objective-section .task-card strong{font-size:16px;line-height:1.6}
+.objective-section .task-card p{font-size:14px;line-height:1.7;color:#e1eaf0;margin:8px 0 0}
+.dial-selection{margin:2px 0 8px!important;font-size:13px!important;color:#f9dcaa!important;font-weight:650;text-align:center}
+.dial-surface{isolation:isolate}
+.dial-group{min-width:41px;min-height:27px;display:grid;place-items:center;padding:3px 6px;border-radius:7px;border:1.5px solid #ead69f;font-size:14px;font-weight:800;background:#10232ef0;z-index:3;box-shadow:0 1px 4px #000a}
+.dial-group-vdc{color:#ffde8c;border-color:#ffde8c}
+.dial-group-vac{color:#a5e7fa;border-color:#a5e7fa}
+.dial-group-adc{color:#fec1a0;border-color:#fec1a0}
+.dial-group-ohm{color:#bdeeb0;border-color:#bdeeb0}
+.dial-divider{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.dial-choice{z-index:4}
+.dial-body{z-index:2}
+.edu-figure{margin:14px auto 19px;width:100%;max-width:480px;background:#10232d;border:1px solid #617d89;border-radius:10px;padding:6px;overflow:hidden}
+.edu-figure svg{width:100%;height:auto;display:block}
+.edu-figure figcaption{text-align:center;color:#d9e8ed;font-size:12px;line-height:1.55;margin:7px 8px 5px}
+.lesson-grid .panel{overflow:hidden}
+.lesson-grid .panel p{line-height:1.75}
+@media(max-width:480px){.dial-group{font-size:11px;min-width:31px;min-height:23px;padding:2px}.objective-section{padding:14px}.objective-section .task-card{padding:12px}}
+
+/* LAB-007 v0.6: fons i línies de cada sector comparteixen geometria SVG. */
+.dial-surface{position:absolute;inset:0;background:none!important;border:0!important;box-shadow:none!important;border-radius:50%;overflow:visible;isolation:isolate}
+.dial-backdrop{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.dial-group{z-index:2;min-width:36px;min-height:25px;font-size:13px;border:1px solid currentColor;background:#112631ed;padding:3px 5px}
+.dial-choice{z-index:3;min-width:0!important;width:39px;max-width:42px;min-height:25px;font-size:10px!important;padding:3px 1px!important}
+.dial-body{z-index:1}
+.dial-divider{display:none!important}
+.task-level{font-size:12px!important;text-transform:uppercase;letter-spacing:.06em;color:#f0ca8e!important;font-weight:650;margin:0 0 7px!important}
+@media(max-width:450px){.dial-choice{width:34px;font-size:9px!important}.dial-group{font-size:11px;min-width:30px}}
+
+/* LAB-007 v0.6: els sectors i separadors es dibuixen exclusivament en SVG. */
+.dial-surface{position:absolute;inset:0;background:none!important;border:0!important;box-shadow:none!important;overflow:visible;isolation:isolate}
+.dial-backdrop{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.dial-group{z-index:2;background:#102631f0;border:1px solid currentColor;font-weight:800;font-size:13px;padding:4px 5px;min-width:34px}
+.dial-choice{z-index:3;width:39px!important;min-width:0!important;max-width:43px!important;font-size:10px!important;min-height:26px;padding:4px 1px!important}
+.dial-body{z-index:1}
+.dial-divider{display:none!important}
+.task-level{font-size:12px!important;color:#f4cb83!important;letter-spacing:.05em;font-weight:700;margin:0 0 8px!important}
+@media(max-width:450px){.dial-group{font-size:11px;min-width:29px}.dial-choice{width:34px!important;font-size:9px!important}}

@@ -1,0 +1,38 @@
+{
+  "id": "LAB-007",
+  "title": "Mesures amb multímetre",
+  "description": "Mesures amb multímetre: selector circular alineat per magnituds, tres borns, reptes diferenciats per nivell i ajuda il·lustrada.",
+  "courses": [
+    "EE10",
+    "EE30",
+    "EEB0",
+    "Enginyeria"
+  ],
+  "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
+  "version": "0.6.0",
+  "status": "published",
+  "access": "public",
+  "entry": "labs/lab-007/",
+  "tags": [
+    "multímetre",
+    "mesures",
+    "tensió",
+    "instrumentació"
+  ],
+  "features": [
+    "dual-circuit-view",
+    "manual-ranges",
+    "rotary-selector",
+    "measurement-checking",
+    "exercise-codes",
+    "levels",
+    "random-per-level",
+    "illustrated-foundations",
+    "illustrated-help",
+    "enhanced-feedback",
+    "three-jacks",
+    "grouped-rotary-ranges",
+    "aligned-dial-sectors",
+    "expanded-exercise-levels"
+  ]
+}
