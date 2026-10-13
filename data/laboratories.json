@@ -160,7 +160,7 @@
   {
     "id": "LAB-007",
     "title": "Mesures amb multímetre",
-    "description": "Multímetre amb tres borns seleccionables (COM, 10A i VΩmA), selector circular agrupat per magnitud i exercicis per nivell.",
+    "description": "Multímetre amb selector agrupat per magnitud, enunciats independents, comprovació i resolució separades, fonaments i ajuda il·lustrats.",
     "courses": [
       "EE10",
       "EE30",
@@ -168,7 +168,7 @@
       "Enginyeria"
     ],
     "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "status": "planned",
     "access": "public",
     "entry": "labs/lab-007/",
