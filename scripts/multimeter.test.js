@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {measure,isCorrect} from '../labs/lab-007/meter.js';
+import {measure,isCorrect,ranges} from '../labs/lab-007/meter.js';
+import {dialLayout,dialPositions,validateDialLayout} from '../labs/lab-007/dial-layout.js';
 import {generate,fromCode,codeOf,levelKinds} from '../labs/lab-007/exercises.js';
 const base={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:'B',blackNode:'C',voltage:12,r1:1000,r2:2000};
 test('R2 val 8 V amb el rang de 20 V',()=>{assert.equal(measure(base).value,8);assert.equal(isCorrect(base),true)});
@@ -34,4 +35,35 @@ test('escales petites de corrent amb VΩmA',()=>{
 });
 test('els cables no comparteixen un únic born',()=>{
  assert.equal(measure({...base,redJack:'COM'}).display,'Err');
+});
+
+test('geometria dels sectors i posicions: cap escala sobre un límit',()=>{
+ assert.equal(validateDialLayout(),true);
+ const positions=dialPositions();
+ assert.equal(positions.length,ranges.length);
+ assert.deepEqual(new Set(positions.map(p=>p.id)),new Set(ranges.map(r=>r.id)));
+ for(const group of dialLayout){
+  for(const angle of group.positions){
+   assert.ok(angle>group.start&&angle<group.end);
+  }
+ }
+});
+test('recuperació de tots els tipus nous incloent guions baixos',()=>{
+ for(const [level,types] of Object.entries(levelKinds)){
+  for(const [kind] of types){
+   for(let seed=1;seed<=50;seed++){
+    const e=generate(level,kind,seed),restored=fromCode(e.code);
+    assert.deepEqual(restored,{level,kind,seed});
+    assert.equal(generate(level,kind,seed).expected,e.expected);
+    const s={range:e.range,redJack:'VΩmA',blackJack:'COM',redNode:e.red,blackNode:e.black,voltage:e.voltage,r1:e.r1,r2:e.r2};
+    assert.equal(isCorrect(s,e),true);
+   }
+  }
+ }
+});
+test('repte de comparació amb resistències diferents',()=>{
+ for(let seed=1;seed<=100;seed++){
+  const e=generate('intermedi','RATIO',seed);
+  assert.notEqual(e.r1,e.r2);
+ }
 });
