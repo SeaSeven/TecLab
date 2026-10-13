@@ -153,3 +153,11 @@ button,select,input{font-size:13px;padding:8px 12px}
 .dial-divider{display:none!important}
 .task-level{font-size:12px!important;color:#f4cb83!important;letter-spacing:.05em;font-weight:700;margin:0 0 8px!important}
 @media(max-width:450px){.dial-group{font-size:11px;min-width:29px}.dial-choice{width:34px!important;font-size:9px!important}}
+
+/* Capçalera LAB-007: mateixa jerarquia visual que LAB-006. */
+.lab-007-heading{display:block!important;background:transparent!important;border:0!important;padding:0!important;margin:0!important;text-align:left}
+.lab-007-heading .back{display:inline-block;color:var(--muted,#a9bdc8);text-decoration:underline;font-size:13px;margin-bottom:12px}
+.lab-007-heading .eyebrow{color:var(--amber,#e5b96f);font-size:12px;margin:0 0 9px;letter-spacing:1.2px}
+.lab-007-heading h1{font-size:clamp(38px,5.6vw,70px);letter-spacing:-2.3px;line-height:1.08;margin:0 0 23px;color:var(--ink,#eaf2f5)}
+.lab-007-heading + .lab-tabs{margin:0 0 23px!important}
+@media(max-width:700px){.lab-007-heading h1{font-size:clamp(32px,8vw,48px);letter-spacing:-1.5px}}
