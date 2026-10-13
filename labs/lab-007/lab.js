@@ -1,8 +1,10 @@
 import {measure,ranges,isCorrect} from './meter.js';
 import {generate,fromCode,levelKinds} from './exercises.js';
+import {dialLayout,polar,sectorPath,dialPositions} from './dial-layout.js';
 const $=id=>document.getElementById(id);
 const fmt=(n,d=2)=>Number(n).toLocaleString('ca-ES',{maximumFractionDigits:d});
 let ex=generate('inicial','R2',12345);
+let seenOverload=false;
 let s={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:null,blackNode:null,probe:'red',view:'schema'};
 const points=[['A',75,44],['B',405,44],['C',405,246]];
 function markings(){
@@ -23,29 +25,20 @@ function circuit(){
  return '<svg viewBox="0 0 500 300" role="group" aria-label="Circuit divisor de tensió">'+(s.view==='schema'?schema:physical)+labels+markings()+'</svg>';
 }
 function dial(){
- const start=-165,span=330,n=ranges.length,angle=i=>start+i*span/(n-1);
- const groups=['V⎓','V~','A⎓','Ω'];
- const angles=groups.map(group=>{
-  const ix=ranges.flatMap((r,i)=>r.group===group?[i]:[]);
-  return {group,first:ix[0],last:ix[ix.length-1]};
- });
- const sectors=angles.map(({group,first,last})=>{
-  const a=angle((first+last)/2)*Math.PI/180;
-  const x=50+Math.sin(a)*26,y=50-Math.cos(a)*26;
-  const cls={'V⎓':'vdc','V~':'vac','A⎓':'adc','Ω':'ohm'}[group];
-  return '<span class="dial-group dial-group-'+cls+'" style="left:'+x+'%;top:'+y+'%" aria-hidden="true">'+group+'</span>';
+ const pos=(angle,r)=>polar(angle,r).map(n=>n/4);
+ const background='<svg class="dial-backdrop" viewBox="0 0 400 400" aria-hidden="true"><circle cx="200" cy="200" r="198" fill="#152733" stroke="#8499a4" stroke-width="4"/>'+
+ dialLayout.map(g=>'<path d="'+sectorPath(g.start,g.end)+'" fill="'+g.color+'" stroke="#9badb6" stroke-width="1.5"/>').join('')+
+ '<circle cx="200" cy="200" r="70" fill="#293d48" stroke="#8499a4" stroke-width="3"/></svg>';
+ const names=dialLayout.filter(g=>g.group!=='OFF').map(g=>{
+  const [x,y]=pos((g.start+g.end)/2,97);
+  return '<span class="dial-group" aria-hidden="true" style="left:'+x+'%;top:'+y+'%;color:'+g.ink+'">'+g.group+'</span>';
  }).join('');
- const dividers=angles.slice(1).map(({first})=>{
-  const a=angle(first-.5)*Math.PI/180;
-  const x1=50+Math.sin(a)*34,y1=50-Math.cos(a)*34,x2=50+Math.sin(a)*48,y2=50-Math.cos(a)*48;
-  return '<svg class="dial-divider" viewBox="0 0 100 100" aria-hidden="true"><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#e6d6a9" stroke-width=".7" stroke-dasharray="1.3 1.1"/></svg>';
+ const buttons=dialPositions().map(p=>{
+  const item=ranges.find(r=>r.id===p.id),[x,y]=pos(p.angle,163);
+  return '<button type="button" data-range="'+p.id+'" class="dial-choice '+(s.range===p.id?'chosen':'')+'" aria-label="'+p.group+' · escala '+item.label+'" aria-pressed="'+(s.range===p.id)+'" style="left:'+x+'%;top:'+y+'%">'+item.label+'</button>';
  }).join('');
- const choices=ranges.map((r,i)=>{
-  const a=angle(i)*Math.PI/180,x=50+Math.sin(a)*44,y=50-Math.cos(a)*44;
-  return '<button type="button" data-range="'+r.id+'" aria-pressed="'+(s.range===r.id)+'" aria-label="'+r.group+' · escala '+r.label+'" class="dial-choice '+(s.range===r.id?'chosen':'')+'" data-group="'+r.mode+'" style="left:'+x+'%;top:'+y+'%">'+r.label+'</button>';
- }).join('');
- const pointer=angle(ranges.findIndex(r=>r.id===s.range));
- return '<div class="dial-surface">'+dividers+sectors+choices+'<div class="dial-body" style="--turn:'+pointer+'deg"><span class="dial-arrow"></span></div><span class="dial-caption">SELECTOR</span></div>';
+ const selected=dialPositions().find(p=>p.id===s.range);
+ return '<div class="dial-surface">'+background+names+buttons+'<div class="dial-body" style="--turn:'+(selected?.angle??-163)+'deg"><span class="dial-arrow"></span></div></div>';
 }
 function renderJacks(){
  document.querySelectorAll('[data-jack]').forEach(b=>{
@@ -68,7 +61,7 @@ function connectJack(jack){
 }
 
 function feedback(message,type=''){const el=$('feedback');el.textContent=message;el.className='feedback '+(type?'feedback-'+type:'');}
-function reading(){const m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2});$('reading').textContent=m.display;$('unit').textContent=m.unit;return m;}
+function reading(){const m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2});$('reading').textContent=m.display;$('unit').textContent=m.unit;if(m.display==='OL')seenOverload=true;return m;}
 function render(){
  $('circuit').innerHTML=circuit();$('rotary').innerHTML=dial();const selected=ranges.find(r=>r.id===s.range);$('dialSelection').textContent='Posició seleccionada: '+(selected.mode==='OFF'?'OFF':selected.group+' · '+selected.label);
  $('circuit').querySelectorAll('[data-node]').forEach(el=>{
@@ -87,9 +80,9 @@ function render(){
 }
 function kinds(level,selected){$('kind').innerHTML=levelKinds[level].map(([k,t])=>'<option value="'+k+'">'+t+'</option>').join('');if(selected)$('kind').value=selected;}
 function load(v){
- ex=v;s.redNode=null;s.blackNode=null;s.range='VDC20';s.redJack='VΩmA';s.blackJack='COM';
+ ex=v;seenOverload=false;s.redNode=null;s.blackNode=null;s.range='VDC20';s.redJack='VΩmA';s.blackJack='COM';
  $('level').value=v.level;kinds(v.level,v.kind);$('exerciseCode').value=v.code;
- $('task').innerHTML='<strong>'+v.text+'</strong><p>Treballa amb la font i les dues resistències representades al circuit. Decideix on situar les puntes, quins borns utilitzar i quin rang del multímetre permet fer la mesura.</p>';
+ $('task').innerHTML='<p class="task-level">'+({inicial:'Inicial',basic:'Bàsic',intermedi:'Intermedi',avancat:'Avançat'}[v.level])+' · '+levelKinds[v.level].find(([id])=>id===v.kind)[1]+'</p><strong>'+v.text+'</strong><p>Observa el circuit i tria connexions i escala. La resolució numèrica només apareix amb Mostra l’explicació.</p>';
  $('explanation').innerHTML='<h3>Resolució guiada</h3><p>Intensitat del divisor: I = U/(R1+R2) = '+fmt(v.voltage/(v.r1+v.r2)*1000,3)+' mA.</p><p>Potencials: A = '+fmt(v.voltage,3)+' V, B = '+fmt(v.voltage*v.r2/(v.r1+v.r2),3)+' V i C = 0 V. Lectura: V('+v.red+') − V('+v.black+') = '+fmt(v.expected,3)+' V. Rang mínim apropiat: '+ranges.find(r=>r.id===v.range).label+' V⎓.</p>';
  $('explanation').hidden=true;$('codeStatus').textContent='Codi reproduïble: '+v.code;render();feedback('Configura el multímetre i connecta les puntes.');
 }
@@ -128,8 +121,14 @@ $('level').onchange=e=>kinds(e.target.value);
 $('newExercise').onclick=()=>load(generate($('level').value,$('kind').value));
 $('copyExercise').onclick=()=>{const code=$('exerciseCode').value;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(code).then(()=>{$('codeStatus').textContent='Codi copiat: '+code;}).catch(()=>{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';});}else{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';}};
 $('recover').onclick=()=>{try{let p=fromCode($('recoverCode').value);load(generate(p.level,p.kind,p.seed));$('codeStatus').textContent='Exercici recuperat: '+ex.code;}catch(e){$('codeStatus').textContent='Error: '+e.message;}};
-$('check').onclick=()=>{const ok=isCorrect({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2},ex),m=reading(),strict=ex.strictRange&&s.range!==ex.range;
- feedback(ok&&!strict?'Correcte: has mesurat '+fmt(m.value,3)+' V entre '+ex.red+' i '+ex.black+' amb connexions i rang adequats.':ok&&strict?'Els nodes són correctes, però l’exercici demana el rang més petit possible. Selecciona '+ranges.find(r=>r.id===ex.range).label+' V⎓.':'Mesura incorrecta. Comprova V⎓, COM i VΩmA, les puntes '+ex.red+' (vermella) i '+ex.black+' (negra) i un rang sense OL. '+m.status,ok&&!strict?'ok':'error');
+$('check').onclick=()=>{
+ const ok=isCorrect({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2},ex),m=reading();
+ const strict=ex.strictRange&&s.range!==ex.range,missingOL=ex.requiresOverload&&!seenOverload;
+ const correct=ok&&!strict&&!missingOL;
+ feedback(correct?'Correcte: has obtingut '+fmt(m.value,3)+' V amb la configuració adequada.':
+  ok&&strict?'La lectura és correcta, però l’exercici demana el rang mínim vàlid.':
+  ok&&missingOL?'Lectura correcta, però primer has de provocar OL amb una escala massa baixa.':
+  'Revisa la funció V⎓, COM, VΩmA, els nodes i l’escala. '+m.status,correct?'ok':'error');
 };
 $('helpToggle').onclick=()=>{$('explanation').hidden=!$('explanation').hidden;};
 load(ex);
