@@ -156,5 +156,27 @@
       "signal-fault-diagnosis",
       "random-per-level"
     ]
+  },
+  {
+    "id": "LAB-007",
+    "title": "Mesures amb multímetre",
+    "description": "Prototip de multímetre digital amb esquema elèctric i muntatge físic sincronitzats.",
+    "courses": [
+      "EE10",
+      "EE30",
+      "EEB0",
+      "Enginyeria"
+    ],
+    "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
+    "version": "0.1.0",
+    "status": "planned",
+    "access": "public",
+    "entry": "labs/lab-007/",
+    "tags": [
+      "multímetre",
+      "mesures",
+      "tensió",
+      "instrumentació"
+    ]
   }
 ]
