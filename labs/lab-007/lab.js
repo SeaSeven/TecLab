@@ -91,7 +91,7 @@ function illustration(type){
 }
 const theory=[
  ['1. Què mesura el multímetre?','Un multímetre permet mesurar tensió, intensitat i resistència, segons la funció seleccionada. El voltímetre calcula la diferència de potencial entre les dues puntes. En corrent continu, invertir-les canvia el signe de la lectura.','parallel'],
- ['2. Connexió del voltímetre','Per mesurar tensió es connecta l’instrument en paral·lel entre els dos punts. El cable negre ha d’estar a COM i el vermell a VΩmA. El circuit no s’interromp. Si els dos punts tenen el mateix potencial, la lectura és zero.','parallel'],
+ ['2. Connexió del voltímetre','Per mesurar tensió es connecta l’instrument en paral·lel entre els dos punts. El cable negre va al born COM i el vermell al born VΩmA. El born 10A queda reservat a intensitats elevades. El circuit no s’interromp. Si els dos punts tenen el mateix potencial, la lectura és zero.','parallel'],
  ['3. Escales manuals','El selector circular ofereix escales de tensió contínua de 200 mV, 2 V, 20 V, 200 V i 600 V. Per a una tensió de 8 V, l’escala de 2 V mostra OL perquè és insuficient; la de 20 V és adequada. Si es desconeix el valor, es comença amb una escala alta.','range'],
  ['4. Com es mesura la intensitat?','L’amperímetre s’insereix en sèrie, obrint abans el circuit amb l’alimentació desconnectada. No s’ha de connectar una entrada d’intensitat directament en paral·lel amb una font perquè pot provocar un curtcircuit. Aquesta inserció encara no està simulada.','series'],
  ['5. Resistència i continuïtat','Cal desconnectar la font i comprovar l’absència de tensió abans de mesurar una resistència. Sovint convé aïllar el component per evitar lectures alterades per camins en paral·lel. Les funcions de resistència i continuïtat queden preparades per a una ampliació posterior.','range'],
@@ -100,8 +100,8 @@ const theory=[
 const help=[
  ['1. Preparar l’exercici','Selecciona un nivell i un tipus. Cada nivell té activitats específiques i una opció aleatòria. Prem Nou exercici per generar nous valors de font i resistències.','range'],
  ['2. Alternar les dues representacions','Els botons Esquema elèctric i Muntatge físic canvien la vista del mateix circuit. Els nodes A, B i C corresponen als mateixos punts; les puntes conserven les connexions quan canvies de vista.','parallel'],
- ['3. Fer servir el selector','Fes clic sobre un valor del dial o utilitza les fletxes del teclat per moure la selecció. V⎓ és tensió contínua, V~ alterna, Ω resistència i mA intensitat. Si apareix OL, cal augmentar el rang.','range'],
- ['4. Connectar les puntes','Tria Punta vermella o Punta negra i després un punt blau del circuit. Pots canviar cada punta de node tantes vegades com vulguis. Per mesurar tensió, verifica COM al cable negre i VΩmA al vermell.','parallel'],
+ ['3. Fer servir el selector','Fes clic sobre un valor del dial o utilitza les fletxes del teclat per moure la selecció. Els sectors agrupen V⎓ (contínua), V~ (alterna), A⎓ (intensitat) i Ω (resistència). El born 10A es fa servir només a l’escala de 10 A; per a les escales de mA, el born VΩmA. Si apareix OL, cal augmentar el rang.','range'],
+ ['4. Connectar les puntes','Tria Punta vermella o Punta negra i després un punt blau del circuit. Pots canviar cada punta de node tantes vegades com vulguis. Per mesurar tensió, selecciona la punta que vols endollar i prem el born corresponent. Per a tensió, negre a COM i vermell a VΩmA.','parallel'],
  ['5. Comprovació i explicació','Prem Comprova la mesura. La resposta correcta es mostra en verd, i una mesura incorrecta en vermell amb una explicació que roman visible. Pots obrir Mostra l’explicació per veure els càlculs i els potencials.','range'],
  ['6. Recuperar pràctiques','El codi TL-MM1 permet reproduir exactament el mateix exercici, inclosos els valors aleatoris. Copia’l al camp Recuperar codi i prem Recuperar. Aquest codi no conté dades d’alumnes.','parallel']
 ];
