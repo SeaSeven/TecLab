@@ -1,7 +1,7 @@
 {
   "id": "LAB-007",
   "title": "Mesures amb multímetre",
-  "description": "Prototip de multímetre amb selector circular, rangs manuals, exercicis per nivell, circuits amb doble representació i ajuda il·lustrada.",
+  "description": "Multímetre amb doble vista del circuit, selector circular, pràctiques per nivell, navegació corregida i fonaments gràfics.",
   "courses": [
     "EE10",
     "EE30",
@@ -9,7 +9,7 @@
     "Enginyeria"
   ],
   "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "status": "planned",
   "access": "public",
   "entry": "labs/lab-007/",
