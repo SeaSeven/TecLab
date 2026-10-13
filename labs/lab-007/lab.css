@@ -143,3 +143,13 @@ button,select,input{font-size:13px;padding:8px 12px}
 .dial-divider{display:none!important}
 .task-level{font-size:12px!important;text-transform:uppercase;letter-spacing:.06em;color:#f0ca8e!important;font-weight:650;margin:0 0 7px!important}
 @media(max-width:450px){.dial-choice{width:34px;font-size:9px!important}.dial-group{font-size:11px;min-width:30px}}
+
+/* LAB-007 v0.6: els sectors i separadors es dibuixen exclusivament en SVG. */
+.dial-surface{position:absolute;inset:0;background:none!important;border:0!important;box-shadow:none!important;overflow:visible;isolation:isolate}
+.dial-backdrop{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.dial-group{z-index:2;background:#102631f0;border:1px solid currentColor;font-weight:800;font-size:13px;padding:4px 5px;min-width:34px}
+.dial-choice{z-index:3;width:39px!important;min-width:0!important;max-width:43px!important;font-size:10px!important;min-height:26px;padding:4px 1px!important}
+.dial-body{z-index:1}
+.dial-divider{display:none!important}
+.task-level{font-size:12px!important;color:#f4cb83!important;letter-spacing:.05em;font-weight:700;margin:0 0 8px!important}
+@media(max-width:450px){.dial-group{font-size:11px;min-width:29px}.dial-choice{width:34px!important;font-size:9px!important}}
