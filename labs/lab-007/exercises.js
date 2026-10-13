@@ -56,7 +56,7 @@ export function generate(level='inicial',kind='R2',seed=randomSeed()){
   REF_A:['C','A'],RATIO:['A','B'],NEG_RANGE:['C','B'],
   MIN_SOURCE:['A','C'],COMPARE:['B','C'],POLARITY:['B','A']
  };
- const nodes=effective==='MULTI'?pick([['A','B'],['B','C'],['A','C'],['B','A'],['C','B'],['C','A']]):endpoints[effective];
+ const nodes=effective==='MULTI'?pick([['A','B'],['B','C'],['A','C']]):effective==='DIAG'?pick([['A','B'],['B','C']]):endpoints[effective];
  if(!nodes)throw Error('Tipus d’exercici desconegut.');
  const [red,black]=nodes,values={A:voltage,B:voltage*r2/(r1+r2),C:0};
  const expected=values[red]-values[black];
@@ -64,14 +64,14 @@ export function generate(level='inicial',kind='R2',seed=randomSeed()){
  const texts={
   R1:'Mesura la caiguda de tensió a R1.',R2:'Mesura la caiguda de tensió a R2.',
   SOURCE:'Mesura la tensió de la font d’alimentació.',
-  ZERO:'Troba una connexió que indiqui 0 V entre punts del mateix potencial.',
+  ZERO:'Comprova la diferència de potencial entre dos contactes del node B.',
   REVERSE:'Mesura la tensió de C respecte de B. La polaritat és important.',
   REV_SOURCE:'Mesura el potencial de C respecte d’A.',
   RV1:'Mesura el potencial de B respecte d’A.',
   RV2:'Mesura la tensió de C respecte de B i interpreta el signe.',
   RANGE:'Mesura R2 amb el rang V⎓ més petit que pugui mostrar tota la lectura.',
-  LOW:'Mesura R2. Prova primer una escala insuficient i després ajusta-la fins a obtenir lectura.',
-  DIAG:'Comprova la caiguda de tensió de R1. Detecta qualsevol error de born o escala.',
+  LOW:'Provoca una indicació OL amb una escala de V⎓ massa baixa i, després, mesura R2 correctament.',
+  DIAG:'Comprova la tensió entre els nodes indicats a l’exercici i detecta els errors de born o escala.',
   MID:'Determina el potencial de B respecte de C, sense consultar la resolució.',
   REF_A:'Mesura el potencial de C respecte d’A i interpreta el signe.',
   RATIO:'Compara els valors de R1 i R2 i mesura la caiguda de tensió de R1.',
