@@ -39,7 +39,7 @@ export function codeOf(level,kind,seed){
  return body+'-'+checksum(body);
 }
 export function fromCode(input){
- const code=String(input).trim().toUpperCase(),m=/^TL-MM1-(INICIAL|BASIC|INTERMEDI|AVANCAT)-([A-Z0-9]+)-([0-9A-Z]{1,7})-([0-9A-F]{4})$/.exec(code);
+ const code=String(input).trim().toUpperCase(),m=/^TL-MM1-(INICIAL|BASIC|INTERMEDI|AVANCAT)-([A-Z0-9_]+)-([0-9A-Z]{1,7})-([0-9A-F]{4})$/.exec(code);
  if(!m)throw Error('Codi no vàlid. Exemple: TL-MM1-INICIAL-R2-...');
  const level=m[1].toLowerCase(),kind=m[2],seed=parseInt(m[3],36);
  if(codeOf(level,kind,seed)!==code)throw Error('Codi incorrecte: revisa els caràcters.');
@@ -47,7 +47,9 @@ export function fromCode(input){
 }
 export function generate(level='inicial',kind='R2',seed=randomSeed()){
  const code=codeOf(level,kind,seed),rng=seededRandom(seed),pick=a=>a[Math.floor(rng()*a.length)];
- const voltage=pick([6,9,12,15,18,24]),r1=pick([470,680,1000,1500,2200]),r2=pick([680,1000,1500,2200,3300]);
+ const voltage=pick([6,9,12,15,18,24]),r1=pick([470,680,1000,1500,2200]);
+ let r2=pick([680,1000,1500,2200,3300]);
+ if(kind==='RATIO'&&r2===r1)r2=r2===3300?680:3300;
  const effective=kind==='ANY'?pick(levelKinds[level].filter(([id])=>id!=='ANY').map(([id])=>id)):kind;
  const endpoints={
   R1:['A','B'],R2:['B','C'],SOURCE:['A','C'],ZERO:['B','B'],
@@ -71,7 +73,7 @@ export function generate(level='inicial',kind='R2',seed=randomSeed()){
   RV2:'Mesura la tensió de C respecte de B i interpreta el signe.',
   RANGE:'Mesura R2 amb el rang V⎓ més petit que pugui mostrar tota la lectura.',
   LOW:'Provoca una indicació OL amb una escala de V⎓ massa baixa i, després, mesura R2 correctament.',
-  DIAG:'Comprova la tensió entre els nodes indicats a l’exercici i detecta els errors de born o escala.',
+  DIAG:'Comprova la caiguda de tensió a '+(red==='A'?'R1':'R2')+' i detecta possibles errors de born o escala.',
   MID:'Determina el potencial de B respecte de C, sense consultar la resolució.',
   REF_A:'Mesura el potencial de C respecte d’A i interpreta el signe.',
   RATIO:'Compara els valors de R1 i R2 i mesura la caiguda de tensió de R1.',
