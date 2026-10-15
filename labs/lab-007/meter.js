@@ -1,5 +1,5 @@
-// Multímetre educatiu de tres borns. Model DC ideal; la mesura d'intensitat
-// requereix inserció en sèrie i no queda habilitada en aquest prototip.
+// Multímetre educatiu: tensió en paral·lel, corrent en una interrupció en sèrie,
+// i resistència amb la font desconnectada i la peça aïllada.
 export const jackNames=['10A','COM','VΩmA'];
 export const ranges=[
  {id:'OFF',label:'OFF',mode:'OFF',group:'OFF',limit:0},
@@ -33,14 +33,34 @@ export function measure(s){
  if(['VDC','VAC','OHM'].includes(mode)&&redJack==='10A')
   return {display:'RISC',unit:'',status:'No connectis el born 10A per mesurar tensió o resistència. Perill de curtcircuit si es connecta en paral·lel.'};
  if(mode==='ADC'){
-  if(range.id==='ADC10'&&redJack!=='10A')return {display:'Err',unit:'A',status:'A l’escala 10A cal utilitzar el born 10A i COM.'};
-  if(range.id!=='ADC10'&&redJack!=='VΩmA')return {display:'Err',unit:'A',status:'Per a intensitats petites, utilitza VΩmA i COM.'};
-  return {display:'—',unit:'A⎓',status:'Cal obrir el circuit i inserir l’amperímetre en sèrie, sense alimentació durant el muntatge. La mesura de corrent no està implementada encara.'};
+  if(range.id==='ADC10'&&redJack!=='10A')return {display:'Err',unit:'A⎓',status:'En el rang de 10 A, vermell a 10A i negre a COM.'};
+  if(range.id!=='ADC10'&&redJack!=='VΩmA')return {display:'Err',unit:'A⎓',status:'Per a µA i mA, vermell a VΩmA i negre a COM.'};
+  if(!s.seriesOpen)return {display:'RISC',unit:'A⎓',status:'No connectis un amperímetre en paral·lel. Desconnecta la font, obre el punt de mesura i insereix-lo en sèrie.'};
+  if(s.redNode!=='D'||s.blackNode!=='E')return {display:'----',unit:'A⎓',status:'Connecta la punta vermella a D i la negra a E, a la interrupció del circuit.'};
+  if(!s.powered)return {display:'0.000',unit:'A⎓',value:0,status:'Circuit desalimentat. Activa la font per mesurar intensitat un cop feta la connexió en sèrie.'};
+  const value=voltage/(r1+r2);
+  if(value>limit+1e-12)return {display:'OL',unit:'A⎓',status:'Intensitat fora d’escala. Selecciona un rang superior del grup A⎓.'};
+  const scaled=limit<=.0002?value*1e6:limit<=.2?value*1e3:value;
+  const unit=limit<=.0002?'µA':limit<=.2?'mA':'A';
+  const decimals=limit<=.0002?1:limit<=.002?3:limit<=.02?2:limit<=.2?1:3;
+  return {display:scaled.toFixed(decimals),unit,value,status:'Amperímetre correctament inserit en sèrie: I = U/(R1 + R2).'};
  }
  if(redJack!=='VΩmA')return {display:'Err',unit:'',status:'Per a tensió i resistència usa VΩmA amb COM.'};
- if(mode==='OHM')return {display:'—',unit:'Ω',status:'Cal desconnectar l’alimentació i aïllar el component abans de mesurar resistència. Funció pendent d’ampliació.'};
+ if(mode==='OHM'){
+  if(s.powered!==false)return {display:'RISC',unit:'Ω',status:'Desconnecta la font abans de mesurar resistència.'};
+  if(!['R1','R2'].includes(s.isolated))return {display:'----',unit:'Ω',status:'Aïlla R1 o R2 abans de mesurar: els camins paral·lels alteren la lectura.'};
+  const target=s.isolated==='R1'?['A','B']:['B','C'];
+  if(!s.redNode||!s.blackNode)return {display:'----',unit:'Ω',status:'Posa una punta a cada extrem de la resistència aïllada.'};
+  if(![target[0],target[1]].includes(s.redNode)||![target[0],target[1]].includes(s.blackNode)||s.redNode===s.blackNode)
+   return {display:'OL',unit:'Ω',status:'Col·loca les puntes als dos extrems de '+s.isolated+' per formar un camí de mesura.'};
+  const value=s.isolated==='R1'?r1:r2;
+  if(value>limit+1e-9)return {display:'OL',unit:'Ω',status:'Resistència fora d’escala: puja el rang Ω.'};
+  const scaled=limit>=2000?value/1000:value,unit=limit>=2000?'kΩ':'Ω';
+  return {display:scaled.toFixed(limit>=2000?3:1),unit,value,status:'Resistència '+s.isolated+' aïllada i font desconnectada.'};
+ }
  if(!s.redNode||!s.blackNode)return {display:'----',unit:'',status:'Connecta les dues puntes al circuit.'};
  if(mode==='VAC')return {display:'0.00',unit:'V~',value:0,status:'El circuit és un model de font CC ideal. No hi ha component alterna en aquest model.'};
+ if(s.powered===false)return {display:'0.00',unit:'V⎓',value:0,status:'La font és desconnectada.'};
  const value=node[s.redNode]-node[s.blackNode];
  if(!Number.isFinite(value))return {display:'Err',unit:'',status:'Node no reconegut.'};
  if(Math.abs(value)>limit+1e-9)return {display:'OL',unit:'V⎓',status:'Fora d’escala: tria un rang més alt dins del grup V⎓.'};
@@ -48,6 +68,11 @@ export function measure(s){
  return {display:value.toFixed(decimals),unit:'V⎓',value,status:value<0?'Polaritat invertida: tensió negativa.':value===0?'Els dos punts tenen el mateix potencial.':'Lectura de tensió contínua entre els nodes seleccionats.'};
 }
 export function isCorrect(s,exercise){
- const m=measure(s);
- return Number.isFinite(m.value)&&s.redJack==='VΩmA'&&s.blackJack==='COM'&&ranges.find(r=>r.id===s.range)?.mode==='VDC'&&s.redNode===(exercise?.red||'B')&&s.blackNode===(exercise?.black||'C');
+ const m=measure(s),mode=exercise?.mode||'VDC';
+ if(!Number.isFinite(m.value))return false;
+ if(s.blackJack!=='COM'||s.redNode!==(exercise?.red||'B')||s.blackNode!==(exercise?.black||'C'))return false;
+ if(ranges.find(r=>r.id===s.range)?.mode!==mode)return false;
+ if(mode==='ADC')return s.seriesOpen===true&&s.powered===true&&s.redJack===(s.range==='ADC10'?'10A':'VΩmA');
+ if(mode==='OHM')return s.powered===false&&s.isolated===exercise?.resistor&&s.redJack==='VΩmA';
+ return s.redJack==='VΩmA';
 }
