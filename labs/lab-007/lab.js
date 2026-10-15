@@ -31,7 +31,9 @@ function circuit(){
  '<path d="M146 44H194" stroke="#88d7b7" stroke-width="5"/>';
  const isolated=s.isolated?'<rect x="'+(s.isolated==='R1'?'217':'386')+'" y="'+(s.isolated==='R1'?'27':'160')+'" width="'+(s.isolated==='R1'?'51':'38')+'" height="'+(s.isolated==='R1'?'36':'51')+'" rx="4" fill="none" stroke="#ffcf75" stroke-width="4" stroke-dasharray="5 4"/><text x="284" y="226" fill="#ffcf75" font-size="14">'+s.isolated+' aïllada</text>':'';
  const off=s.powered?'':'<text x="22" y="278" fill="#ffcf75" font-size="15">FONT DESCONNECTADA</text>';
- return '<svg viewBox="0 0 500 300" role="group" aria-label="Circuit divisor de tensió">'+(s.view==='schema'?schema:physical)+bridge+isolated+off+labels+markings()+'</svg>';
+ const fault=(!fuseState.mA||!fuseState['10A'])?
+ '<g class="circuit-fault-symbol"><path d="M13 208h24l-9 15h15l-27 36 6-24H9z" fill="#ff974a" stroke="#fff0aa" stroke-width="2"/><text x="51" y="230" fill="#ffb5a0" font-size="14" font-weight="bold">FUSIBLE FOS</text></g>':'';
+ return '<svg viewBox="0 0 500 300" role="group" aria-label="Circuit divisor de tensió">'+(s.view==='schema'?schema:physical)+bridge+isolated+off+fault+labels+markings()+'</svg>';
 }
 function dial(){
  const pos=(angle,r)=>polar(angle,r).map(n=>n/4);
