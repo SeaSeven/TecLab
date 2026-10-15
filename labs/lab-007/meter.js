@@ -36,6 +36,7 @@ export function measure(s){
  if(mode==='ADC'){
   if(range.id==='ADC10'&&redJack!=='10A')return {display:'Err',unit:'A⎓',status:'En el rang de 10 A, vermell a 10A i negre a COM.'};
   if(range.id!=='ADC10'&&redJack!=='VΩmA')return {display:'Err',unit:'A⎓',status:'Per a µA i mA, vermell a VΩmA i negre a COM.'};
+  if(s.isolated)return {display:'----',unit:'A⎓',status:'Torna a muntar R1 i R2 abans de mesurar la intensitat del divisor.'};
   if(!s.seriesOpen)return {display:'RISC',unit:'A⎓',status:'No connectis un amperímetre en paral·lel. Desconnecta la font, obre el punt de mesura i insereix-lo en sèrie.'};
   if(s.redNode!=='D'||s.blackNode!=='E')return {display:'----',unit:'A⎓',status:'Connecta la punta vermella a D i la negra a E, a la interrupció del circuit.'};
   if(!s.powered)return {display:'0.000',unit:'A⎓',value:0,status:'Circuit desalimentat. Activa la font per mesurar intensitat un cop feta la connexió en sèrie.'};
