@@ -204,3 +204,9 @@ button,select,input{font-size:13px;padding:8px 12px}
 .jack-actions{display:flex;justify-content:flex-end;margin:7px 0}
 .jack-actions button{font-size:12px;min-height:36px;background:#1c3644;border-color:#8aabbc}
 @media(max-width:450px){.lead-tray{grid-template-columns:1fr}.jack-socket{min-height:106px!important}.socket-occupant{font-size:9px}.lead-plug{min-height:47px!important}}
+
+
+/* Filtre de magnitud: tots els nivells poden explorar V⎓, A⎓ i Ω. */
+.manager-row{grid-template-columns:minmax(125px,.8fr) minmax(165px,1fr) minmax(200px,1.5fr) auto}
+@media(max-width:950px){.manager-row{grid-template-columns:repeat(2,minmax(0,1fr))}.manager-row button{grid-column:1/-1;justify-self:start}}
+@media(max-width:520px){.manager-row{grid-template-columns:1fr}.manager-row button{grid-column:auto}}
