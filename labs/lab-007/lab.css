@@ -175,3 +175,32 @@ button,select,input{font-size:13px;padding:8px 12px}
 .wiring-panel .wiring-status{font-size:12px;line-height:1.6;margin:10px 0 0;color:#bce3e8}
 @media(max-width:620px){.wiring-controls{display:grid;grid-template-columns:1fr 1fr}.wiring-controls label{grid-column:1/-1}.wiring-controls button{white-space:normal}}
 @media(max-width:390px){.wiring-controls{grid-template-columns:1fr}.wiring-controls label{grid-column:auto}}
+
+
+/* v0.7.1 — cables destacats, estat inequívoc i zones de deixada */
+.wiring-panel .wiring-intro{font-size:13px;line-height:1.6;max-width:900px;color:#d4e2e9}
+.lead-tray{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 14px}
+.lead-plug{display:flex;gap:8px;align-items:center;justify-content:flex-start;min-height:54px!important;padding:8px 10px!important;text-align:left;font-weight:700;border:2px solid #9aacb9!important;background:#233744!important;color:#f4f8fa!important;cursor:grab;touch-action:manipulation}
+.lead-plug:active{cursor:grabbing}
+.lead-plug.lead-selected{box-shadow:0 0 0 2px #f3ce88;border-color:#f3ce88!important}
+.lead-plug.lead-red{border-left:8px solid #f87170!important}
+.lead-plug.lead-black{border-left:8px solid #e2eef6!important}
+.lead-grip{width:18px;height:30px;border-radius:7px 7px 3px 3px;flex:none;background:linear-gradient(90deg,#20252b 0 35%,#f27370 35% 66%,#20252b 66%);border:2px solid #f0b2a9}
+.lead-black .lead-grip{background:linear-gradient(90deg,#0b1015 0 50%,#42515b 50%);border:2px solid #e2eef6}
+.lead-connection{margin-left:auto;display:inline-block;padding:5px 7px;font:700 11px ui-monospace,monospace;white-space:nowrap;color:#d7e7ee;background:#0e2631;border:1px solid #526d7c;border-radius:6px}
+.lead-unplugged .lead-connection{color:#ffdab5;border-color:#bc9163}
+.jack-board{gap:10px}
+.jack-socket{min-height:119px!important;background:#263843!important;border:2px solid #738c9c!important}
+.jack-socket .socket-hole{width:43px;height:43px;background:radial-gradient(circle,#07101b 0 48%,#1b3240 49%);border:7px solid #b0bfca;box-shadow:inset 0 2px 9px #000,0 0 0 2px #172732}
+.jack-socket.plug-red{background:#523238!important;border-color:#ff9e93!important}
+.jack-socket.plug-black{background:#3d4c57!important;border-color:#f0f7fb!important}
+.jack-socket.plug-black .socket-hole{border-color:#f7fbff;box-shadow:0 0 0 3px #10191f,inset 0 0 0 3px #dae6ec}
+.jack-socket.plug-black .socket-hole::after{background:#121922;box-shadow:0 0 0 3px #f5faff,inset 0 0 0 2px #374856}
+.jack-socket.plug-red .socket-hole::after{background:#ed6863;box-shadow:0 0 0 2px #fff5}
+.jack-socket.jack-drop-target{outline:4px dashed #ffe3a1;outline-offset:2px;transform:translateY(-2px)}
+.socket-occupant{font:800 10px ui-monospace,monospace;letter-spacing:.04em;min-height:16px;color:#cfdee5}
+.jack-socket.plug-red .socket-occupant{color:#ffb9b3}
+.jack-socket.plug-black .socket-occupant{color:#fff}
+.jack-actions{display:flex;justify-content:flex-end;margin:7px 0}
+.jack-actions button{font-size:12px;min-height:36px;background:#1c3644;border-color:#8aabbc}
+@media(max-width:450px){.lead-tray{grid-template-columns:1fr}.jack-socket{min-height:106px!important}.socket-occupant{font-size:9px}.lead-plug{min-height:47px!important}}
