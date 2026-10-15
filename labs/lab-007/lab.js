@@ -5,6 +5,8 @@ const $=id=>document.getElementById(id);
 const fmt=(n,d=2)=>Number(n).toLocaleString('ca-ES',{maximumFractionDigits:d});
 let ex=generate('inicial','R2',12345);
 let seenOverload=false;
+// Els fusibles representen un estat físic persistent, independent de l’exercici.
+const fuseState={mA:true,'10A':true};
 let s={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:null,blackNode:null,probe:'red',view:'schema',powered:true,seriesOpen:false,isolated:''};
 const points=[['A',75,44],['B',405,44],['C',405,246],['D',146,44],['E',194,44]];
 function markings(){
@@ -92,7 +94,34 @@ function updateWiring(){
  $('isolation').value=s.isolated;
  $('wiringStatus').textContent=(s.powered?'Font connectada':'Font desconnectada')+' · '+(s.seriesOpen?'interrupció D–E oberta':'circuit tancat')+' · '+(s.isolated?s.isolated+' aïllada':'resistències muntades')+'.';
 }
-function reading(){const m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2});$('reading').textContent=m.display;$('unit').textContent=m.unit;if(m.display==='OL')seenOverload=true;return m;}
+function renderFuses(){
+ for(const [id,name,elId,buttonId] of [['mA','fuseMaState','fuseMa','replaceMa'],['10A','fuse10State','fuse10','replace10']]){
+  const ok=fuseState[id],panel=$(elId);
+  panel.classList.toggle('fuse-blown',!ok);
+  $(name).textContent=ok?'Correcte':'FOS';
+  $(buttonId).hidden=ok;
+ }
+ $('fuseNote').textContent=Object.values(fuseState).every(Boolean)?
+  'Protecció simulada: un curtcircuit directe pot fer fondre el fusible.':
+  'Fusible fos: font desconnectada i puntes retirades abans de substituir-lo.';
+}
+function reading(){
+ let m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,fuses:fuseState});
+ if(m.faultFuse&&fuseState[m.faultFuse]){
+  const blown=m.faultFuse;
+  fuseState[blown]=false;
+  m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,fuses:fuseState});
+  // Conservem l'avís del curtcircuit en lloc d'ocultar-ne la causa.
+  m={...m,status:'Curtcircuit simulat entre A i C! S’ha fos el fusible '+blown+'. Desconnecta la font i revisa les connexions.'};
+  feedback(m.status,'error');
+ }
+ $('reading').textContent=m.display;
+ $('unit').textContent=m.unit;
+ $('reading').classList.toggle('meter-fuse-fault',m.display==='FUS');
+ if(m.display==='OL')seenOverload=true;
+ renderFuses();
+ return m;
+}
 function render(){
  $('circuit').innerHTML=circuit();$('rotary').innerHTML=dial();const selected=ranges.find(r=>r.id===s.range);$('dialSelection').textContent='Posició seleccionada: '+(selected.mode==='OFF'?'OFF':selected.group+' · '+selected.label);
  $('circuit').querySelectorAll('[data-node]').forEach(el=>{
@@ -194,6 +223,17 @@ $('isolation').onchange=e=>{
  if(s.powered){$('isolation').value=s.isolated;feedback('Per aïllar una resistència, desconnecta primer la font.','error');return;}
  s.isolated=e.target.value;render();feedback(reading().status);
 };
+for(const [id,button] of [['mA','replaceMa'],['10A','replace10']]){
+ $(button).onclick=()=>{
+  if(s.powered||s.redNode||s.blackNode){
+   feedback('Per substituir un fusible, desconnecta la font i retira les dues puntes del circuit.','error');return;
+  }
+  fuseState[id]=true;
+  renderFuses();
+  reading();
+  feedback('Fusible '+id+' substituït. Revisa el muntatge abans de connectar la font.');
+ };
+}
 $('reset').onclick=()=>{s.redNode=null;s.blackNode=null;render();feedback('Puntes desconnectades.');};
 $('level').onchange=e=>kinds(e.target.value);
 $('magnitude').onchange=()=>kinds($('level').value);
