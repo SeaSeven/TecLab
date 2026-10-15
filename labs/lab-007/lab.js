@@ -92,7 +92,7 @@ function render(){
 }
 function kinds(level,selected){$('kind').innerHTML=levelKinds[level].map(([k,t])=>'<option value="'+k+'">'+t+'</option>').join('');if(selected)$('kind').value=selected;}
 function load(v){
- ex=v;seenOverload=false;s.redNode=null;s.blackNode=null;s.range=v.mode==='ADC'?'ADC20m':v.mode==='OHM'?'OHM20k':'VDC20';s.redJack='VΩmA';s.blackJack='COM';s.powered=v.mode==='OHM'?false:true;s.seriesOpen=false;s.isolated='';
+ ex=v;seenOverload=false;s.redNode=null;s.blackNode=null;s.range=v.mode==='ADC'?'ADC20m':v.mode==='OHM'?'OHM20k':'VDC20';s.redJack='VΩmA';s.blackJack='COM';s.powered=true;s.seriesOpen=false;s.isolated='';
  $('level').value=v.level;kinds(v.level,v.kind);$('exerciseCode').value=v.code;
  $('task').innerHTML='<p class="task-level">'+({inicial:'Inicial',basic:'Bàsic',intermedi:'Intermedi',avancat:'Avançat'}[v.level])+' · '+levelKinds[v.level].find(([id])=>id===v.kind)[1]+'</p><strong>'+v.text+'</strong><p>Observa el circuit i tria connexions i escala. La resolució numèrica només apareix amb Mostra l’explicació.</p>';
  $('explanation').innerHTML=v.mode==='ADC'?
