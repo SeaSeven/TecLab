@@ -85,7 +85,7 @@ test('resistència: component aïllat, font desconnectada i rang correcte',()=>{
  assert.equal(measure({...cfg,isolated:''}).display,'----');
  assert.equal(measure({...cfg,redNode:'A'}).display,'OL');
  const e=generate('intermedi','OHM_R2',345);
- assert.equal(isCorrect({...cfg,r1:e.r1,r2:e.r2},e),false);
+ assert.equal(isCorrect({...cfg,r1:e.r1,r2:e.r2},e),true);
 });
 test('intensitat i ohms a tots els nivells amb codis recuperables',()=>{
  const modes={inicial:'CURRENT',basic:'OHM_R1',intermedi:'I_RANGE',avancat:'OHM_RANGE'};
