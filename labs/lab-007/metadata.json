@@ -1,7 +1,7 @@
 {
   "id": "LAB-007",
   "title": "Mesures amb multímetre",
-  "description": "Multímetre virtual amb mesures de V⎓, A⎓ i Ω, selecció de magnitud, clavilles arrossegables, maniobres del circuit i exercicis per nivells.",
+  "description": "Multímetre virtual amb mesures V⎓, A⎓ i Ω, exercicis per magnitud, clavilles arrossegables i simulació educativa d'avaria i fusibles mA/10A.",
   "courses": [
     "EE10",
     "EE30",
@@ -9,7 +9,7 @@
     "Enginyeria"
   ],
   "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "status": "in-review",
   "access": "public",
   "entry": "labs/lab-007/",
@@ -41,6 +41,9 @@
     "all-magnitudes-random-exercises",
     "drag-and-drop-test-leads",
     "magnitude-exercise-filter",
-    "unplug-probes"
+    "unplug-probes",
+    "fuse-fault-protection",
+    "fuse-replacement-workflow",
+    "visible-short-circuit-warning"
   ]
 }
