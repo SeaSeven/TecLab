@@ -7,7 +7,7 @@ export const levelKinds={
   ['ZERO','Dos punts del mateix potencial'],
   ['CURRENT','Intensitat del divisor en sèrie'],
   ['ANY','Exercici aleatori de tensió (compatible)'],
-  ['MIX','Exercici aleatori de totes les magnituds']
+  ['MIX','Exercici aleatori (totes les opcions del nivell)']
  ],
  basic:[
   ['REVERSE','Mesura amb polaritat negativa'],
@@ -17,7 +17,7 @@ export const levelKinds={
   ['RANGE','Selecció del rang mínim adequat'],
   ['OHM_R1','Mesura de la resistència R1'],
   ['ANY','Exercici aleatori de tensió (compatible)'],
-  ['MIX','Exercici aleatori de totes les magnituds']
+  ['MIX','Exercici aleatori (totes les opcions del nivell)']
  ],
  intermedi:[
   ['LOW','Recuperar una lectura fora d’escala'],
@@ -28,7 +28,7 @@ export const levelKinds={
   ['OHM_R2','Mesura de la resistència R2'],
   ['I_RANGE','Escala de corrent més apropiada'],
   ['ANY','Exercici aleatori de tensió (compatible)'],
-  ['MIX','Exercici aleatori de totes les magnituds']
+  ['MIX','Exercici aleatori (totes les opcions del nivell)']
  ],
  avancat:[
   ['MULTI','Mesura entre nodes aleatoris'],
@@ -40,7 +40,7 @@ export const levelKinds={
   ['I_REVERSE','Polaritat invertida de l’amperímetre'],
   ['OHM_RANGE','Resistència amb rang mínim'],
   ['ANY','Exercici aleatori de tensió (compatible)'],
-  ['MIX','Exercici aleatori de totes les magnituds']
+  ['MIX','Exercici aleatori (totes les opcions del nivell)']
  ]
 };
 const levels=Object.keys(levelKinds);
