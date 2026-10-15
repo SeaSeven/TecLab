@@ -22,7 +22,7 @@ function circuit(){
  '<circle cx="53" cy="178" r="7" fill="#fa5c5c"/><circle cx="111" cy="178" r="7" fill="#111"/>'+
  '<path d="M53 178C53 17 118 44 146 44M194 44H220M264 44H405M111 178C111 270 206 246 405 246" fill="none" stroke="#ed5858" stroke-width="5"/><path d="M405 44V164M405 208V246" stroke="#455a60" stroke-width="5" fill="none"/>'+
  '<rect x="220" y="32" width="44" height="24" rx="9" fill="#e8c18c" stroke="#795b40"/><rect x="392" y="164" width="26" height="44" rx="9" fill="#e8c18c" stroke="#795b40"/>';
- const meterInserted=s.seriesOpen&&s.redNode==='D'&&s.blackNode==='E'&&ranges.find(r=>r.id===s.range)?.mode==='ADC';
+ const meterInserted=s.seriesOpen&&((s.redNode==='D'&&s.blackNode==='E')||(s.redNode==='E'&&s.blackNode==='D'))&&ranges.find(r=>r.id===s.range)?.mode==='ADC';
  const bridge=s.seriesOpen?(meterInserted?
  '<path d="M146 44H152M188 44H194" stroke="#e1c185" stroke-width="4"/><circle cx="170" cy="44" r="18" stroke="#ffce77" stroke-width="3" fill="#203843"/><text x="170" y="51" text-anchor="middle" fill="#ffffff" font-size="20">A</text><text x="170" y="85" text-anchor="middle" fill="#b8f0c8" font-size="12">EN SÈRIE</text>':
  '<path d="M146 44v14m48-14v14" stroke="#f1d27f" stroke-width="3"/><text x="170" y="84" text-anchor="middle" fill="#f6d38a" font-size="14">OBERT</text>'):
@@ -137,7 +137,7 @@ document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{$('section
 ['red','black'].forEach(v=>$(v+'Probe').onclick=()=>{s.probe=v;render();});
 document.querySelectorAll('[data-jack]').forEach(b=>b.onclick=()=>connectJack(b.dataset.jack));
 $('powerToggle').onclick=()=>{
- if(!s.powered&&(s.seriesOpen&&! (s.redNode==='D'&&s.blackNode==='E'))){feedback('Abans de connectar la font, tanca el circuit o completa la connexió en sèrie entre D i E.','error');return;}
+ if(!s.powered&&(s.seriesOpen&&! ((s.redNode==='D'&&s.blackNode==='E')||(s.redNode==='E'&&s.blackNode==='D')))){feedback('Abans de connectar la font, tanca el circuit o completa la connexió en sèrie entre D i E.','error');return;}
  if(!s.powered&&s.isolated){feedback('Torna a muntar la resistència abans de connectar la font.','error');return;}
  s.powered=!s.powered;render();feedback(reading().status);
 };
