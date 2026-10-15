@@ -110,10 +110,22 @@ function render(){
  updateWiring();
  reading();
 }
-function kinds(level,selected){$('kind').innerHTML=levelKinds[level].map(([k,t])=>'<option value="'+k+'">'+t+'</option>').join('');if(selected)$('kind').value=selected;}
+function kindMode(id){
+ if(id==='MIX')return 'all';
+ if(id==='ANY')return 'VDC';
+ if(['CURRENT','I_RANGE','I_DIAG','I_REVERSE'].includes(id))return 'ADC';
+ if(id.startsWith('OHM_'))return 'OHM';
+ return 'VDC';
+}
+function kinds(level,selected){
+ const filter=$('magnitude').value||'all';
+ const items=levelKinds[level].filter(([id])=>filter==='all'||kindMode(id)===filter);
+ $('kind').innerHTML=items.map(([id,label])=>'<option value="'+id+'">'+label+'</option>').join('');
+ if(selected&&items.some(([id])=>id===selected))$('kind').value=selected;
+}
 function load(v){
  ex=v;seenOverload=false;s.redNode=null;s.blackNode=null;s.range=v.mode==='ADC'?'ADC20m':v.mode==='OHM'?'OHM20k':'VDC20';s.redJack='VΩmA';s.blackJack='COM';s.powered=true;s.seriesOpen=false;s.isolated='';
- $('level').value=v.level;kinds(v.level,v.kind);$('exerciseCode').value=v.code;
+ $('level').value=v.level;$('magnitude').value=kindMode(v.kind);kinds(v.level,v.kind);$('exerciseCode').value=v.code;
  $('task').innerHTML='<p class="task-level">'+({inicial:'Inicial',basic:'Bàsic',intermedi:'Intermedi',avancat:'Avançat'}[v.level])+' · '+levelKinds[v.level].find(([id])=>id===v.kind)[1]+'</p><strong>'+v.text+'</strong><p>Observa el circuit i tria connexions i escala. La resolució numèrica només apareix amb Mostra l’explicació.</p>';
  $('explanation').innerHTML=v.mode==='ADC'?
  '<h3>Resolució guiada de la intensitat</h3><p>Font desconnectada durant el muntatge; obre D–E i intercala el multímetre en sèrie. Després, amb la font connectada: I = U/(R1 + R2) = '+fmt(v.expected*1000,3)+' mA. Escala mínima possible: '+ranges.find(r=>r.id===v.range).label+' A⎓.</p>':
@@ -184,6 +196,7 @@ $('isolation').onchange=e=>{
 };
 $('reset').onclick=()=>{s.redNode=null;s.blackNode=null;render();feedback('Puntes desconnectades.');};
 $('level').onchange=e=>kinds(e.target.value);
+$('magnitude').onchange=()=>kinds($('level').value);
 $('newExercise').onclick=()=>load(generate($('level').value,$('kind').value));
 $('copyExercise').onclick=()=>{const code=$('exerciseCode').value;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(code).then(()=>{$('codeStatus').textContent='Codi copiat: '+code;}).catch(()=>{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';});}else{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';}};
 $('recover').onclick=()=>{try{let p=fromCode($('recoverCode').value);load(generate(p.level,p.kind,p.seed));$('codeStatus').textContent='Exercici recuperat: '+ex.code;}catch(e){$('codeStatus').textContent='Error: '+e.message;}};
