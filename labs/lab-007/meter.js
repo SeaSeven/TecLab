@@ -22,12 +22,30 @@ export const ranges=[
  {id:'OHM2M',label:'2M',mode:'OHM',group:'Ω',limit:2000000}
 ];
 export const nodeVoltages=Object.freeze({A:12,B:8,C:0});
+// Escenari de curtcircuit didàctic: terminal d'intensitat en paral·lel
+// directament als borns de la font ideal A-C, amb alimentació connectada.
+// Un OL o una connexió simplement incompleta NO fonen el fusible.
+export function currentFuseFault(s){
+ const range=ranges.find(r=>r.id===s.range);
+ if(!s.powered||s.seriesOpen||s.isolated||s.blackJack!=='COM')return null;
+ const sourceShunt=(s.redNode==='A'&&s.blackNode==='C')||(s.redNode==='C'&&s.blackNode==='A');
+ if(!sourceShunt)return null;
+ if(s.redJack==='10A')return '10A';
+ if(s.redJack==='VΩmA'&&range?.mode==='ADC')return 'mA';
+ return null;
+}
 export function measure(s){
  const range=ranges.find(r=>r.id===s.range)||ranges[3];
  const {mode,limit}=range,voltage=s.voltage??12,r1=s.r1??1000,r2=s.r2??2000;
  // Amb la interrupció D–E oberta o una resistència desmuntada, no hi circula corrent.
  const node={A:s.powered===false?0:voltage,B:(s.seriesOpen||s.isolated||s.powered===false)?0:voltage*r2/(r1+r2),C:0};
  if(mode==='OFF')return {display:'OFF',unit:'',status:'Instrument apagat.'};
+ const fuseId=s.redJack==='10A'?'10A':'mA';
+ if((s.fuses?.[fuseId]===false)&&((mode==='ADC')||(s.redJack==='10A')))
+  return {display:'FUS',unit:'',status:'Fusible '+fuseId+' fos. Desconnecta la font i revisa el muntatge abans de substituir-lo.'};
+ const fault=currentFuseFault(s);
+ if(fault)return {display:'FUS',unit:'',faultFuse:fault,status:'Curtcircuit simulat entre els borns de la font. Fusible '+fault+' fos: el multímetre queda sense lectura en aquest circuit.'};
+
  const blackJack=s.blackJack===undefined?'COM':s.blackJack,redJack=s.redJack===undefined?'VΩmA':s.redJack;
  if(!blackJack||!redJack)return {display:'----',unit:'',status:'Connecta les dues clavilles als borns del multímetre.'};
  if(blackJack===redJack)return {display:'Err',unit:'',status:'Cada cable ha d’anar a un born diferent.'};
