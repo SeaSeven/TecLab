@@ -6,7 +6,8 @@ export const levelKinds={
   ['SOURCE','Tensió de la font'],
   ['ZERO','Dos punts del mateix potencial'],
   ['CURRENT','Intensitat del divisor en sèrie'],
-  ['ANY','Exercici aleatori del nivell']
+  ['ANY','Exercici aleatori de tensió (compatible)'],
+  ['MIX','Exercici aleatori de totes les magnituds']
  ],
  basic:[
   ['REVERSE','Mesura amb polaritat negativa'],
@@ -15,7 +16,8 @@ export const levelKinds={
   ['RV2','Tensió negativa a R2'],
   ['RANGE','Selecció del rang mínim adequat'],
   ['OHM_R1','Mesura de la resistència R1'],
-  ['ANY','Exercici aleatori del nivell']
+  ['ANY','Exercici aleatori de tensió (compatible)'],
+  ['MIX','Exercici aleatori de totes les magnituds']
  ],
  intermedi:[
   ['LOW','Recuperar una lectura fora d’escala'],
@@ -25,7 +27,8 @@ export const levelKinds={
   ['RATIO','Divisor amb resistències de valors diferents'],
   ['OHM_R2','Mesura de la resistència R2'],
   ['I_RANGE','Escala de corrent més apropiada'],
-  ['ANY','Exercici aleatori del nivell']
+  ['ANY','Exercici aleatori de tensió (compatible)'],
+  ['MIX','Exercici aleatori de totes les magnituds']
  ],
  avancat:[
   ['MULTI','Mesura entre nodes aleatoris'],
@@ -35,7 +38,8 @@ export const levelKinds={
   ['POLARITY','Diagnosi de polaritat sense pistes'],
   ['I_DIAG','Diagnosi de connexió en sèrie'],
   ['OHM_RANGE','Resistència amb rang mínim'],
-  ['ANY','Exercici aleatori del nivell']
+  ['ANY','Exercici aleatori de tensió (compatible)'],
+  ['MIX','Exercici aleatori de totes les magnituds']
  ]
 };
 const levels=Object.keys(levelKinds);
@@ -56,7 +60,8 @@ export function generate(level='inicial',kind='R2',seed=randomSeed()){
  const voltage=pick([6,9,12,15,18,24]),r1=pick([470,680,1000,1500,2200]);
  let r2=pick([680,1000,1500,2200,3300]);
  if(kind==='RATIO'&&r2===r1)r2=r2===3300?680:3300;
- const effective=kind==='ANY'?pick(levelKinds[level].filter(([id])=>id!=='ANY').map(([id])=>id)):kind;
+ const legacy={inicial:['R2','R1','SOURCE','ZERO'],basic:['REVERSE','REV_SOURCE','RV1','RV2','RANGE'],intermedi:['LOW','DIAG','MID','REF_A','RATIO'],avancat:['MULTI','NEG_RANGE','MIN_SOURCE','COMPARE','POLARITY']};
+ const effective=kind==='ANY'?pick(legacy[level]):kind==='MIX'?pick(levelKinds[level].filter(([id])=>!['ANY','MIX'].includes(id)).map(([id])=>id)):kind;
  const endpoints={
   R1:['A','B'],R2:['B','C'],SOURCE:['A','C'],ZERO:['B','B'],
   REVERSE:['C','B'],REV_SOURCE:['C','A'],RV1:['B','A'],RV2:['C','B'],
