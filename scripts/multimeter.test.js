@@ -97,3 +97,30 @@ test('intensitat i ohms a tots els nivells amb codis recuperables',()=>{
   assert.ok(Math.abs(measure(s).value-e.expected)<1e-9);
  }
 });
+
+test('invertir puntes en A⎓ dona lectura negativa sense canviar el mòdul',()=>{
+ const state={...base,range:'ADC20m',redNode:'E',blackNode:'D',powered:true,seriesOpen:true};
+ assert.equal(measure(state).value,-0.004);
+ assert.equal(measure(state).display,'-4.00');
+ const ex=generate('avancat','I_REVERSE',777);
+ assert.equal(ex.mode,'ADC');assert.ok(ex.expected<0);
+ const s={...state,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,range:ex.range};
+ assert.equal(isCorrect(s,ex),true);
+});
+test('ohms no depèn de l’orientació de les puntes',()=>{
+ const ex=generate('basic','OHM_R1',888);
+ const state={...base,range:ex.range,redNode:ex.black,blackNode:ex.red,powered:false,isolated:'R1',r1:ex.r1,r2:ex.r2};
+ assert.equal(measure(state).value,ex.expected);
+ assert.equal(isCorrect(state,ex),true);
+});
+test('selecció aleatòria per totes les magnituds manté els codis antics',()=>{
+ const legacy={inicial:['R2','R1','SOURCE','ZERO'],basic:['REVERSE','REV_SOURCE','RV1','RV2','RANGE'],intermedi:['LOW','DIAG','MID','REF_A','RATIO'],avancat:['MULTI','NEG_RANGE','MIN_SOURCE','COMPARE','POLARITY']};
+ for(const level of Object.keys(legacy)){
+  for(let seed=1;seed<=150;seed++){
+   assert.ok(legacy[level].includes(generate(level,'ANY',seed).effective));
+   const mix=generate(level,'MIX',seed);
+   assert.ok(levelKinds[level].some(([id])=>id===mix.effective));
+   assert.equal(fromCode(mix.code).kind,'MIX');
+  }
+ }
+});
