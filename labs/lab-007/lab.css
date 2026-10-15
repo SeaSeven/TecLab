@@ -228,3 +228,7 @@ button,select,input{font-size:13px;padding:8px 12px}
 .meter-fuse-fault{color:#9f3029!important;background:#ffd4b4;border-radius:6px;box-shadow:0 0 0 3px #b65750}
 .circuit-fault-symbol{filter:drop-shadow(0 0 6px #ff6e38)}
 @media(max-width:410px){.fuse-item{flex-wrap:wrap;gap:6px}.fuse-item svg{width:80px}.fuse-item span{flex:1}.fuse-item button{margin-left:auto}}
+
+
+#circuit{position:relative}
+#circuit.circuit-fuse-fault::after{content:"⚡ FUSIBLE FOS";position:absolute;bottom:12px;right:12px;z-index:4;pointer-events:none;padding:8px 12px;background:#5b2425;border:2px solid #ffad80;border-radius:8px;color:#fff2cb;font-size:13px;font-weight:800;letter-spacing:.04em;box-shadow:0 0 14px #ff4f3380}
