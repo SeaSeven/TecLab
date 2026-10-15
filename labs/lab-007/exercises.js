@@ -5,6 +5,7 @@ export const levelKinds={
   ['R1','Caiguda de tensió a R1'],
   ['SOURCE','Tensió de la font'],
   ['ZERO','Dos punts del mateix potencial'],
+  ['CURRENT','Intensitat del divisor en sèrie'],
   ['ANY','Exercici aleatori del nivell']
  ],
  basic:[
@@ -13,6 +14,7 @@ export const levelKinds={
   ['RV1','Tensió negativa a R1'],
   ['RV2','Tensió negativa a R2'],
   ['RANGE','Selecció del rang mínim adequat'],
+  ['OHM_R1','Mesura de la resistència R1'],
   ['ANY','Exercici aleatori del nivell']
  ],
  intermedi:[
@@ -21,6 +23,8 @@ export const levelKinds={
   ['MID','Potencial del node intermedi'],
   ['REF_A','Tensió del node C respecte a A'],
   ['RATIO','Divisor amb resistències de valors diferents'],
+  ['OHM_R2','Mesura de la resistència R2'],
+  ['I_RANGE','Escala de corrent més apropiada'],
   ['ANY','Exercici aleatori del nivell']
  ],
  avancat:[
@@ -29,6 +33,8 @@ export const levelKinds={
   ['MIN_SOURCE','Tensió de la font amb rang òptim'],
   ['COMPARE','Comparar caigudes del divisor'],
   ['POLARITY','Diagnosi de polaritat sense pistes'],
+  ['I_DIAG','Diagnosi de connexió en sèrie'],
+  ['OHM_RANGE','Resistència amb rang mínim'],
   ['ANY','Exercici aleatori del nivell']
  ]
 };
@@ -58,11 +64,15 @@ export function generate(level='inicial',kind='R2',seed=randomSeed()){
   REF_A:['C','A'],RATIO:['A','B'],NEG_RANGE:['C','B'],
   MIN_SOURCE:['A','C'],COMPARE:['B','C'],POLARITY:['B','A']
  };
- const nodes=effective==='MULTI'?pick([['A','B'],['B','C'],['A','C']]):effective==='DIAG'?pick([['A','B'],['B','C']]):endpoints[effective];
+ const mode=effective.startsWith('OHM_')?'OHM':['CURRENT','I_RANGE','I_DIAG'].includes(effective)?'ADC':'VDC';
+ const resistor=mode==='OHM'?(effective==='OHM_R1'?'R1':'R2'):null;
+ const nodes=effective==='MULTI'?pick([['A','B'],['B','C'],['A','C']]):effective==='DIAG'?pick([['A','B'],['B','C']]):mode==='ADC'?['D','E']:mode==='OHM'?(resistor==='R1'?['A','B']:['B','C']):endpoints[effective];
  if(!nodes)throw Error('Tipus d’exercici desconegut.');
  const [red,black]=nodes,values={A:voltage,B:voltage*r2/(r1+r2),C:0};
- const expected=values[red]-values[black];
- const range=Math.abs(expected)<=.2?'VDC200m':Math.abs(expected)<=2?'VDC2':Math.abs(expected)<=20?'VDC20':'VDC200';
+ const expected=mode==='ADC'?voltage/(r1+r2):mode==='OHM'?(resistor==='R1'?r1:r2):values[red]-values[black];
+ const range=mode==='ADC'?(expected<=.0002?'ADC200u':expected<=.002?'ADC2m':expected<=.02?'ADC20m':expected<=.2?'ADC200m':'ADC10'):
+  mode==='OHM'?(expected<=200?'OHM200':expected<=2000?'OHM2k':expected<=20000?'OHM20k':expected<=200000?'OHM200k':'OHM2M'):
+  Math.abs(expected)<=.2?'VDC200m':Math.abs(expected)<=2?'VDC2':Math.abs(expected)<=20?'VDC20':'VDC200';
  const texts={
   R1:'Mesura la caiguda de tensió a R1.',R2:'Mesura la caiguda de tensió a R2.',
   SOURCE:'Mesura la tensió de la font d’alimentació.',
@@ -81,9 +91,15 @@ export function generate(level='inicial',kind='R2',seed=randomSeed()){
   NEG_RANGE:'Mesura V(C) − V(B), amb signe negatiu i el rang mínim adequat.',
   MIN_SOURCE:'Mesura la tensió de la font amb el rang mínim adequat.',
   COMPARE:'Compara R1 i R2 i mesura la tensió a R2.',
-  POLARITY:'Mesura V(B) − V(A) i interpreta per què la lectura té aquest signe.'
+  POLARITY:'Mesura V(B) − V(A) i interpreta per què la lectura té aquest signe.',
+  CURRENT:'Mesura la intensitat que circula per les dues resistències connectant l’amperímetre en sèrie.',
+  I_RANGE:'Mesura la intensitat del divisor amb el rang d’amperes més petit que admeti la lectura.',
+  I_DIAG:'Desconnecta la font, obre el circuit, col·loca correctament els cables i mesura la intensitat en sèrie.',
+  OHM_R1:'Mesura R1: desconnecta la font, aïlla la resistència i comprova el rang Ω.',
+  OHM_R2:'Mesura R2: desconnecta la font, aïlla la resistència i comprova el rang Ω.',
+  OHM_RANGE:'Mesura R2 aïllada amb el rang Ω més petit que permeti la lectura.'
  };
- const strictRange=['RANGE','NEG_RANGE','MIN_SOURCE'].includes(effective);
- return {level,kind,seed,effective,code,voltage,r1,r2,red,black,expected,range,text:texts[effective],strictRange,requiresOverload:effective==='LOW'};
+ const strictRange=['RANGE','NEG_RANGE','MIN_SOURCE','I_RANGE','OHM_RANGE'].includes(effective);
+ return {level,kind,seed,effective,code,voltage,r1,r2,red,black,expected,range,text:texts[effective],strictRange,requiresOverload:effective==='LOW',mode,resistor};
 
 }
