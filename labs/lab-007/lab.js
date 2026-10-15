@@ -103,6 +103,7 @@ function renderFuses(){
   $(name).textContent=ok?'Correcte':'FOS';
   $(buttonId).hidden=ok;
  }
+ $('circuit').classList.toggle('circuit-fuse-fault',!Object.values(fuseState).every(Boolean));
  $('fuseNote').textContent=Object.values(fuseState).every(Boolean)?
   'Protecció simulada: un curtcircuit directe pot fer fondre el fusible.':
   'Fusible fos: font desconnectada i puntes retirades abans de substituir-lo.';
