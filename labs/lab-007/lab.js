@@ -5,8 +5,8 @@ const $=id=>document.getElementById(id);
 const fmt=(n,d=2)=>Number(n).toLocaleString('ca-ES',{maximumFractionDigits:d});
 let ex=generate('inicial','R2',12345);
 let seenOverload=false;
-let s={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:null,blackNode:null,probe:'red',view:'schema'};
-const points=[['A',75,44],['B',405,44],['C',405,246]];
+let s={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:null,blackNode:null,probe:'red',view:'schema',powered:true,seriesOpen:false,isolated:''};
+const points=[['A',75,44],['B',405,44],['C',405,246],['D',146,44],['E',194,44]];
 function markings(){
  return points.map(([id,x,y])=>['red','black'].filter(p=>s[p+'Node']===id).map((p,i)=>{
  const color=p==='red'?'#ff6666':'#101820',dx=p==='red'?-19:19;
@@ -15,14 +15,17 @@ function markings(){
 }
 function circuit(){
  const labels='<g fill="#eaf2f5" font-size="16"><text x="88" y="139">'+fmt(ex.voltage)+' V</text><text x="203" y="21">R1 '+fmt(ex.r1,0)+' Ω</text><text x="304" y="187">R2 '+fmt(ex.r2,0)+' Ω</text></g>';
- const schema='<path class="wire" d="M75 44H220M264 44H405V164M405 208V246H75V167M75 104V44"/><path d="M75 104v18m-15 0h30m-24 12h18m-9 0v33" stroke="#e4ca84" stroke-width="4" fill="none"/><rect class="resistor" x="220" y="30" width="44" height="28" rx="3"/><rect class="resistor" x="390" y="164" width="30" height="44" rx="3"/>';
+ const schema='<path class="wire" d="M75 44H146M194 44H220M264 44H405V164M405 208V246H75V167M75 104V44"/><path d="M75 104v18m-15 0h30m-24 12h18m-9 0v33" stroke="#e4ca84" stroke-width="4" fill="none"/><rect class="resistor" x="220" y="30" width="44" height="28" rx="3"/><rect class="resistor" x="390" y="164" width="30" height="44" rx="3"/>';
  const holes=Array.from({length:7},(_,i)=>Array.from({length:5},(_,j)=>'<circle cx="'+(207+j*52)+'" cy="'+(34+i*36)+'" r="4" fill="#89979a"/>').join('')).join('');
  const physical='<rect x="180" y="15" width="278" height="266" rx="14" fill="#eee6d0" stroke="#b8ab89" stroke-width="4"/>'+holes+
  '<rect x="12" y="98" width="136" height="100" rx="11" fill="#475963" stroke="#adc4cc" stroke-width="3"/><text x="30" y="122" fill="#eecb86">FONT CC</text><text x="29" y="155" fill="white" font-size="24">'+fmt(ex.voltage)+' V</text>'+
  '<circle cx="53" cy="178" r="7" fill="#fa5c5c"/><circle cx="111" cy="178" r="7" fill="#111"/>'+
- '<path d="M53 178C53 17 170 44 220 44M264 44H405M111 178C111 270 206 246 405 246" fill="none" stroke="#ed5858" stroke-width="5"/><path d="M405 44V164M405 208V246" stroke="#455a60" stroke-width="5" fill="none"/>'+
+ '<path d="M53 178C53 17 118 44 146 44M194 44H220M264 44H405M111 178C111 270 206 246 405 246" fill="none" stroke="#ed5858" stroke-width="5"/><path d="M405 44V164M405 208V246" stroke="#455a60" stroke-width="5" fill="none"/>'+
  '<rect x="220" y="32" width="44" height="24" rx="9" fill="#e8c18c" stroke="#795b40"/><rect x="392" y="164" width="26" height="44" rx="9" fill="#e8c18c" stroke="#795b40"/>';
- return '<svg viewBox="0 0 500 300" role="group" aria-label="Circuit divisor de tensió">'+(s.view==='schema'?schema:physical)+labels+markings()+'</svg>';
+ const bridge=s.seriesOpen?'<path d="M146 44v14m48-14v14" stroke="#f1d27f" stroke-width="3"/><text x="170" y="84" text-anchor="middle" fill="#f6d38a" font-size="14">OBERT</text>':'<path d="M146 44H194" stroke="#88d7b7" stroke-width="5"/>';
+ const isolated=s.isolated?'<rect x="'+(s.isolated==='R1'?'217':'386')+'" y="'+(s.isolated==='R1'?'27':'160')+'" width="'+(s.isolated==='R1'?'51':'38')+'" height="'+(s.isolated==='R1'?'36':'51')+'" rx="4" fill="none" stroke="#ffcf75" stroke-width="4" stroke-dasharray="5 4"/><text x="284" y="226" fill="#ffcf75" font-size="14">'+s.isolated+' aïllada</text>':'';
+ const off=s.powered?'':'<text x="22" y="278" fill="#ffcf75" font-size="15">FONT DESCONNECTADA</text>';
+ return '<svg viewBox="0 0 500 300" role="group" aria-label="Circuit divisor de tensió">'+(s.view==='schema'?schema:physical)+bridge+isolated+off+labels+markings()+'</svg>';
 }
 function dial(){
  const pos=(angle,r)=>polar(angle,r).map(n=>n/4);
@@ -61,6 +64,14 @@ function connectJack(jack){
 }
 
 function feedback(message,type=''){const el=$('feedback');el.textContent=message;el.className='feedback '+(type?'feedback-'+type:'');}
+function updateWiring(){
+ $('powerToggle').textContent='Font: '+(s.powered?'connectada':'desconnectada');
+ $('powerToggle').setAttribute('aria-pressed',String(s.powered));
+ $('seriesToggle').textContent='Circuit: '+(s.seriesOpen?'obert (D–E)':'tancat');
+ $('seriesToggle').setAttribute('aria-pressed',String(s.seriesOpen));
+ $('isolation').value=s.isolated;
+ $('wiringStatus').textContent=(s.powered?'Font connectada':'Font desconnectada')+' · '+(s.seriesOpen?'interrupció D–E oberta':'circuit tancat')+' · '+(s.isolated?s.isolated+' aïllada':'resistències muntades')+'.';
+}
 function reading(){const m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2});$('reading').textContent=m.display;$('unit').textContent=m.unit;if(m.display==='OL')seenOverload=true;return m;}
 function render(){
  $('circuit').innerHTML=circuit();$('rotary').innerHTML=dial();const selected=ranges.find(r=>r.id===s.range);$('dialSelection').textContent='Posició seleccionada: '+(selected.mode==='OFF'?'OFF':selected.group+' · '+selected.label);
@@ -75,15 +86,20 @@ function render(){
  $('redNode').textContent=s.redNode||'sense connectar';$('blackNode').textContent=s.blackNode||'sense connectar';
  ['red','black'].forEach(p=>$(p+'Probe').classList.toggle('selected',p===s.probe));renderJacks();
  ['schema','physical'].forEach(v=>$(v).classList.toggle('active',v===s.view));
- $('circuitInfo').textContent='Font '+fmt(ex.voltage)+' V CC · R1 '+fmt(ex.r1,0)+' Ω · R2 '+fmt(ex.r2,0)+' Ω.';
+ $('circuitInfo').textContent='Font '+fmt(ex.voltage)+' V CC · R1 '+fmt(ex.r1,0)+' Ω · R2 '+fmt(ex.r2,0)+' Ω. Terminal D i E: obertura del circuit per a A⎓.';
+ updateWiring();
  reading();
 }
 function kinds(level,selected){$('kind').innerHTML=levelKinds[level].map(([k,t])=>'<option value="'+k+'">'+t+'</option>').join('');if(selected)$('kind').value=selected;}
 function load(v){
- ex=v;seenOverload=false;s.redNode=null;s.blackNode=null;s.range='VDC20';s.redJack='VΩmA';s.blackJack='COM';
+ ex=v;seenOverload=false;s.redNode=null;s.blackNode=null;s.range=v.mode==='ADC'?'ADC20m':v.mode==='OHM'?'OHM20k':'VDC20';s.redJack='VΩmA';s.blackJack='COM';s.powered=v.mode==='OHM'?false:true;s.seriesOpen=false;s.isolated='';
  $('level').value=v.level;kinds(v.level,v.kind);$('exerciseCode').value=v.code;
  $('task').innerHTML='<p class="task-level">'+({inicial:'Inicial',basic:'Bàsic',intermedi:'Intermedi',avancat:'Avançat'}[v.level])+' · '+levelKinds[v.level].find(([id])=>id===v.kind)[1]+'</p><strong>'+v.text+'</strong><p>Observa el circuit i tria connexions i escala. La resolució numèrica només apareix amb Mostra l’explicació.</p>';
- $('explanation').innerHTML='<h3>Resolució guiada</h3><p>Intensitat del divisor: I = U/(R1+R2) = '+fmt(v.voltage/(v.r1+v.r2)*1000,3)+' mA.</p><p>Potencials: A = '+fmt(v.voltage,3)+' V, B = '+fmt(v.voltage*v.r2/(v.r1+v.r2),3)+' V i C = 0 V. Lectura: V('+v.red+') − V('+v.black+') = '+fmt(v.expected,3)+' V. Rang mínim apropiat: '+ranges.find(r=>r.id===v.range).label+' V⎓.</p>';
+ $('explanation').innerHTML=v.mode==='ADC'?
+ '<h3>Resolució guiada de la intensitat</h3><p>Font desconnectada durant el muntatge; obre D–E i intercala el multímetre en sèrie. Després, amb la font connectada: I = U/(R1 + R2) = '+fmt(v.expected*1000,3)+' mA. Escala mínima possible: '+ranges.find(r=>r.id===v.range).label+' A⎓.</p>':
+ v.mode==='OHM'?
+ '<h3>Resolució guiada de resistència</h3><p>Font desconnectada; aïlla '+v.resistor+'. Col·loca les puntes a '+v.red+' i '+v.black+'. La lectura és '+fmt(v.expected,0)+' Ω, amb el rang '+ranges.find(r=>r.id===v.range).label+' Ω.</p>':
+ '<h3>Resolució guiada</h3><p>I = U/(R1 + R2) = '+fmt(v.voltage/(v.r1+v.r2)*1000,3)+' mA.</p><p>Potencials: A = '+fmt(v.voltage,3)+' V, B = '+fmt(v.voltage*v.r2/(v.r1+v.r2),3)+' V i C = 0 V. Lectura: V('+v.red+') − V('+v.black+') = '+fmt(v.expected,3)+' V. Rang mínim apropiat: '+ranges.find(r=>r.id===v.range).label+' V⎓.</p>';
  $('explanation').hidden=true;$('codeStatus').textContent='Codi reproduïble: '+v.code;render();feedback('Configura el multímetre i connecta les puntes.');
 }
 function illustration(type){
@@ -116,6 +132,19 @@ document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{$('section
 ['schema','physical'].forEach(v=>$(v).onclick=()=>{s.view=v;render();});
 ['red','black'].forEach(v=>$(v+'Probe').onclick=()=>{s.probe=v;render();});
 document.querySelectorAll('[data-jack]').forEach(b=>b.onclick=()=>connectJack(b.dataset.jack));
+$('powerToggle').onclick=()=>{
+ if(!s.powered&&(s.seriesOpen&&! (s.redNode==='D'&&s.blackNode==='E'))){feedback('Abans de connectar la font, tanca el circuit o completa la connexió en sèrie entre D i E.','error');return;}
+ if(!s.powered&&s.isolated){feedback('Torna a muntar la resistència abans de connectar la font.','error');return;}
+ s.powered=!s.powered;render();feedback(reading().status);
+};
+$('seriesToggle').onclick=()=>{
+ if(s.powered){feedback('Desconnecta primer la font abans d’obrir o tancar el circuit.','error');return;}
+ s.seriesOpen=!s.seriesOpen;render();feedback(reading().status);
+};
+$('isolation').onchange=e=>{
+ if(s.powered){$('isolation').value=s.isolated;feedback('Per aïllar una resistència, desconnecta primer la font.','error');return;}
+ s.isolated=e.target.value;render();feedback(reading().status);
+};
 $('reset').onclick=()=>{s.redNode=null;s.blackNode=null;render();feedback('Puntes desconnectades.');};
 $('level').onchange=e=>kinds(e.target.value);
 $('newExercise').onclick=()=>load(generate($('level').value,$('kind').value));
@@ -125,10 +154,12 @@ $('check').onclick=()=>{
  const ok=isCorrect({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2},ex),m=reading();
  const strict=ex.strictRange&&s.range!==ex.range,missingOL=ex.requiresOverload&&!seenOverload;
  const correct=ok&&!strict&&!missingOL;
- feedback(correct?'Correcte: has obtingut '+fmt(m.value,3)+' V amb la configuració adequada.':
-  ok&&strict?'La lectura és correcta, però l’exercici demana el rang mínim vàlid.':
-  ok&&missingOL?'Lectura correcta, però primer has de provocar OL amb una escala massa baixa.':
-  'Revisa la funció V⎓, COM, VΩmA, els nodes i l’escala. '+m.status,correct?'ok':'error');
+ const unit=ex.mode==='ADC'?'mA':ex.mode==='OHM'?'Ω':'V';
+ const amount=ex.mode==='ADC'?m.value*1000:m.value;
+ feedback(correct?'Correcte: '+fmt(amount,3)+' '+unit+'. Connexió, seguretat i escala adequades.':
+  ok&&strict?'La mesura és correcta, però cal seleccionar el rang més petit vàlid.':
+  ok&&missingOL?'La mesura és correcta, però falta provocar primer OL amb una escala insuficient.':
+  'Encara no és correcte. '+m.status,correct?'ok':'error');
 };
 $('helpToggle').onclick=()=>{$('explanation').hidden=!$('explanation').hidden;};
 load(ex);
