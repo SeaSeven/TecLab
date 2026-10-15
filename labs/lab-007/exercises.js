@@ -37,6 +37,7 @@ export const levelKinds={
   ['COMPARE','Comparar caigudes del divisor'],
   ['POLARITY','Diagnosi de polaritat sense pistes'],
   ['I_DIAG','Diagnosi de connexió en sèrie'],
+  ['I_REVERSE','Polaritat invertida de l’amperímetre'],
   ['OHM_RANGE','Resistència amb rang mínim'],
   ['ANY','Exercici aleatori de tensió (compatible)'],
   ['MIX','Exercici aleatori de totes les magnituds']
@@ -69,13 +70,13 @@ export function generate(level='inicial',kind='R2',seed=randomSeed()){
   REF_A:['C','A'],RATIO:['A','B'],NEG_RANGE:['C','B'],
   MIN_SOURCE:['A','C'],COMPARE:['B','C'],POLARITY:['B','A']
  };
- const mode=effective.startsWith('OHM_')?'OHM':['CURRENT','I_RANGE','I_DIAG'].includes(effective)?'ADC':'VDC';
+ const mode=effective.startsWith('OHM_')?'OHM':['CURRENT','I_RANGE','I_DIAG','I_REVERSE'].includes(effective)?'ADC':'VDC';
  const resistor=mode==='OHM'?(effective==='OHM_R1'?'R1':'R2'):null;
- const nodes=effective==='MULTI'?pick([['A','B'],['B','C'],['A','C']]):effective==='DIAG'?pick([['A','B'],['B','C']]):mode==='ADC'?['D','E']:mode==='OHM'?(resistor==='R1'?['A','B']:['B','C']):endpoints[effective];
+ const nodes=effective==='MULTI'?pick([['A','B'],['B','C'],['A','C']]):effective==='DIAG'?pick([['A','B'],['B','C']]):mode==='ADC'?(effective==='I_REVERSE'?['E','D']:['D','E']):mode==='OHM'?(resistor==='R1'?['A','B']:['B','C']):endpoints[effective];
  if(!nodes)throw Error('Tipus d’exercici desconegut.');
  const [red,black]=nodes,values={A:voltage,B:voltage*r2/(r1+r2),C:0};
- const expected=mode==='ADC'?voltage/(r1+r2):mode==='OHM'?(resistor==='R1'?r1:r2):values[red]-values[black];
- const range=mode==='ADC'?(expected<=.0002?'ADC200u':expected<=.002?'ADC2m':expected<=.02?'ADC20m':expected<=.2?'ADC200m':'ADC10'):
+ const expected=mode==='ADC'?(effective==='I_REVERSE'?-1:1)*voltage/(r1+r2):mode==='OHM'?(resistor==='R1'?r1:r2):values[red]-values[black];
+ const range=mode==='ADC'?(Math.abs(expected)<=.0002?'ADC200u':Math.abs(expected)<=.002?'ADC2m':Math.abs(expected)<=.02?'ADC20m':Math.abs(expected)<=.2?'ADC200m':'ADC10'):
   mode==='OHM'?(expected<=200?'OHM200':expected<=2000?'OHM2k':expected<=20000?'OHM20k':expected<=200000?'OHM200k':'OHM2M'):
   Math.abs(expected)<=.2?'VDC200m':Math.abs(expected)<=2?'VDC2':Math.abs(expected)<=20?'VDC20':'VDC200';
  const texts={
@@ -100,6 +101,7 @@ export function generate(level='inicial',kind='R2',seed=randomSeed()){
   CURRENT:'Mesura la intensitat que circula per les dues resistències connectant l’amperímetre en sèrie.',
   I_RANGE:'Mesura la intensitat del divisor amb el rang d’amperes més petit que admeti la lectura.',
   I_DIAG:'Desconnecta la font, obre el circuit, col·loca correctament els cables i mesura la intensitat en sèrie.',
+  I_REVERSE:'Mesura el corrent del divisor amb la vermella a E i la negra a D; interpreta per què la lectura és negativa.',
   OHM_R1:'Mesura R1: desconnecta la font, aïlla la resistència i comprova el rang Ω.',
   OHM_R2:'Mesura R2: desconnecta la font, aïlla la resistència i comprova el rang Ω.',
   OHM_RANGE:'Mesura R2 aïllada amb el rang Ω més petit que permeti la lectura.'
