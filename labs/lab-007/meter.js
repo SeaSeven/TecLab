@@ -28,7 +28,8 @@ export function measure(s){
  // Amb la interrupció D–E oberta o una resistència desmuntada, no hi circula corrent.
  const node={A:s.powered===false?0:voltage,B:(s.seriesOpen||s.isolated||s.powered===false)?0:voltage*r2/(r1+r2),C:0};
  if(mode==='OFF')return {display:'OFF',unit:'',status:'Instrument apagat.'};
- const blackJack=s.blackJack||'COM',redJack=s.redJack||'VΩmA';
+ const blackJack=s.blackJack===undefined?'COM':s.blackJack,redJack=s.redJack===undefined?'VΩmA':s.redJack;
+ if(!blackJack||!redJack)return {display:'----',unit:'',status:'Connecta les dues clavilles als borns del multímetre.'};
  if(blackJack===redJack)return {display:'Err',unit:'',status:'Cada cable ha d’anar a un born diferent.'};
  if(blackJack!=='COM')return {display:'Err',unit:'',status:'Per aquesta pràctica, el cable negre ha d’anar al born COM.'};
  if(['VDC','VAC','OHM'].includes(mode)&&redJack==='10A')
