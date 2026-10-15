@@ -52,19 +52,35 @@ function renderJacks(){
   const j=b.dataset.jack,red=s.redJack===j,black=s.blackJack===j;
   b.classList.toggle('plug-red',red);b.classList.toggle('plug-black',black);
   b.setAttribute('aria-pressed',String((s.probe==='red'?red:black)));
-  b.title=(red?'Punta vermella':black?'Punta negra':'Born lliure')+' · '+j;
+  b.setAttribute('aria-label','Born '+j+(red?', clavilla vermella connectada':black?', clavilla negra connectada':', lliure'));
+  b.title=(red?'Clavilla vermella':black?'Clavilla negra':'Born lliure')+' · '+j;
+  const occupant=b.querySelector('.socket-occupant');
+  if(occupant)occupant.textContent=red?'VERMELLA':black?'NEGRA':'LLIURE';
  });
- $('jackStatus').textContent='Vermella: '+(s.redJack||'sense born')+' · Negra: '+(s.blackJack||'sense born')+'.';
+ for(const p of ['red','black']){
+  const lead=$(p+'Lead'),jack=s[p+'Jack'];
+  lead.classList.toggle('lead-selected',s.probe===p);
+  lead.classList.toggle('lead-unplugged',!jack);
+  lead.setAttribute('aria-pressed',String(s.probe===p));
+  $(p+'LeadLocation').textContent=jack?'→ '+jack:'SENSE BORN';
+ }
+ $('jackStatus').textContent='Vermella: '+(s.redJack||'desendollada')+' · Negra: '+(s.blackJack||'desendollada')+'.';
 }
-function connectJack(jack){
- const other=s.probe==='red'?'black':'red';
+function connectJack(jack,probe=s.probe){
+ const other=probe==='red'?'black':'red';
  if(s[other+'Jack']===jack){
-  feedback('El born '+jack+' ja està ocupat per la punta '+(other==='red'?'vermella':'negra')+'. Tria un altre born.','error');
+  feedback('El born '+jack+' ja està ocupat per la clavilla '+(other==='red'?'vermella':'negra')+'. Mou primer l’altra clavilla.','error');
   return;
  }
- s[s.probe+'Jack']=jack;
- renderJacks();reading();
- feedback('Punta '+(s.probe==='red'?'vermella':'negra')+' connectada al born '+jack+'. '+reading().status);
+ s.probe=probe;
+ s[probe+'Jack']=jack;
+ renderJacks();
+ feedback('Clavilla '+(probe==='red'?'vermella':'negra')+' connectada a '+jack+'. '+reading().status);
+}
+function unplugJack(probe=s.probe){
+ s[probe+'Jack']=null;
+ renderJacks();
+ feedback('Clavilla '+(probe==='red'?'vermella':'negra')+' desendollada. Selecciona un born lliure.');
 }
 
 function feedback(message,type=''){const el=$('feedback');el.textContent=message;el.className='feedback '+(type?'feedback-'+type:'');}
@@ -135,7 +151,24 @@ lessons('tab-ajuda','Ajuda del laboratori','Guia pràctica amb exemples gràfics
 document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{$('sectionKicker').textContent='LAB-007 / '+({laboratori:'PRÀCTICA',fonaments:'FONAMENTS',ajuda:'AJUDA'}[b.dataset.section]);$('sectionTitle').textContent=({laboratori:'Mesures amb multímetre',fonaments:'Fonaments del multímetre',ajuda:'Ajuda del multímetre'}[b.dataset.section]);['laboratori','fonaments','ajuda'].forEach(k=>{$('tab-'+k).hidden=k!==b.dataset.section;document.querySelector('[data-section="'+k+'"]').classList.toggle('active',k===b.dataset.section);document.querySelector('[data-section="'+k+'"]').setAttribute('aria-current',k===b.dataset.section?'page':'false');});});
 ['schema','physical'].forEach(v=>$(v).onclick=()=>{s.view=v;render();});
 ['red','black'].forEach(v=>$(v+'Probe').onclick=()=>{s.probe=v;render();});
-document.querySelectorAll('[data-jack]').forEach(b=>b.onclick=()=>connectJack(b.dataset.jack));
+document.querySelectorAll('[data-jack]').forEach(b=>{
+ b.onclick=()=>connectJack(b.dataset.jack);
+ b.ondragover=e=>{e.preventDefault();b.classList.add('jack-drop-target');};
+ b.ondragleave=()=>b.classList.remove('jack-drop-target');
+ b.ondrop=e=>{
+  e.preventDefault();b.classList.remove('jack-drop-target');
+  const probe=e.dataTransfer?.getData('text/plain');
+  if(probe==='red'||probe==='black')connectJack(b.dataset.jack,probe);
+ };
+});
+for(const probe of ['red','black']){
+ const el=$(probe+'Lead');
+ el.onclick=()=>{s.probe=probe;render();};
+ el.ondragstart=e=>{s.probe=probe;e.dataTransfer?.setData('text/plain',probe);if(e.dataTransfer)e.dataTransfer.effectAllowed='move';renderJacks();};
+ el.ondragend=()=>document.querySelectorAll('[data-jack]').forEach(b=>b.classList.remove('jack-drop-target'));
+}
+$('unplugLead').onclick=()=>unplugJack();
+
 $('powerToggle').onclick=()=>{
  if(!s.powered&&(s.seriesOpen&&! ((s.redNode==='D'&&s.blackNode==='E')||(s.redNode==='E'&&s.blackNode==='D')))){feedback('Abans de connectar la font, tanca el circuit o completa la connexió en sèrie entre D i E.','error');return;}
  if(!s.powered&&s.isolated){feedback('Torna a muntar la resistència abans de connectar la font.','error');return;}
