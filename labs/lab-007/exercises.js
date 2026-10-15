@@ -6,6 +6,7 @@ export const levelKinds={
   ['SOURCE','Tensió de la font'],
   ['ZERO','Dos punts del mateix potencial'],
   ['CURRENT','Intensitat del divisor en sèrie'],
+  ['OHM_R1','Resistència de R1'],
   ['ANY','Exercici aleatori de tensió (compatible)'],
   ['MIX','Exercici aleatori (totes les opcions del nivell)']
  ],
@@ -16,6 +17,7 @@ export const levelKinds={
   ['RV2','Tensió negativa a R2'],
   ['RANGE','Selecció del rang mínim adequat'],
   ['OHM_R1','Mesura de la resistència R1'],
+  ['CURRENT','Intensitat del divisor en sèrie'],
   ['ANY','Exercici aleatori de tensió (compatible)'],
   ['MIX','Exercici aleatori (totes les opcions del nivell)']
  ],
@@ -27,6 +29,8 @@ export const levelKinds={
   ['RATIO','Divisor amb resistències de valors diferents'],
   ['OHM_R2','Mesura de la resistència R2'],
   ['I_RANGE','Escala de corrent més apropiada'],
+  ['CURRENT','Intensitat en sèrie'],
+  ['OHM_R1','Resistència de R1'],
   ['ANY','Exercici aleatori de tensió (compatible)'],
   ['MIX','Exercici aleatori (totes les opcions del nivell)']
  ],
@@ -39,6 +43,8 @@ export const levelKinds={
   ['I_DIAG','Diagnosi de connexió en sèrie'],
   ['I_REVERSE','Polaritat invertida de l’amperímetre'],
   ['OHM_RANGE','Resistència amb rang mínim'],
+  ['OHM_R2','Resistència de R2'],
+  ['I_RANGE','Rang òptim d’intensitat'],
   ['ANY','Exercici aleatori de tensió (compatible)'],
   ['MIX','Exercici aleatori (totes les opcions del nivell)']
  ]
