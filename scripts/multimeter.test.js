@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {measure,isCorrect,ranges} from '../labs/lab-007/meter.js';
+import {measure,isCorrect,ranges,currentFuseFault} from '../labs/lab-007/meter.js';
 import {dialLayout,dialPositions,validateDialLayout} from '../labs/lab-007/dial-layout.js';
 import {generate,fromCode,codeOf,levelKinds} from '../labs/lab-007/exercises.js';
 const base={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:'B',blackNode:'C',voltage:12,r1:1000,r2:2000};
@@ -140,4 +140,34 @@ test('una clavilla desendollada no es reassigna automàticament',()=>{
  assert.equal(measure({...base,blackJack:null}).display,'----');
  assert.equal(measure({...base,redJack:null}).display,'----');
  assert.equal(isCorrect({...base,blackJack:null}),false);
+});
+
+test('curtcircuit amb amperímetre en paral·lel a la font fa fondre el fusible mA',()=>{
+ const cfg={...base,range:'ADC20m',redNode:'A',blackNode:'C',powered:true,seriesOpen:false};
+ assert.equal(currentFuseFault(cfg),'mA');
+ assert.equal(measure(cfg).display,'FUS');
+ assert.equal(measure({...cfg,fuses:{mA:false,'10A':true}}).display,'FUS');
+ assert.equal(measure({...cfg,powered:false}).faultFuse,undefined);
+});
+test('el born 10 A té un fusible independent i un OL no el fon',()=>{
+ const short={...base,range:'ADC10',redJack:'10A',redNode:'A',blackNode:'C',powered:true,seriesOpen:false};
+ assert.equal(currentFuseFault(short),'10A');
+ assert.equal(measure(short).faultFuse,'10A');
+ const correct={...short,seriesOpen:true,redNode:'D',blackNode:'E'};
+ assert.equal(measure({...correct,fuses:{mA:false,'10A':true}}).value,0.004);
+ assert.equal(measure({...correct,fuses:{mA:true,'10A':false}}).display,'FUS');
+ const ol={...correct,range:'ADC2m',redJack:'VΩmA'};
+ assert.equal(measure(ol).display,'OL');
+ assert.equal(currentFuseFault(ol),null);
+});
+test('les connexions incompletes o la font apagada no fonen cap fusible',()=>{
+ for(const cfg of [
+  {...base,range:'ADC20m',redNode:null,powered:true},
+  {...base,range:'ADC20m',redNode:'A',blackNode:'C',powered:false},
+  {...base,range:'ADC20m',redNode:'D',blackNode:'E',seriesOpen:true,powered:true}
+ ])assert.equal(currentFuseFault(cfg),null);
+});
+test('l’enunciat inicial de corrent no revela on connectar el multímetre',()=>{
+ const e=generate('inicial','CURRENT',9);
+ assert.ok(!/en sèrie|connectant|D i E/i.test(e.text));
 });
