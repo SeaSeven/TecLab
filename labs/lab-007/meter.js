@@ -25,7 +25,8 @@ export const nodeVoltages=Object.freeze({A:12,B:8,C:0});
 export function measure(s){
  const range=ranges.find(r=>r.id===s.range)||ranges[3];
  const {mode,limit}=range,voltage=s.voltage??12,r1=s.r1??1000,r2=s.r2??2000;
- const node={A:voltage,B:voltage*r2/(r1+r2),C:0};
+ // Amb la interrupció D–E oberta o una resistència desmuntada, no hi circula corrent.
+ const node={A:s.powered===false?0:voltage,B:(s.seriesOpen||s.isolated||s.powered===false)?0:voltage*r2/(r1+r2),C:0};
  if(mode==='OFF')return {display:'OFF',unit:'',status:'Instrument apagat.'};
  const blackJack=s.blackJack||'COM',redJack=s.redJack||'VΩmA';
  if(blackJack===redJack)return {display:'Err',unit:'',status:'Cada cable ha d’anar a un born diferent.'};
