@@ -161,3 +161,17 @@ button,select,input{font-size:13px;padding:8px 12px}
 .lab-007-heading h1{font-size:clamp(38px,5.6vw,70px);letter-spacing:-2.3px;line-height:1.08;margin:0 0 23px;color:var(--ink,#eaf2f5)}
 .lab-007-heading + .lab-tabs{margin:0 0 23px!important}
 @media(max-width:700px){.lab-007-heading h1{font-size:clamp(32px,8vw,48px);letter-spacing:-1.5px}}
+
+
+/* LAB-007 v0.7: maniobres del circuit per a amperímetre i ohmímetre. */
+.wiring-panel{margin:14px 0 20px;border-color:#6d8190;background:#1a2d37}
+.wiring-panel h2{margin-bottom:8px}
+.wiring-panel p{color:#d8e6ec;margin:0 0 14px}
+.wiring-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+.wiring-controls button{min-height:44px;border:1px solid #859bac;background:#263e4b}
+.wiring-controls button[aria-pressed=true]{border-color:#f5c87e;background:#4c3b2b;color:#ffe7b6}
+.wiring-controls label{display:grid;gap:6px;flex:1 1 200px;font-size:13px;font-weight:650;color:#f4e5cb}
+.wiring-controls select{width:100%;min-height:44px;padding:8px;border-radius:8px;color:#fff;background:#102834;border:1px solid #869ca7}
+.wiring-panel .wiring-status{font-size:12px;line-height:1.6;margin:10px 0 0;color:#bce3e8}
+@media(max-width:620px){.wiring-controls{display:grid;grid-template-columns:1fr 1fr}.wiring-controls label{grid-column:1/-1}.wiring-controls button{white-space:normal}}
+@media(max-width:390px){.wiring-controls{grid-template-columns:1fr}.wiring-controls label{grid-column:auto}}
