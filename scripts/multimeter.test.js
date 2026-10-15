@@ -124,3 +124,20 @@ test('selecció aleatòria per totes les magnituds manté els codis antics',()=>
   }
  }
 });
+
+
+test('V, A i Ω són disponibles als quatre nivells',()=>{
+ for(const [level,items] of Object.entries(levelKinds)){
+  const modes=new Set();
+  for(const [kind] of items){
+   if(kind==='ANY'||kind==='MIX')continue;
+   modes.add(generate(level,kind,271).mode);
+  }
+  assert.deepEqual([...modes].sort(),['ADC','OHM','VDC']);
+ }
+});
+test('una clavilla desendollada no es reassigna automàticament',()=>{
+ assert.equal(measure({...base,blackJack:null}).display,'----');
+ assert.equal(measure({...base,redJack:null}).display,'----');
+ assert.equal(isCorrect({...base,blackJack:null}),false);
+});
