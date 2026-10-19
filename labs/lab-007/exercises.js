@@ -94,7 +94,7 @@ export function generate(level='inicial',kind='R2',seed=randomSeed()){
   RV1:'Mesura el potencial de B respecte d’A.',
   RV2:'Mesura la tensió de C respecte de B i interpreta el signe.',
   RANGE:'Determina la tensió a R2 amb la màxima resolució possible.',
-  LOW:'Determina la tensió a R2 després d'analitzar una lectura fora d'escala.',
+  LOW:'Determina la tensió a R2 després d’una lectura fora d’escala.',
   DIAG:'Determina la caiguda de tensió a '+(red==='A'?'R1':'R2')+' i avalua si la lectura és fiable.',
   MID:'Determina el potencial de B respecte de C, sense consultar la resolució.',
   REF_A:'Mesura el potencial de C respecte d’A i interpreta el signe.',
