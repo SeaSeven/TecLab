@@ -171,3 +171,16 @@ test('l’enunciat inicial de corrent no revela on connectar el multímetre',()=
  const e=generate('inicial','CURRENT',9);
  assert.ok(!/en sèrie|connectant|D i E/i.test(e.text));
 });
+
+test('R1 es pot mesurar en Ω amb la font apagada i aïllada',()=>{
+ const ex=generate('inicial','OHM_R1',52);
+ const s={range:'OHM20k',redJack:'VΩmA',blackJack:'COM',redNode:'A',blackNode:'B',voltage:ex.voltage,r1:ex.r1,r2:ex.r2,powered:false,seriesOpen:false,isolated:'R1'};
+ const m=measure(s);
+ assert.equal(m.value,ex.r1);
+ assert.equal(m.unit,'kΩ');
+ assert.ok(Number.parseFloat(m.display)>0);
+ assert.equal(isCorrect(s,ex),true);
+ assert.equal(measure({...s,powered:true}).display,'RISC');
+ assert.equal(measure({...s,isolated:''}).display,'----');
+ assert.equal(measure({...s,redNode:null}).display,'----');
+});
