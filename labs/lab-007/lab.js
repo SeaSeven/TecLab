@@ -16,7 +16,8 @@ function markings(){
  }).join('')+'<g class="node" data-node="'+id+'" role="button" tabindex="0" aria-label="Connectar al node '+id+'"><circle cx="'+x+'" cy="'+y+'" r="11"/><text x="'+(x+16)+'" y="'+(y+5)+'">'+id+'</text></g>').join('');
 }
 function circuit(){
- const labels='<g fill="#eaf2f5" font-size="16"><text x="88" y="139">'+fmt(ex.voltage)+' V</text><text x="203" y="21">R1 '+fmt(ex.r1,0)+' Ω</text><text x="304" y="187">R2 '+fmt(ex.r2,0)+' Ω</text></g>';
+ const ohmsTask=ex.mode==='OHM';
+ const labels='<g fill="#eaf2f5" font-size="16"><text x="88" y="139">'+fmt(ex.voltage)+' V</text><text x="203" y="21">R1 '+(ohmsTask?'?':fmt(ex.r1,0)+' Ω')+'</text><text x="304" y="187">R2 '+(ohmsTask?'?':fmt(ex.r2,0)+' Ω')+'</text></g>';
  const schema='<path class="wire" d="M75 44H146M194 44H220M264 44H405V164M405 208V246H75V167M75 104V44"/><path d="M75 104v18m-15 0h30m-24 12h18m-9 0v33" stroke="#e4ca84" stroke-width="4" fill="none"/><rect class="resistor" x="220" y="30" width="44" height="28" rx="3"/><rect class="resistor" x="390" y="164" width="30" height="44" rx="3"/>';
  const holes=Array.from({length:7},(_,i)=>Array.from({length:5},(_,j)=>'<circle cx="'+(207+j*52)+'" cy="'+(34+i*36)+'" r="4" fill="#89979a"/>').join('')).join('');
  const physical='<rect x="180" y="15" width="278" height="266" rx="14" fill="#eee6d0" stroke="#b8ab89" stroke-width="4"/>'+holes+
@@ -120,6 +121,8 @@ function reading(){
  }
  $('reading').textContent=m.display;
  $('unit').textContent=m.unit;
+ $('readingDetail').textContent=m.status;
+ $('readingDetail').classList.toggle('reading-alert',m.display==='FUS'||m.display==='RISC'||m.display==='Err');
  $('reading').classList.toggle('meter-fuse-fault',m.display==='FUS');
  if(m.display==='OL')seenOverload=true;
  renderFuses();
@@ -138,7 +141,7 @@ function render(){
  $('redNode').textContent=s.redNode||'sense connectar';$('blackNode').textContent=s.blackNode||'sense connectar';
  ['red','black'].forEach(p=>$(p+'Probe').classList.toggle('selected',p===s.probe));renderJacks();
  ['schema','physical'].forEach(v=>$(v).classList.toggle('active',v===s.view));
- $('circuitInfo').textContent='Font '+fmt(ex.voltage)+' V CC · R1 '+fmt(ex.r1,0)+' Ω · R2 '+fmt(ex.r2,0)+' Ω. Terminal D i E: obertura del circuit per a A⎓.';
+ $('circuitInfo').textContent=ex.mode==='OHM'?'Font de '+fmt(ex.voltage)+' V CC · R1 i R2 de valor desconegut · Determina el valor demanat amb el multímetre.':'Font '+fmt(ex.voltage)+' V CC · R1 '+fmt(ex.r1,0)+' Ω · R2 '+fmt(ex.r2,0)+' Ω. Terminal D i E: obertura del circuit per a A⎓.';
  updateWiring();
  reading();
 }
