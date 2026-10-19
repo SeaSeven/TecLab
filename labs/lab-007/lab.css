@@ -232,3 +232,7 @@ button,select,input{font-size:13px;padding:8px 12px}
 
 #circuit{position:relative}
 #circuit.circuit-fuse-fault::after{content:"⚡ FUSIBLE FOS";position:absolute;bottom:12px;right:12px;z-index:4;pointer-events:none;padding:8px 12px;background:#5b2425;border:2px solid #ffad80;border-radius:8px;color:#fff2cb;font-size:13px;font-weight:800;letter-spacing:.04em;box-shadow:0 0 14px #ff4f3380}
+
+/* Diagnosi contextual al costat de la lectura del multímetre. */
+.reading-detail{margin:9px 0 16px;min-height:42px;padding:10px 12px;border-radius:9px;border:1px solid #63899a;background:#18313d;color:#e5f3f8;font-size:13px;line-height:1.5;font-weight:550}
+.reading-detail.reading-alert{background:#4c2a2a;border-color:#ef9b8a;color:#fff0e8}
