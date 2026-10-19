@@ -251,9 +251,7 @@ $('check').onclick=()=>{
  const ok=isCorrect({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2},ex),m=reading();
  const strict=ex.strictRange&&s.range!==ex.range,missingOL=ex.requiresOverload&&!seenOverload;
  const correct=ok&&!strict&&!missingOL;
- const unit=ex.mode==='ADC'?'mA':ex.mode==='OHM'?'Ω':'V';
- const amount=ex.mode==='ADC'?m.value*1000:m.value;
- feedback(correct?'Correcte: '+fmt(amount,3)+' '+unit+'. Connexió, seguretat i escala adequades.':
+ feedback(correct?'Correcte: '+m.display+' '+m.unit+'. Connexió, seguretat i escala adequades.':
   ok&&strict?'La mesura és correcta, però cal seleccionar el rang més petit vàlid.':
   ok&&missingOL?'La mesura és correcta, però falta provocar primer OL amb una escala insuficient.':
   'Encara no és correcte. '+m.status,correct?'ok':'error');
