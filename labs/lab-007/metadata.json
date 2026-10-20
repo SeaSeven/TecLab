@@ -9,7 +9,7 @@
     "Enginyeria"
   ],
   "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "status": "in-review",
   "access": "public",
   "entry": "labs/lab-007/",
