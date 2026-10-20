@@ -75,8 +75,8 @@ function renderJacks(){
   const j=b.dataset.jack,red=s.redJack===j,black=s.blackJack===j;
   b.classList.toggle('plug-red',red);b.classList.toggle('plug-black',black);
   b.setAttribute('aria-pressed',String((s.probe==='red'?red:black)));
-  b.setAttribute('aria-label','Born '+j+(red?', clavilla vermella connectada':black?', clavilla negre connectada':', lliure'));
-  b.title=(red?'Clavilla vermella':black?'Clavilla negre':'Born lliure')+' · '+j;
+  b.setAttribute('aria-label','Born '+j+(red?', connector vermell connectat':black?', connector negre connectat':', lliure'));
+  b.title=(red?'Connector vermell':black?'Connector negre':'Born lliure')+' · '+j;
   const occupant=b.querySelector('.socket-occupant');
   if(occupant)occupant.textContent=red?'VERMELLA':black?'NEGRE':'LLIURE';
  });
@@ -87,23 +87,23 @@ function renderJacks(){
   lead.setAttribute('aria-pressed',String(s.probe===p));
   $(p+'LeadLocation').textContent=jack?'→ '+jack:'SENSE BORN';
  }
- $('jackStatus').textContent='Vermella: '+(s.redJack||'desendollada')+' · Negre: '+(s.blackJack||'desendollada')+'.';
+ $('jackStatus').textContent='Vermell: '+(s.redJack||'desendollada')+' · Negre: '+(s.blackJack||'desendollada')+'.';
 }
 function connectJack(jack,probe=s.probe){
  const other=probe==='red'?'black':'red';
  if(s[other+'Jack']===jack){
-  feedback('El born '+jack+' ja està ocupat per la clavilla '+(other==='red'?'vermella':'negre')+'. Mou primer l’altra clavilla.','error');
+  feedback('El born '+jack+' ja està ocupat per el connector '+(other==='red'?'vermell':'negre')+'. Mou primer l’altra clavilla.','error');
   return;
  }
  s.probe=probe;
  s[probe+'Jack']=jack;
  renderJacks();
- feedback('Clavilla '+(probe==='red'?'vermella':'negre')+' connectada a '+jack+'. '+reading().status);
+ feedback('Connector '+(probe==='red'?'vermell':'negre')+' connectada a '+jack+'. '+reading().status);
 }
 function unplugJack(probe=s.probe){
  s[probe+'Jack']=null;
  renderJacks();
- feedback('Clavilla '+(probe==='red'?'vermella':'negre')+' desendollada. Selecciona un born lliure.');
+ feedback('Connector '+(probe==='red'?'vermell':'negre')+' desendollada. Selecciona un born lliure.');
 }
 
 function feedback(message,type=''){const el=$('feedback');el.textContent=message;el.className='feedback '+(type?'feedback-'+type:'');}
@@ -139,7 +139,7 @@ function reading(){
  }
  $('reading').textContent=m.display;
  $('unit').textContent=m.unit;
- $('readingDetail').textContent=m.status+(ex.mode==='OHM'?' · Contactes actuals: vermella '+(s.redNode||'sense connectar')+'; negre '+(s.blackNode||'sense connectar')+'.':'');
+ $('readingDetail').textContent=m.status+(ex.mode==='OHM'?' · Contactes actuals: vermell '+(s.redNode||'sense connectar')+'; negre '+(s.blackNode||'sense connectar')+'.':'');
  $('readingDetail').classList.toggle('reading-alert',m.display==='FUS'||m.display==='RISC'||m.display==='Err');
  $('reading').classList.toggle('meter-fuse-fault',m.display==='FUS');
  if(m.display==='OL')seenOverload=true;
@@ -190,15 +190,15 @@ function load(v){
 function illustration(type){
  const base=(label,svg)=>'<figure class="edu-figure"><svg viewBox="0 0 480 226" role="img" aria-label="'+label+'"><rect width="480" height="226" rx="12" fill="#10232d"/>'+svg+'</svg><figcaption>'+label+'</figcaption></figure>';
  if(type==='range')return base('Exemple de 8 V: 2 V dona OL; 20 V dona 8,00 V','<rect x="20" y="30" width="206" height="150" rx="12" fill="#43575d"/><rect x="253" y="30" width="206" height="150" rx="12" fill="#43575d"/><rect x="34" y="45" width="178" height="88" rx="6" fill="#b0d7bf"/><rect x="267" y="45" width="178" height="88" rx="6" fill="#b0d7bf"/><text x="123" y="104" text-anchor="middle" fill="#142a24" font-size="45" font-family="monospace">OL</text><text x="356" y="104" text-anchor="middle" fill="#142a24" font-size="40" font-family="monospace">8.00</text><text x="123" y="164" text-anchor="middle" fill="#fff" font-size="22">2 V ⎓</text><text x="356" y="164" text-anchor="middle" fill="#fff" font-size="22">20 V ⎓</text>');
- if(type==='jacks')return base('Per a tensió: vermella a VΩmA, negre a COM','<circle cx="85" cy="100" r="32" fill="#08141a" stroke="#cf6d63" stroke-width="11"/><circle cx="240" cy="100" r="32" fill="#08141a" stroke="#afbecb" stroke-width="11"/><circle cx="395" cy="100" r="32" fill="#08141a" stroke="#cf6d63" stroke-width="11"/><g fill="#fff" font-size="23" text-anchor="middle" font-weight="bold"><text x="85" y="168">10A</text><text x="240" y="168">COM</text><text x="395" y="168">VΩmA</text></g><text x="240" y="203" fill="#f6d6a4" font-size="17" text-anchor="middle">10A només per a corrents elevats</text>');
+ if(type==='jacks')return base('Per a tensió: vermell a VΩmA, negre a COM','<circle cx="85" cy="100" r="32" fill="#08141a" stroke="#cf6d63" stroke-width="11"/><circle cx="240" cy="100" r="32" fill="#08141a" stroke="#afbecb" stroke-width="11"/><circle cx="395" cy="100" r="32" fill="#08141a" stroke="#cf6d63" stroke-width="11"/><g fill="#fff" font-size="23" text-anchor="middle" font-weight="bold"><text x="85" y="168">10A</text><text x="240" y="168">COM</text><text x="395" y="168">VΩmA</text></g><text x="240" y="203" fill="#f6d6a4" font-size="17" text-anchor="middle">10A només per a corrents elevats</text>');
  if(type==='series')return base('Amperímetre en sèrie: cal obrir el circuit','<path d="M58 95V35H197M263 35H425V188H58V95" fill="none" stroke="#d5e2e8" stroke-width="5"/><circle cx="230" cy="35" r="32" fill="#354c58" stroke="#f4c66b" stroke-width="4"/><text x="230" y="45" text-anchor="middle" fill="white" font-size="26">A</text><rect x="410" y="112" width="28" height="47" fill="#e2b774"/><text x="350" y="108" fill="#fff" font-size="22">R</text><text x="40" y="96" fill="#fff" font-size="18">+</text>');
  return base('Voltímetre en paral·lel als extrems de R2','<path d="M58 105V30H250V80M250 126V188H58V105M250 80H392V128H250" fill="none" stroke="#d5e2e8" stroke-width="5"/><rect x="234" y="80" width="32" height="46" fill="#e2b774"/><circle cx="392" cy="104" r="32" fill="#344b58" stroke="#f5c573" stroke-width="4"/><text x="392" y="114" text-anchor="middle" fill="white" font-size="30">V</text><text x="274" y="77" fill="#fff" font-size="22">R2</text><text x="286" y="169" fill="#f5d18f" font-size="18">En paral·lel</text>');
 }
 const theory=[
- ['1. Tensió contínua i polaritat','V⎓ mesura V(punta vermella) − V(punta negre). Si B està a 8 V i C a 0 V, la vermella a B i la negre a C indiquen +8 V; amb les puntes intercanviades apareix −8 V. La connexió del voltímetre és en paral·lel, sense obrir el circuit.','parallel'],
+ ['1. Tensió contínua i polaritat','V⎓ mesura V(cable vermell) − V(cable negre). Si B està a 8 V i C a 0 V, el vermell a B i el negre a C indiquen +8 V; amb les puntes intercanviades apareix −8 V. La connexió del voltímetre és en paral·lel, sense obrir el circuit.','parallel'],
  ['2. Borns del multímetre','Per mesurar tensió, el cable negre va a COM i el vermell a VΩmA. El born 10A és específic de l’escala 10 A. No connectis aquest born en paral·lel amb la font: pots provocar un curtcircuit. A les escales de corrent petites s’utilitza VΩmA, però la mesura real necessita obrir el circuit.','jacks'],
  ['3. Escales i sobrecàrrega','Si esperes 8 V, el rang V⎓ de 2 V és insuficient i apareix OL. El rang de 20 V permet llegir 8,00 V. Si no coneixes la tensió, comença amb un rang elevat i redueix-lo progressivament. Cada xifra del dial correspon al fons d’escala del seu sector.','range'],
- ['4. Intensitat en sèrie','Desconnecta la font amb el botó Font. Prem Circuit: tancat per obrir la interrupció D–E. Selecciona la punta vermella i connecta-la a D; després la negre a E. Per a corrents petits, VΩmA i COM; per al rang 10 A, 10A i COM. Selecciona A⎓ i torna a connectar la font. Amb 12 V, R1 = 1 kΩ i R2 = 2 kΩ obtindràs I = 12/3000 = 4 mA. Mai connectis un amperímetre en paral·lel amb una font.','series'],
+ ['4. Intensitat en sèrie','Desconnecta la font amb el botó Font. Prem Circuit: tancat per obrir la interrupció D–E. Selecciona el cable vermell i connecta’l a D; després el negre a E. Per a corrents petits, VΩmA i COM; per al rang 10 A, 10A i COM. Selecciona A⎓ i torna a connectar la font. Amb 12 V, R1 = 1 kΩ i R2 = 2 kΩ obtindràs I = 12/3000 = 4 mA. Mai connectis un amperímetre en paral·lel amb una font.','series'],
  ['5. Resistència amb el circuit desalimentat','Desconnecta la font. A Resistència aïllada, selecciona R1 o R2: el simulador la separa elèctricament de la resta. Selecciona Ω, connecta negre a COM i vermell a VΩmA i col·loca les puntes als dos extrems de la resistència escollida (R1: A–B; R2: B–C). Una resistència de 2 kΩ supera el rang 200 Ω; en 20 kΩ apareix una lectura. Aquest model és ideal i només representa la resistència aïllada.','range'],
  ['6. Exemple de divisor de tensió','Amb U = 12 V, R1 = 1 kΩ i R2 = 2 kΩ: I = 12/(1000 + 2000) = 4 mA. La caiguda a R1 és 4 V i a R2 és 8 V. Així, A = 12 V, B = 8 V i C = 0 V. Les lectures entre nodes segueixen les diferències de potencial, no el nom dels components.','parallel']
 ];
@@ -206,7 +206,7 @@ const help=[
  ['1. Crear un exercici','Tria Inicial, Bàsic, Intermedi o Avançat. Selecciona un tipus o Exercici aleatori i prem Nou exercici. Canviar només el desplegable no genera una pràctica. Els nous valors de font i resistències es mostren al circuit.','range'],
  ['2. Interpretar l’enunciat','L’enunciat és al requadre Pràctica actual, damunt del circuit. Indica què has de mesurar, però no revela els nodes exactes ni els resultats. Resol primer la pràctica i obre Mostra l’explicació només quan necessitis la resolució numèrica.','parallel'],
  ['3. Identificar grup i escala','Els sectors del dial són V⎓: 200 mV, 2, 20, 200 i 600 V; V~: 200 i 600 V; A⎓: 200 µA, 2, 20, 200 mA i 10 A; Ω: 200 Ω, 2 kΩ, 20 kΩ, 200 kΩ i 2 MΩ. La indicació sota el dial mostra el grup i l’escala seleccionats.','range'],
- ['4. Connectar els cables i controlar la font','Selecciona primer la punta Vermella o Negre; a continuació prem el born adequat. Per a V⎓ i Ω: negre a COM, vermell a VΩmA. Per a A⎓: VΩmA en els rangs µA/mA i 10A només al rang 10 A. La font es pot connectar i desconnectar amb el botó superior; mai canviïs el muntatge mentre està alimentat.','jacks'],
+ ['4. Connectar els cables i controlar la font','Selecciona primer el cable vermell o negre; a continuació prem el born adequat. Per a V⎓ i Ω: negre a COM, vermell a VΩmA. Per a A⎓: VΩmA en els rangs µA/mA i 10A només al rang 10 A. La font es pot connectar i desconnectar amb el botó superior; mai canviïs el muntatge mentre està alimentat.','jacks'],
  ['5. Intensitat i resistència pas a pas','Intensitat: desconnecta la font, obre Circuit: tancat, connecta vermell a D i negre a E, selecciona A⎓ i torna a connectar la font. Resistència: desconnecta la font, selecciona R1 o R2 al control Resistència aïllada, tria Ω i mesura entre A–B o B–C respectivament. OL indica rang insuficient o camí de mesura obert.','series'],
  ['6. Comprovar i recuperar','Prem Comprova la mesura després d’ajustar el mode, els borns i el circuit. El missatge serà verd o vermell. Amb Mostra l’explicació es desenvolupen els càlculs en V, mA o Ω segons l’exercici. El codi TL-MM1 permet reproduir-ne els components i l’objectiu.','range'],
  ['7. Fusibles i connexions perilloses','El simulador representa dos fusibles independents: mA i 10 A. Una connexió directa entre els borns de la font a través d’un terminal d’intensitat pot simular un curtcircuit i mostrar FUS. Això és diferent d’OL, que només indica rang insuficient. Per substituir un fusible simulat, desconnecta la font i retira les puntes del circuit; després prem Substitueix. És una simplificació educativa: el resultat real depèn de l’instrument i de la protecció instal·lada.','jacks']
