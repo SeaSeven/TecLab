@@ -41,3 +41,20 @@
 .gen-example-ok{background:#123c2b;border:2px solid #49c88c;color:#e1ffed}
 .gen-example-error{background:#482229;border:2px solid #f1787d;color:#ffe9e9}
 @media(max-width:520px){.gen-setting-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gen-hardware-controls{grid-template-columns:minmax(0,1fr) 82px;gap:7px}.gen-keypad{gap:4px}.gen-keypad button{padding:9px 2px}.gen-knob{width:71px;height:71px}.gen-rotary button{width:60px}.gen-mini-front{flex-wrap:wrap}.gen-mini-lcd{flex-basis:100%}.gen-mini-knob{width:50px;height:50px;line-height:36px}}
+
+/* Versió 1.0: visualització de mesures, límits, pistes i selector de xifres. */
+.gen-measurements{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px}
+.gen-measurements span{border:1px solid #466775;background:#152c38;color:#cde6d6;border-radius:6px;padding:8px;font:12px ui-monospace,monospace}
+.gen-load{display:flex;align-items:center;gap:12px;margin:12px 0}
+.gen-load label{font-weight:700;color:#f0debd}
+.gen-load select{background:#182e3b;color:#eef4f8;border:1px solid #778c98;padding:8px;border-radius:6px}
+.gen-limit{margin:10px 0;color:#a2dec4;font-size:.88rem;border-left:4px solid #409b75;padding:8px 12px;background:#133728}
+.gen-limit[data-error=true]{color:#ffcece;border-left-color:#f4757c;background:#512a33;font-weight:700}
+.gen-digit-controls{display:flex;align-items:center;gap:2px;justify-content:center}
+.gen-digit-controls button{width:29px;height:30px;min-width:0}
+.gen-digit-controls span{font-size:10px;color:#e0e8ed;min-width:50px;text-align:center}
+.gen-training{display:inline-flex;align-items:center;gap:7px;padding:6px;color:#dbe6f0}
+.gen-training input{accent-color:#dbaf69}
+#feedbackDetails{padding:12px 18px;border-top:1px solid #718291;margin-top:10px}
+#feedbackDetails li{padding:3px}
+@media(max-width:560px){.gen-measurements{grid-template-columns:repeat(2,minmax(0,1fr))}.gen-load{flex-wrap:wrap}}
