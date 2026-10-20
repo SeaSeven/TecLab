@@ -68,3 +68,7 @@ La proposta pendent d'aprovar és utilitzar MIT per al codi i CC BY-SA 4.0 per a
 - Ajuda amb exemples de PWM, acoblament i diagnosi. La resta de codis OSC1-OSC4 mantenen el mateix generador.
 
 **Limitació del model:** el filtratge AC es representa mitjançant eliminació exacta de la mitjana; no s'hi simulen transitoris ni freqüència de tall d'un condensador d'acoblament. Les anomalies són senyals de prova didàctics.
+
+## LAB-008: Generador de funcions v1.0.0
+
+Generació de senyals amb teclat numèric, selecció de dígits, selector rotatiu, sinusoide, ona quadrada, triangular i PWM. Exercicis inicials, intermedis i avançats amb configuració directa, conversions de pic i RMS AC, període, extrems de tensió i càrrega. Codis TL-GEN1 conservats i TL-GEN2 per a modes nous. Pantalla simplificada amb lectures ideals i comprovació amb pistes. Límits docents: High-Z ±10 V, 50 Ω ±5 V; no es modela impedància de sortida real ni distorsió. Les lectures del simulador corresponen al model ideal.
