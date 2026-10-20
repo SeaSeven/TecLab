@@ -160,7 +160,7 @@
   {
     "id": "LAB-007",
     "title": "Mesures amb multímetre",
-    "description": "Mesures amb multímetre: selector circular alineat per magnituds, tres borns, reptes diferenciats per nivell i ajuda il·lustrada.",
+    "description": "Multímetre virtual amb mesures V⎓, A⎓ i Ω, exercicis per magnitud, clavilles arrossegables i simulació educativa d'avaria i fusibles mA/10A.",
     "courses": [
       "EE10",
       "EE30",
@@ -168,7 +168,7 @@
       "Enginyeria"
     ],
     "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
-    "version": "0.6.0",
+    "version": "0.7.4",
     "status": "published",
     "access": "public",
     "entry": "labs/lab-007/",
@@ -192,7 +192,18 @@
       "three-jacks",
       "grouped-rotary-ranges",
       "aligned-dial-sectors",
-      "expanded-exercise-levels"
+      "expanded-exercise-levels",
+      "series-current-measurement",
+      "isolated-resistance-measurement",
+      "power-switch",
+      "open-circuit-switch",
+      "all-magnitudes-random-exercises",
+      "drag-and-drop-test-leads",
+      "magnitude-exercise-filter",
+      "unplug-probes",
+      "fuse-fault-protection",
+      "fuse-replacement-workflow",
+      "visible-short-circuit-warning"
     ]
   }
 ]
