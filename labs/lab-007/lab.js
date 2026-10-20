@@ -139,7 +139,7 @@ function reading(){
  }
  $('reading').textContent=m.display;
  $('unit').textContent=m.unit;
- $('readingDetail').textContent=m.status;
+ $('readingDetail').textContent=m.status+(ex.mode==='OHM'?' · Contactes actuals: vermella '+(s.redNode||'sense connectar')+'; negra '+(s.blackNode||'sense connectar')+'.':'');
  $('readingDetail').classList.toggle('reading-alert',m.display==='FUS'||m.display==='RISC'||m.display==='Err');
  $('reading').classList.toggle('meter-fuse-fault',m.display==='FUS');
  if(m.display==='OL')seenOverload=true;
