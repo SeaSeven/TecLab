@@ -1,4 +1,4 @@
-import { renderLab005, circuitCardFigure } from '../../labs/lab-005/lab.js';
+import { renderLab005, circuitCardFigure } from '../../labs/lab-005/lab.js?v=1.1.0';
 import { renderLab001, resistorFigure } from '../../labs/lab-001/lab.js';
 import {renderLab006,scopeFigure} from '../../labs/lab-006/lab.js';
 const app=document.querySelector('#app');
