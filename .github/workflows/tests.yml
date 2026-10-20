@@ -16,3 +16,17 @@ jobs:
           npm run build
           git diff --exit-code -- data/laboratories.json
           npm test
+      - name: Previsualització real amb Chromium
+        run: |
+          python3 -m http.server 8765 > /tmp/teclab-server.log 2>&1 &
+          sleep 2
+          BROWSER=$(command -v google-chrome || command -v chromium || true)
+          test -n "$BROWSER"
+          "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --virtual-time-budget=3000 --dump-dom http://127.0.0.1:8765/labs/lab-008/ > /tmp/lab008-dom.html
+          grep 'id="scopeSvg"' /tmp/lab008-dom.html
+          "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --virtual-time-budget=3000 --window-size=1440,1000 --screenshot=/tmp/lab008-screenshot.png http://127.0.0.1:8765/labs/lab-008/
+      - name: Captura de pantalla per revisar
+        uses: actions/upload-artifact@v4
+        with:
+          name: lab-008-captura
+          path: /tmp/lab008-screenshot.png
