@@ -1,0 +1,36 @@
+{
+  "id": "LAB-008",
+  "title": "Generador de funcions",
+  "description": "Generador de funcions interactiu amb senyals configurables, oscil·loscopi simplificat i exercicis recuperables en tres nivells.",
+  "courses": [
+    "EE10",
+    "EE30",
+    "EEB0",
+    "Enginyeria"
+  ],
+  "iconPath": "M4 24h10c5-19 14-19 19 0s14 19 19 0 14-19 19 0h7",
+  "version": "0.1.0",
+  "status": "published",
+  "access": "public",
+  "entry": "labs/lab-008/",
+  "tags": [
+    "generador de funcions",
+    "sinusoidal",
+    "quadrada",
+    "triangular",
+    "freqüència",
+    "amplitud",
+    "offset",
+    "PWM",
+    "oscil·loscopi"
+  ],
+  "features": [
+    "signal-generator",
+    "three-levels",
+    "exercise-codes",
+    "random-per-level",
+    "basic-oscilloscope",
+    "feedback",
+    "illustrated-help"
+  ]
+}
