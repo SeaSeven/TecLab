@@ -73,7 +73,6 @@ export function exercise(level,seed,requested='random',kind='direct'){
  const load=kind==='load'?'50ohm':'highz';
  if(kind==='load'){vpp=pick(r,[1,2,3,4,6]);offset=pick(r,[-1,-.5,0,.5,1]);}
  if(kind==='bounds'){vpp=pick(r,[2,4,6,8]);offset=pick(r,[-1,0,1]);}
- if(kind==='rms'&&wave==='pulse')kind='peak';
  if(kind==='rms'&&vpp%2!==0)vpp=pick(r,[2,4,6,8]);
  if(kind==='period')frequency=pick(r,[100,200,250,500,1000,2000,2500,5000]);
  const ex={level,seed,wave,frequency,vpp,offset,duty,phase,load,mode:kind};
