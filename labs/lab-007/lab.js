@@ -5,24 +5,54 @@ const $=id=>document.getElementById(id);
 const fmt=(n,d=2)=>Number(n).toLocaleString('ca-ES',{maximumFractionDigits:d});
 let ex=generate('inicial','R2',12345);
 let seenOverload=false;
-let s={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:null,blackNode:null,probe:'red',view:'schema'};
-const points=[['A',75,44],['B',405,44],['C',405,246]];
+// Els fusibles representen un estat físic persistent, independent de l’exercici.
+const fuseState={mA:true,'10A':true};
+let s={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:null,blackNode:null,probe:'red',view:'schema',powered:true,seriesOpen:false,isolated:''};
+const points=[['A',75,44],['B',405,44],['C',405,246],['D',146,44],['E',194,44]];
 function markings(){
  return points.map(([id,x,y])=>['red','black'].filter(p=>s[p+'Node']===id).map((p,i)=>{
  const color=p==='red'?'#ff6666':'#101820',dx=p==='red'?-19:19;
  return '<path d="M'+x+' '+y+'l'+dx+' -28" stroke="'+color+'" stroke-width="5"/><circle cx="'+(x+dx)+'" cy="'+(y-28)+'" r="6" fill="'+color+'" stroke="white"/>';
  }).join('')+'<g class="node" data-node="'+id+'" role="button" tabindex="0" aria-label="Connectar al node '+id+'"><circle cx="'+x+'" cy="'+y+'" r="11"/><text x="'+(x+16)+'" y="'+(y+5)+'">'+id+'</text></g>').join('');
 }
+// Quan una resistència està aïllada, representem els seus terminals de prova
+// físicament separats de D/E. Els dos contactes sempre conserven els nodes lògics.
+function isolatedResistorCircuit(){
+ const r=s.isolated,terminalA=r==='R1'?'A':'B',terminalB=r==='R1'?'B':'C';
+ const selected=node=>s.redNode===node?'red':s.blackNode===node?'black':'';
+ const terminal=(node,x)=>{
+  const col=selected(node)==='red'?'#ff7874':selected(node)==='black'?'#f1f7ff':'#53c5e9';
+  const contact=selected(node)?'<circle cx="'+x+'" cy="125" r="25" fill="none" stroke="'+col+'" stroke-width="5"/>':'';
+  return '<g class="node isolated-contact" data-node="'+node+'" role="button" tabindex="0" aria-label="Contacte '+node+' de '+r+'"><circle cx="'+x+'" cy="125" r="22" fill="'+col+'" stroke="#fff" stroke-width="4"/>'+contact+'<text x="'+x+'" y="177" font-size="23" text-anchor="middle" fill="#f0f8fc">'+node+'</text></g>';
+ };
+ const label='<text x="250" y="62" font-size="24" text-anchor="middle" font-weight="bold" fill="#f5d48d">'+r+' · ? Ω</text>';
+ const lead='<path d="M145 125H222M278 125H355" fill="none" stroke="#bdd1d9" stroke-width="7" stroke-linecap="round"/>';
+ const resistor='<rect x="222" y="103" width="56" height="44" rx="5" fill="#dca35e" stroke="#f9d997" stroke-width="3"/>';
+ const visual='<rect x="44" y="15" width="412" height="225" rx="16" fill="'+(s.view==='physical'?'#e9ddbb':'#122934')+'" stroke="#607b89" stroke-width="3" opacity=".35"/>';
+ const mark='<text x="250" y="218" font-size="15" text-anchor="middle" fill="#c9dce5">Resistència separada del circuit · contactes de mesura accessibles</text>';
+ return '<svg viewBox="0 0 500 260" role="group" aria-label="Resistència '+r+' aïllada amb els terminals '+terminalA+' i '+terminalB+'">'+visual+lead+resistor+label+terminal(terminalA,120)+terminal(terminalB,380)+mark+'</svg>';
+}
 function circuit(){
- const labels='<g fill="#eaf2f5" font-size="16"><text x="88" y="139">'+fmt(ex.voltage)+' V</text><text x="203" y="21">R1 '+fmt(ex.r1,0)+' Ω</text><text x="304" y="187">R2 '+fmt(ex.r2,0)+' Ω</text></g>';
- const schema='<path class="wire" d="M75 44H220M264 44H405V164M405 208V246H75V167M75 104V44"/><path d="M75 104v18m-15 0h30m-24 12h18m-9 0v33" stroke="#e4ca84" stroke-width="4" fill="none"/><rect class="resistor" x="220" y="30" width="44" height="28" rx="3"/><rect class="resistor" x="390" y="164" width="30" height="44" rx="3"/>';
+ if(ex.mode==='OHM'&&s.isolated)return isolatedResistorCircuit();
+ const ohmsTask=ex.mode==='OHM';
+ const labels='<g fill="#eaf2f5" font-size="16"><text x="88" y="139">'+fmt(ex.voltage)+' V</text><text x="203" y="21">R1 '+(ohmsTask?'?':fmt(ex.r1,0)+' Ω')+'</text><text x="304" y="187">R2 '+(ohmsTask?'?':fmt(ex.r2,0)+' Ω')+'</text></g>';
+ const schema='<path class="wire" d="M75 44H146M194 44H220M264 44H405V164M405 208V246H75V167M75 104V44"/><path d="M75 104v18m-15 0h30m-24 12h18m-9 0v33" stroke="#e4ca84" stroke-width="4" fill="none"/><rect class="resistor" x="220" y="30" width="44" height="28" rx="3"/><rect class="resistor" x="390" y="164" width="30" height="44" rx="3"/>';
  const holes=Array.from({length:7},(_,i)=>Array.from({length:5},(_,j)=>'<circle cx="'+(207+j*52)+'" cy="'+(34+i*36)+'" r="4" fill="#89979a"/>').join('')).join('');
  const physical='<rect x="180" y="15" width="278" height="266" rx="14" fill="#eee6d0" stroke="#b8ab89" stroke-width="4"/>'+holes+
  '<rect x="12" y="98" width="136" height="100" rx="11" fill="#475963" stroke="#adc4cc" stroke-width="3"/><text x="30" y="122" fill="#eecb86">FONT CC</text><text x="29" y="155" fill="white" font-size="24">'+fmt(ex.voltage)+' V</text>'+
  '<circle cx="53" cy="178" r="7" fill="#fa5c5c"/><circle cx="111" cy="178" r="7" fill="#111"/>'+
- '<path d="M53 178C53 17 170 44 220 44M264 44H405M111 178C111 270 206 246 405 246" fill="none" stroke="#ed5858" stroke-width="5"/><path d="M405 44V164M405 208V246" stroke="#455a60" stroke-width="5" fill="none"/>'+
+ '<path d="M53 178C53 17 118 44 146 44M194 44H220M264 44H405M111 178C111 270 206 246 405 246" fill="none" stroke="#ed5858" stroke-width="5"/><path d="M405 44V164M405 208V246" stroke="#455a60" stroke-width="5" fill="none"/>'+
  '<rect x="220" y="32" width="44" height="24" rx="9" fill="#e8c18c" stroke="#795b40"/><rect x="392" y="164" width="26" height="44" rx="9" fill="#e8c18c" stroke="#795b40"/>';
- return '<svg viewBox="0 0 500 300" role="group" aria-label="Circuit divisor de tensió">'+(s.view==='schema'?schema:physical)+labels+markings()+'</svg>';
+ const meterInserted=s.seriesOpen&&((s.redNode==='D'&&s.blackNode==='E')||(s.redNode==='E'&&s.blackNode==='D'))&&ranges.find(r=>r.id===s.range)?.mode==='ADC';
+ const bridge=s.seriesOpen?(meterInserted?
+ '<path d="M146 44H152M188 44H194" stroke="#e1c185" stroke-width="4"/><circle cx="170" cy="44" r="18" stroke="#ffce77" stroke-width="3" fill="#203843"/><text x="170" y="51" text-anchor="middle" fill="#ffffff" font-size="20">A</text><text x="170" y="85" text-anchor="middle" fill="#b8f0c8" font-size="12">EN SÈRIE</text>':
+ '<path d="M146 44v14m48-14v14" stroke="#f1d27f" stroke-width="3"/><text x="170" y="84" text-anchor="middle" fill="#f6d38a" font-size="14">OBERT</text>'):
+ '<path d="M146 44H194" stroke="#88d7b7" stroke-width="5"/>';
+ const isolated=s.isolated?'<rect x="'+(s.isolated==='R1'?'217':'386')+'" y="'+(s.isolated==='R1'?'27':'160')+'" width="'+(s.isolated==='R1'?'51':'38')+'" height="'+(s.isolated==='R1'?'36':'51')+'" rx="4" fill="none" stroke="#ffcf75" stroke-width="4" stroke-dasharray="5 4"/><text x="284" y="226" fill="#ffcf75" font-size="14">'+s.isolated+' aïllada</text>':'';
+ const off=s.powered?'':'<text x="22" y="278" fill="#ffcf75" font-size="15">FONT DESCONNECTADA</text>';
+ const fault=(!fuseState.mA||!fuseState['10A'])?
+ '<g class="circuit-fault-symbol"><path d="M13 208h24l-9 15h15l-27 36 6-24H9z" fill="#ff974a" stroke="#fff0aa" stroke-width="2"/><text x="51" y="230" fill="#ffb5a0" font-size="14" font-weight="bold">FUSIBLE FOS</text></g>':'';
+ return '<svg viewBox="0 0 500 300" role="group" aria-label="Circuit divisor de tensió">'+(s.view==='schema'?schema:physical)+bridge+isolated+off+fault+labels+markings()+'</svg>';
 }
 function dial(){
  const pos=(angle,r)=>polar(angle,r).map(n=>n/4);
@@ -45,23 +75,77 @@ function renderJacks(){
   const j=b.dataset.jack,red=s.redJack===j,black=s.blackJack===j;
   b.classList.toggle('plug-red',red);b.classList.toggle('plug-black',black);
   b.setAttribute('aria-pressed',String((s.probe==='red'?red:black)));
-  b.title=(red?'Punta vermella':black?'Punta negra':'Born lliure')+' · '+j;
+  b.setAttribute('aria-label','Born '+j+(red?', clavilla vermella connectada':black?', clavilla negra connectada':', lliure'));
+  b.title=(red?'Clavilla vermella':black?'Clavilla negra':'Born lliure')+' · '+j;
+  const occupant=b.querySelector('.socket-occupant');
+  if(occupant)occupant.textContent=red?'VERMELLA':black?'NEGRA':'LLIURE';
  });
- $('jackStatus').textContent='Vermella: '+(s.redJack||'sense born')+' · Negra: '+(s.blackJack||'sense born')+'.';
+ for(const p of ['red','black']){
+  const lead=$(p+'Lead'),jack=s[p+'Jack'];
+  lead.classList.toggle('lead-selected',s.probe===p);
+  lead.classList.toggle('lead-unplugged',!jack);
+  lead.setAttribute('aria-pressed',String(s.probe===p));
+  $(p+'LeadLocation').textContent=jack?'→ '+jack:'SENSE BORN';
+ }
+ $('jackStatus').textContent='Vermella: '+(s.redJack||'desendollada')+' · Negra: '+(s.blackJack||'desendollada')+'.';
 }
-function connectJack(jack){
- const other=s.probe==='red'?'black':'red';
+function connectJack(jack,probe=s.probe){
+ const other=probe==='red'?'black':'red';
  if(s[other+'Jack']===jack){
-  feedback('El born '+jack+' ja està ocupat per la punta '+(other==='red'?'vermella':'negra')+'. Tria un altre born.','error');
+  feedback('El born '+jack+' ja està ocupat per la clavilla '+(other==='red'?'vermella':'negra')+'. Mou primer l’altra clavilla.','error');
   return;
  }
- s[s.probe+'Jack']=jack;
- renderJacks();reading();
- feedback('Punta '+(s.probe==='red'?'vermella':'negra')+' connectada al born '+jack+'. '+reading().status);
+ s.probe=probe;
+ s[probe+'Jack']=jack;
+ renderJacks();
+ feedback('Clavilla '+(probe==='red'?'vermella':'negra')+' connectada a '+jack+'. '+reading().status);
+}
+function unplugJack(probe=s.probe){
+ s[probe+'Jack']=null;
+ renderJacks();
+ feedback('Clavilla '+(probe==='red'?'vermella':'negra')+' desendollada. Selecciona un born lliure.');
 }
 
 function feedback(message,type=''){const el=$('feedback');el.textContent=message;el.className='feedback '+(type?'feedback-'+type:'');}
-function reading(){const m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2});$('reading').textContent=m.display;$('unit').textContent=m.unit;if(m.display==='OL')seenOverload=true;return m;}
+function updateWiring(){
+ $('powerToggle').textContent='Font: '+(s.powered?'connectada':'desconnectada');
+ $('powerToggle').setAttribute('aria-pressed',String(s.powered));
+ $('seriesToggle').textContent='Circuit: '+(s.seriesOpen?'obert (D–E)':'tancat');
+ $('seriesToggle').setAttribute('aria-pressed',String(s.seriesOpen));
+ $('isolation').value=s.isolated;
+ $('wiringStatus').textContent=(s.powered?'Font connectada':'Font desconnectada')+' · '+(s.seriesOpen?'interrupció D–E oberta':'circuit tancat')+' · '+(s.isolated?s.isolated+' aïllada':'resistències muntades')+'.';
+}
+function renderFuses(){
+ for(const [id,name,elId,buttonId] of [['mA','fuseMaState','fuseMa','replaceMa'],['10A','fuse10State','fuse10','replace10']]){
+  const ok=fuseState[id],panel=$(elId);
+  panel.classList.toggle('fuse-blown',!ok);
+  $(name).textContent=ok?'Correcte':'FOS';
+  $(buttonId).hidden=ok;
+ }
+ $('circuit').classList.toggle('circuit-fuse-fault',!Object.values(fuseState).every(Boolean));
+ $('fuseNote').textContent=Object.values(fuseState).every(Boolean)?
+  'Protecció simulada: un curtcircuit directe pot fer fondre el fusible.':
+  'Fusible fos: font desconnectada i puntes retirades abans de substituir-lo.';
+}
+function reading(){
+ let m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,fuses:fuseState});
+ if(m.faultFuse&&fuseState[m.faultFuse]){
+  const blown=m.faultFuse;
+  fuseState[blown]=false;
+  m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,fuses:fuseState});
+  // Conservem l'avís del curtcircuit en lloc d'ocultar-ne la causa.
+  m={...m,status:'Curtcircuit simulat entre A i C! S’ha fos el fusible '+blown+'. Desconnecta la font i revisa les connexions.'};
+  feedback(m.status,'error');
+ }
+ $('reading').textContent=m.display;
+ $('unit').textContent=m.unit;
+ $('readingDetail').textContent=m.status+(ex.mode==='OHM'?' · Contactes actuals: vermella '+(s.redNode||'sense connectar')+'; negra '+(s.blackNode||'sense connectar')+'.':'');
+ $('readingDetail').classList.toggle('reading-alert',m.display==='FUS'||m.display==='RISC'||m.display==='Err');
+ $('reading').classList.toggle('meter-fuse-fault',m.display==='FUS');
+ if(m.display==='OL')seenOverload=true;
+ renderFuses();
+ return m;
+}
 function render(){
  $('circuit').innerHTML=circuit();$('rotary').innerHTML=dial();const selected=ranges.find(r=>r.id===s.range);$('dialSelection').textContent='Posició seleccionada: '+(selected.mode==='OFF'?'OFF':selected.group+' · '+selected.label);
  $('circuit').querySelectorAll('[data-node]').forEach(el=>{
@@ -75,15 +159,32 @@ function render(){
  $('redNode').textContent=s.redNode||'sense connectar';$('blackNode').textContent=s.blackNode||'sense connectar';
  ['red','black'].forEach(p=>$(p+'Probe').classList.toggle('selected',p===s.probe));renderJacks();
  ['schema','physical'].forEach(v=>$(v).classList.toggle('active',v===s.view));
- $('circuitInfo').textContent='Font '+fmt(ex.voltage)+' V CC · R1 '+fmt(ex.r1,0)+' Ω · R2 '+fmt(ex.r2,0)+' Ω.';
+ $('circuitInfo').textContent=ex.mode==='OHM'?'Font de '+fmt(ex.voltage)+' V CC · R1 i R2 de valor desconegut · Determina el valor demanat amb el multímetre.':'Font '+fmt(ex.voltage)+' V CC · R1 '+fmt(ex.r1,0)+' Ω · R2 '+fmt(ex.r2,0)+' Ω. Terminal D i E: obertura del circuit per a A⎓.';
+ updateWiring();
  reading();
 }
-function kinds(level,selected){$('kind').innerHTML=levelKinds[level].map(([k,t])=>'<option value="'+k+'">'+t+'</option>').join('');if(selected)$('kind').value=selected;}
+function kindMode(id){
+ if(id==='MIX')return 'all';
+ if(id==='ANY')return 'VDC';
+ if(['CURRENT','I_RANGE','I_DIAG','I_REVERSE'].includes(id))return 'ADC';
+ if(id.startsWith('OHM_'))return 'OHM';
+ return 'VDC';
+}
+function kinds(level,selected){
+ const filter=$('magnitude').value||'all';
+ const items=levelKinds[level].filter(([id])=>filter==='all'||kindMode(id)===filter);
+ $('kind').innerHTML=items.map(([id,label])=>'<option value="'+id+'">'+label+'</option>').join('');
+ if(selected&&items.some(([id])=>id===selected))$('kind').value=selected;
+}
 function load(v){
- ex=v;seenOverload=false;s.redNode=null;s.blackNode=null;s.range='VDC20';s.redJack='VΩmA';s.blackJack='COM';
- $('level').value=v.level;kinds(v.level,v.kind);$('exerciseCode').value=v.code;
+ ex=v;seenOverload=false;s.redNode=null;s.blackNode=null;s.range=v.mode==='ADC'?'ADC20m':v.mode==='OHM'?'OHM20k':'VDC20';s.redJack='VΩmA';s.blackJack='COM';s.powered=true;s.seriesOpen=false;s.isolated='';
+ $('level').value=v.level;$('magnitude').value=kindMode(v.kind);kinds(v.level,v.kind);$('exerciseCode').value=v.code;
  $('task').innerHTML='<p class="task-level">'+({inicial:'Inicial',basic:'Bàsic',intermedi:'Intermedi',avancat:'Avançat'}[v.level])+' · '+levelKinds[v.level].find(([id])=>id===v.kind)[1]+'</p><strong>'+v.text+'</strong><p>Observa el circuit i tria connexions i escala. La resolució numèrica només apareix amb Mostra l’explicació.</p>';
- $('explanation').innerHTML='<h3>Resolució guiada</h3><p>Intensitat del divisor: I = U/(R1+R2) = '+fmt(v.voltage/(v.r1+v.r2)*1000,3)+' mA.</p><p>Potencials: A = '+fmt(v.voltage,3)+' V, B = '+fmt(v.voltage*v.r2/(v.r1+v.r2),3)+' V i C = 0 V. Lectura: V('+v.red+') − V('+v.black+') = '+fmt(v.expected,3)+' V. Rang mínim apropiat: '+ranges.find(r=>r.id===v.range).label+' V⎓.</p>';
+ $('explanation').innerHTML=v.mode==='ADC'?
+ '<h3>Resolució guiada de la intensitat</h3><p>Font desconnectada durant el muntatge; obre D–E i intercala el multímetre en sèrie. Després, amb la font connectada: I = U/(R1 + R2) = '+fmt(v.expected*1000,3)+' mA. Escala mínima possible: '+ranges.find(r=>r.id===v.range).label+' A⎓.</p>':
+ v.mode==='OHM'?
+ '<h3>Resolució guiada de resistència</h3><p>Font desconnectada; aïlla '+v.resistor+'. Col·loca les puntes a '+v.red+' i '+v.black+'. La lectura és '+fmt(v.expected,0)+' Ω, amb el rang '+ranges.find(r=>r.id===v.range).label+' Ω.</p>':
+ '<h3>Resolució guiada</h3><p>I = U/(R1 + R2) = '+fmt(v.voltage/(v.r1+v.r2)*1000,3)+' mA.</p><p>Potencials: A = '+fmt(v.voltage,3)+' V, B = '+fmt(v.voltage*v.r2/(v.r1+v.r2),3)+' V i C = 0 V. Lectura: V('+v.red+') − V('+v.black+') = '+fmt(v.expected,3)+' V. Rang mínim apropiat: '+ranges.find(r=>r.id===v.range).label+' V⎓.</p>';
  $('explanation').hidden=true;$('codeStatus').textContent='Codi reproduïble: '+v.code;render();feedback('Configura el multímetre i connecta les puntes.');
 }
 function illustration(type){
@@ -97,17 +198,18 @@ const theory=[
  ['1. Tensió contínua i polaritat','V⎓ mesura V(punta vermella) − V(punta negra). Si B està a 8 V i C a 0 V, la vermella a B i la negra a C indiquen +8 V; amb les puntes intercanviades apareix −8 V. La connexió del voltímetre és en paral·lel, sense obrir el circuit.','parallel'],
  ['2. Borns del multímetre','Per mesurar tensió, el cable negre va a COM i el vermell a VΩmA. El born 10A és específic de l’escala 10 A. No connectis aquest born en paral·lel amb la font: pots provocar un curtcircuit. A les escales de corrent petites s’utilitza VΩmA, però la mesura real necessita obrir el circuit.','jacks'],
  ['3. Escales i sobrecàrrega','Si esperes 8 V, el rang V⎓ de 2 V és insuficient i apareix OL. El rang de 20 V permet llegir 8,00 V. Si no coneixes la tensió, comença amb un rang elevat i redueix-lo progressivament. Cada xifra del dial correspon al fons d’escala del seu sector.','range'],
- ['4. Intensitat en sèrie','Abans de mesurar A⎓ cal desconnectar l’alimentació, obrir el circuit i inserir el multímetre en sèrie. Amb una font de 12 V i resistències de 1 kΩ i 2 kΩ, I = 12 / 3000 = 0,004 A = 4 mA. En aquest prototip la mesura de corrent encara està pendent i es mostra un avís.','series'],
- ['5. Resistència i continuïtat','Per mesurar resistència desconnecta l’alimentació i comprova absència de tensió. Una resistència de 2 kΩ no entra en el rang de 200 Ω però sí en el de 20 kΩ. Cal aïllar el component si altres camins en paral·lel poden alterar la lectura. La mesura Ω queda reservada a una ampliació.','range'],
+ ['4. Intensitat en sèrie','Desconnecta la font amb el botó Font. Prem Circuit: tancat per obrir la interrupció D–E. Selecciona la punta vermella i connecta-la a D; després la negra a E. Per a corrents petits, VΩmA i COM; per al rang 10 A, 10A i COM. Selecciona A⎓ i torna a connectar la font. Amb 12 V, R1 = 1 kΩ i R2 = 2 kΩ obtindràs I = 12/3000 = 4 mA. Mai connectis un amperímetre en paral·lel amb una font.','series'],
+ ['5. Resistència amb el circuit desalimentat','Desconnecta la font. A Resistència aïllada, selecciona R1 o R2: el simulador la separa elèctricament de la resta. Selecciona Ω, connecta negre a COM i vermell a VΩmA i col·loca les puntes als dos extrems de la resistència escollida (R1: A–B; R2: B–C). Una resistència de 2 kΩ supera el rang 200 Ω; en 20 kΩ apareix una lectura. Aquest model és ideal i només representa la resistència aïllada.','range'],
  ['6. Exemple de divisor de tensió','Amb U = 12 V, R1 = 1 kΩ i R2 = 2 kΩ: I = 12/(1000 + 2000) = 4 mA. La caiguda a R1 és 4 V i a R2 és 8 V. Així, A = 12 V, B = 8 V i C = 0 V. Les lectures entre nodes segueixen les diferències de potencial, no el nom dels components.','parallel']
 ];
 const help=[
  ['1. Crear un exercici','Tria Inicial, Bàsic, Intermedi o Avançat. Selecciona un tipus o Exercici aleatori i prem Nou exercici. Canviar només el desplegable no genera una pràctica. Els nous valors de font i resistències es mostren al circuit.','range'],
  ['2. Interpretar l’enunciat','L’enunciat és al requadre Pràctica actual, damunt del circuit. Indica què has de mesurar, però no revela els nodes exactes ni els resultats. Resol primer la pràctica i obre Mostra l’explicació només quan necessitis la resolució numèrica.','parallel'],
  ['3. Identificar grup i escala','Els sectors del dial són V⎓: 200 mV, 2, 20, 200 i 600 V; V~: 200 i 600 V; A⎓: 200 µA, 2, 20, 200 mA i 10 A; Ω: 200 Ω, 2 kΩ, 20 kΩ, 200 kΩ i 2 MΩ. La indicació sota el dial mostra el grup i l’escala seleccionats.','range'],
- ['4. Connectar els cables','Selecciona la punta Vermella o Negra. Prem COM, 10A o VΩmA per assignar-li el born. En una mesura de voltatge: negre a COM i vermell a VΩmA. El mateix born no pot estar ocupat per les dues puntes.','jacks'],
- ['5. Mesurar sobre el circuit','Amb la punta seleccionada, prem un node A, B o C. Pots canviar de vista entre esquema i muntatge físic conservant els nodes. El signe negatiu indica polaritat invertida; OL indica que has de triar un rang superior.','parallel'],
- ['6. Comprovar i recuperar','Prem Comprova la mesura: el missatge serà verd o vermell i indicarà si la configuració és vàlida. Prem Mostra l’explicació per veure els càlculs. El codi TL-MM1 permet reproduir el mateix enunciat amb els mateixos components.','range']
+ ['4. Connectar els cables i controlar la font','Selecciona primer la punta Vermella o Negra; a continuació prem el born adequat. Per a V⎓ i Ω: negre a COM, vermell a VΩmA. Per a A⎓: VΩmA en els rangs µA/mA i 10A només al rang 10 A. La font es pot connectar i desconnectar amb el botó superior; mai canviïs el muntatge mentre està alimentat.','jacks'],
+ ['5. Intensitat i resistència pas a pas','Intensitat: desconnecta la font, obre Circuit: tancat, connecta vermell a D i negre a E, selecciona A⎓ i torna a connectar la font. Resistència: desconnecta la font, selecciona R1 o R2 al control Resistència aïllada, tria Ω i mesura entre A–B o B–C respectivament. OL indica rang insuficient o camí de mesura obert.','series'],
+ ['6. Comprovar i recuperar','Prem Comprova la mesura després d’ajustar el mode, els borns i el circuit. El missatge serà verd o vermell. Amb Mostra l’explicació es desenvolupen els càlculs en V, mA o Ω segons l’exercici. El codi TL-MM1 permet reproduir-ne els components i l’objectiu.','range'],
+ ['7. Fusibles i connexions perilloses','El simulador representa dos fusibles independents: mA i 10 A. Una connexió directa entre els borns de la font a través d’un terminal d’intensitat pot simular un curtcircuit i mostrar FUS. Això és diferent d’OL, que només indica rang insuficient. Per substituir un fusible simulat, desconnecta la font i retira les puntes del circuit; després prem Substitueix. És una simplificació educativa: el resultat real depèn de l’instrument i de la protecció instal·lada.','jacks']
 ];
 function lessons(id,title,lead,items){$(id).innerHTML='<h2>'+title+'</h2><p class="intro">'+lead+'</p><div class="lesson-grid">'+items.map(([t,b,fig])=>'<article class="panel"><h3>'+t+'</h3>'+illustration(fig)+'<p>'+b+'</p></article>').join('')+'</div>';}
 lessons('tab-fonaments','Fonaments de mesura','Explicacions i esquemes per comprendre les connexions, els rangs i els resultats.',theory);
@@ -115,9 +217,51 @@ lessons('tab-ajuda','Ajuda del laboratori','Guia pràctica amb exemples gràfics
 document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{$('sectionKicker').textContent='LAB-007 / '+({laboratori:'PRÀCTICA',fonaments:'FONAMENTS',ajuda:'AJUDA'}[b.dataset.section]);$('sectionTitle').textContent=({laboratori:'Mesures amb multímetre',fonaments:'Fonaments del multímetre',ajuda:'Ajuda del multímetre'}[b.dataset.section]);['laboratori','fonaments','ajuda'].forEach(k=>{$('tab-'+k).hidden=k!==b.dataset.section;document.querySelector('[data-section="'+k+'"]').classList.toggle('active',k===b.dataset.section);document.querySelector('[data-section="'+k+'"]').setAttribute('aria-current',k===b.dataset.section?'page':'false');});});
 ['schema','physical'].forEach(v=>$(v).onclick=()=>{s.view=v;render();});
 ['red','black'].forEach(v=>$(v+'Probe').onclick=()=>{s.probe=v;render();});
-document.querySelectorAll('[data-jack]').forEach(b=>b.onclick=()=>connectJack(b.dataset.jack));
+document.querySelectorAll('[data-jack]').forEach(b=>{
+ b.onclick=()=>connectJack(b.dataset.jack);
+ b.ondragover=e=>{e.preventDefault();b.classList.add('jack-drop-target');};
+ b.ondragleave=()=>b.classList.remove('jack-drop-target');
+ b.ondrop=e=>{
+  e.preventDefault();b.classList.remove('jack-drop-target');
+  const probe=e.dataTransfer?.getData('text/plain');
+  if(probe==='red'||probe==='black')connectJack(b.dataset.jack,probe);
+ };
+});
+for(const probe of ['red','black']){
+ const el=$(probe+'Lead');
+ el.onclick=()=>{s.probe=probe;render();};
+ el.ondragstart=e=>{s.probe=probe;e.dataTransfer?.setData('text/plain',probe);if(e.dataTransfer)e.dataTransfer.effectAllowed='move';renderJacks();};
+ el.ondragend=()=>document.querySelectorAll('[data-jack]').forEach(b=>b.classList.remove('jack-drop-target'));
+}
+$('unplugLead').onclick=()=>unplugJack();
+
+$('powerToggle').onclick=()=>{
+ if(!s.powered&&(s.seriesOpen&&! ((s.redNode==='D'&&s.blackNode==='E')||(s.redNode==='E'&&s.blackNode==='D')))){feedback('Abans de connectar la font, tanca el circuit o completa la connexió en sèrie entre D i E.','error');return;}
+ if(!s.powered&&s.isolated){feedback('Torna a muntar la resistència abans de connectar la font.','error');return;}
+ s.powered=!s.powered;render();feedback(reading().status);
+};
+$('seriesToggle').onclick=()=>{
+ if(s.powered){feedback('Desconnecta primer la font abans d’obrir o tancar el circuit.','error');return;}
+ s.seriesOpen=!s.seriesOpen;render();feedback(reading().status);
+};
+$('isolation').onchange=e=>{
+ if(s.powered){$('isolation').value=s.isolated;feedback('Per aïllar una resistència, desconnecta primer la font.','error');return;}
+ s.isolated=e.target.value;render();feedback(reading().status);
+};
+for(const [id,button] of [['mA','replaceMa'],['10A','replace10']]){
+ $(button).onclick=()=>{
+  if(s.powered||s.redNode||s.blackNode){
+   feedback('Per substituir un fusible, desconnecta la font i retira les dues puntes del circuit.','error');return;
+  }
+  fuseState[id]=true;
+  renderFuses();
+  reading();
+  feedback('Fusible '+id+' substituït. Revisa el muntatge abans de connectar la font.');
+ };
+}
 $('reset').onclick=()=>{s.redNode=null;s.blackNode=null;render();feedback('Puntes desconnectades.');};
 $('level').onchange=e=>kinds(e.target.value);
+$('magnitude').onchange=()=>kinds($('level').value);
 $('newExercise').onclick=()=>load(generate($('level').value,$('kind').value));
 $('copyExercise').onclick=()=>{const code=$('exerciseCode').value;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(code).then(()=>{$('codeStatus').textContent='Codi copiat: '+code;}).catch(()=>{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';});}else{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';}};
 $('recover').onclick=()=>{try{let p=fromCode($('recoverCode').value);load(generate(p.level,p.kind,p.seed));$('codeStatus').textContent='Exercici recuperat: '+ex.code;}catch(e){$('codeStatus').textContent='Error: '+e.message;}};
@@ -125,10 +269,10 @@ $('check').onclick=()=>{
  const ok=isCorrect({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2},ex),m=reading();
  const strict=ex.strictRange&&s.range!==ex.range,missingOL=ex.requiresOverload&&!seenOverload;
  const correct=ok&&!strict&&!missingOL;
- feedback(correct?'Correcte: has obtingut '+fmt(m.value,3)+' V amb la configuració adequada.':
-  ok&&strict?'La lectura és correcta, però l’exercici demana el rang mínim vàlid.':
-  ok&&missingOL?'Lectura correcta, però primer has de provocar OL amb una escala massa baixa.':
-  'Revisa la funció V⎓, COM, VΩmA, els nodes i l’escala. '+m.status,correct?'ok':'error');
+ feedback(correct?'Correcte: '+m.display+' '+m.unit+'. Connexió, seguretat i escala adequades.':
+  ok&&strict?'La mesura és correcta, però cal seleccionar el rang més petit vàlid.':
+  ok&&missingOL?'La mesura és correcta, però falta provocar primer OL amb una escala insuficient.':
+  'Encara no és correcte. '+m.status,correct?'ok':'error');
 };
 $('helpToggle').onclick=()=>{$('explanation').hidden=!$('explanation').hidden;};
 load(ex);

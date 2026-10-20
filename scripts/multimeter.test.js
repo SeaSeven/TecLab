@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {measure,isCorrect,ranges} from '../labs/lab-007/meter.js';
+import {measure,isCorrect,ranges,currentFuseFault} from '../labs/lab-007/meter.js';
 import {dialLayout,dialPositions,validateDialLayout} from '../labs/lab-007/dial-layout.js';
 import {generate,fromCode,codeOf,levelKinds} from '../labs/lab-007/exercises.js';
 const base={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:'B',blackNode:'C',voltage:12,r1:1000,r2:2000};
@@ -11,7 +11,7 @@ test('el mateix node dona 0 V',()=>assert.equal(measure({...base,redNode:'C'}).v
 test('el rang 2 V és insuficient per 8 V',()=>assert.equal(measure({...base,range:'VDC2'}).display,'OL'));
 test('el rang 20 V és suficient',()=>assert.equal(measure({...base,range:'VDC20'}).display,'8.00'));
 test('el born 10A en mode tensió indica risc',()=>assert.equal(measure({...base,redJack:'10A'}).display,'RISC'));
-test('resistència alimentada no simulada',()=>assert.equal(measure({...base,range:'OHM2k'}).display,'—'));
+test('l’ohmímetre avisa si la font està alimentada',()=>assert.equal(measure({...base,range:'OHM2k',powered:true}).display,'RISC'));
 test('comprovació de connexions correctes i incorrectes',()=>{let e={red:'B',black:'C'};assert.ok(isCorrect(base,e));assert.ok(!isCorrect({...base,range:'VDC2'},e));assert.ok(!isCorrect({...base,redNode:'A'},e));});
 test('el codi de l’exercici es recupera',()=>{let x=generate('inicial','R2',123456);let p=fromCode(x.code);assert.equal(generate(p.level,p.kind,p.seed).expected,x.expected);assert.equal(p.kind,'R2')});
 test('hi ha opció aleatòria a tots els nivells',()=>{for(let level of Object.keys(levelKinds)){assert.ok(levelKinds[level].some(([id])=>id==='ANY'));let e=generate(level,'ANY',98765);assert.ok(Number.isFinite(e.expected));}});
@@ -27,10 +27,10 @@ test('selector organitzat per grups de magnitud',async()=>{
 });
 test('10A ha d’utilitzar el born 10A',()=>{
  assert.equal(measure({...base,range:'ADC10',redJack:'VΩmA'}).display,'Err');
- assert.equal(measure({...base,range:'ADC10',redJack:'10A'}).display,'—');
+ assert.equal(measure({...base,range:'ADC10',redJack:'10A'}).display,'RISC');
 });
 test('escales petites de corrent amb VΩmA',()=>{
- assert.equal(measure({...base,range:'ADC20m'}).display,'—');
+ assert.equal(measure({...base,range:'ADC20m'}).display,'RISC');
  assert.equal(measure({...base,range:'ADC20m',redJack:'10A'}).display,'Err');
 });
 test('els cables no comparteixen un únic born',()=>{
@@ -55,7 +55,7 @@ test('recuperació de tots els tipus nous incloent guions baixos',()=>{
     const e=generate(level,kind,seed),restored=fromCode(e.code);
     assert.deepEqual(restored,{level,kind,seed});
     assert.equal(generate(level,kind,seed).expected,e.expected);
-    const s={range:e.range,redJack:'VΩmA',blackJack:'COM',redNode:e.red,blackNode:e.black,voltage:e.voltage,r1:e.r1,r2:e.r2};
+    const s={range:e.range,redJack:e.range==='ADC10'?'10A':'VΩmA',blackJack:'COM',redNode:e.red,blackNode:e.black,voltage:e.voltage,r1:e.r1,r2:e.r2,seriesOpen:e.mode==='ADC',powered:e.mode!=='OHM',isolated:e.resistor||''};
     assert.equal(isCorrect(s,e),true);
    }
   }
@@ -66,4 +66,121 @@ test('repte de comparació amb resistències diferents',()=>{
   const e=generate('intermedi','RATIO',seed);
   assert.notEqual(e.r1,e.r2);
  }
+});
+
+test('amperímetre connectat en sèrie: 12 V / 3 kΩ = 4 mA',()=>{
+ const cfg={...base,range:'ADC20m',redNode:'D',blackNode:'E',seriesOpen:true,powered:true};
+ assert.equal(measure(cfg).value,0.004);
+ assert.equal(measure(cfg).display,'4.00');
+ assert.equal(measure({...cfg,seriesOpen:false}).display,'RISC');
+ assert.equal(measure({...cfg,powered:false}).value,0);
+ assert.equal(measure({...cfg,range:'ADC2m'}).display,'OL');
+ assert.equal(measure({...cfg,range:'ADC10',redJack:'10A'}).value,0.004);
+});
+test('resistència: component aïllat, font desconnectada i rang correcte',()=>{
+ const cfg={...base,powered:false,isolated:'R2',range:'OHM20k',redNode:'B',blackNode:'C'};
+ assert.equal(measure(cfg).value,2000);
+ assert.equal(measure({...cfg,range:'OHM200'}).display,'OL');
+ assert.equal(measure({...cfg,powered:true}).display,'RISC');
+ assert.equal(measure({...cfg,isolated:''}).display,'----');
+ assert.equal(measure({...cfg,redNode:'A'}).display,'OL');
+ const e=generate('intermedi','OHM_R2',345);
+ assert.equal(isCorrect({...cfg,r1:e.r1,r2:e.r2},e),true);
+});
+test('intensitat i ohms a tots els nivells amb codis recuperables',()=>{
+ const modes={inicial:'CURRENT',basic:'OHM_R1',intermedi:'I_RANGE',avancat:'OHM_RANGE'};
+ for(const [level,kind] of Object.entries(modes)){
+  const e=generate(level,kind,41737);
+  assert.equal(fromCode(e.code).kind,kind);
+  const s={range:e.range,redJack:e.range==='ADC10'?'10A':'VΩmA',blackJack:'COM',redNode:e.red,blackNode:e.black,voltage:e.voltage,r1:e.r1,r2:e.r2,seriesOpen:e.mode==='ADC',powered:e.mode!=='OHM',isolated:e.resistor||''};
+  assert.equal(isCorrect(s,e),true);
+  assert.ok(Math.abs(measure(s).value-e.expected)<1e-9);
+ }
+});
+
+test('invertir puntes en A⎓ dona lectura negativa sense canviar el mòdul',()=>{
+ const state={...base,range:'ADC20m',redNode:'E',blackNode:'D',powered:true,seriesOpen:true};
+ assert.equal(measure(state).value,-0.004);
+ assert.equal(measure(state).display,'-4.00');
+ const ex=generate('avancat','I_REVERSE',777);
+ assert.equal(ex.mode,'ADC');assert.ok(ex.expected<0);
+ const s={...state,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,range:ex.range};
+ assert.equal(isCorrect(s,ex),true);
+});
+test('ohms no depèn de l’orientació de les puntes',()=>{
+ const ex=generate('basic','OHM_R1',888);
+ const state={...base,range:ex.range,redNode:ex.black,blackNode:ex.red,powered:false,isolated:'R1',r1:ex.r1,r2:ex.r2};
+ assert.equal(measure(state).value,ex.expected);
+ assert.equal(isCorrect(state,ex),true);
+});
+test('selecció aleatòria per totes les magnituds manté els codis antics',()=>{
+ const legacy={inicial:['R2','R1','SOURCE','ZERO'],basic:['REVERSE','REV_SOURCE','RV1','RV2','RANGE'],intermedi:['LOW','DIAG','MID','REF_A','RATIO'],avancat:['MULTI','NEG_RANGE','MIN_SOURCE','COMPARE','POLARITY']};
+ for(const level of Object.keys(legacy)){
+  for(let seed=1;seed<=150;seed++){
+   assert.ok(legacy[level].includes(generate(level,'ANY',seed).effective));
+   const mix=generate(level,'MIX',seed);
+   assert.ok(levelKinds[level].some(([id])=>id===mix.effective));
+   assert.equal(fromCode(mix.code).kind,'MIX');
+  }
+ }
+});
+
+
+test('V, A i Ω són disponibles als quatre nivells',()=>{
+ for(const [level,items] of Object.entries(levelKinds)){
+  const modes=new Set();
+  for(const [kind] of items){
+   if(kind==='ANY'||kind==='MIX')continue;
+   modes.add(generate(level,kind,271).mode);
+  }
+  assert.deepEqual([...modes].sort(),['ADC','OHM','VDC']);
+ }
+});
+test('una clavilla desendollada no es reassigna automàticament',()=>{
+ assert.equal(measure({...base,blackJack:null}).display,'----');
+ assert.equal(measure({...base,redJack:null}).display,'----');
+ assert.equal(isCorrect({...base,blackJack:null}),false);
+});
+
+test('curtcircuit amb amperímetre en paral·lel a la font fa fondre el fusible mA',()=>{
+ const cfg={...base,range:'ADC20m',redNode:'A',blackNode:'C',powered:true,seriesOpen:false};
+ assert.equal(currentFuseFault(cfg),'mA');
+ assert.equal(measure(cfg).display,'FUS');
+ assert.equal(measure({...cfg,fuses:{mA:false,'10A':true}}).display,'FUS');
+ assert.equal(measure({...cfg,powered:false}).faultFuse,undefined);
+});
+test('el born 10 A té un fusible independent i un OL no el fon',()=>{
+ const short={...base,range:'ADC10',redJack:'10A',redNode:'A',blackNode:'C',powered:true,seriesOpen:false};
+ assert.equal(currentFuseFault(short),'10A');
+ assert.equal(measure(short).faultFuse,'10A');
+ const correct={...short,seriesOpen:true,redNode:'D',blackNode:'E'};
+ assert.equal(measure({...correct,fuses:{mA:false,'10A':true}}).value,0.004);
+ assert.equal(measure({...correct,fuses:{mA:true,'10A':false}}).display,'FUS');
+ const ol={...correct,range:'ADC2m',redJack:'VΩmA'};
+ assert.equal(measure(ol).display,'OL');
+ assert.equal(currentFuseFault(ol),null);
+});
+test('les connexions incompletes o la font apagada no fonen cap fusible',()=>{
+ for(const cfg of [
+  {...base,range:'ADC20m',redNode:null,powered:true},
+  {...base,range:'ADC20m',redNode:'A',blackNode:'C',powered:false},
+  {...base,range:'ADC20m',redNode:'D',blackNode:'E',seriesOpen:true,powered:true}
+ ])assert.equal(currentFuseFault(cfg),null);
+});
+test('l’enunciat inicial de corrent no revela on connectar el multímetre',()=>{
+ const e=generate('inicial','CURRENT',9);
+ assert.ok(!/en sèrie|connectant|D i E/i.test(e.text));
+});
+
+test('R1 es pot mesurar en Ω amb la font apagada i aïllada',()=>{
+ const ex=generate('inicial','OHM_R1',52);
+ const s={range:'OHM20k',redJack:'VΩmA',blackJack:'COM',redNode:'A',blackNode:'B',voltage:ex.voltage,r1:ex.r1,r2:ex.r2,powered:false,seriesOpen:false,isolated:'R1'};
+ const m=measure(s);
+ assert.equal(m.value,ex.r1);
+ assert.equal(m.unit,'kΩ');
+ assert.ok(Number.parseFloat(m.display)>0);
+ assert.equal(isCorrect(s,ex),true);
+ assert.equal(measure({...s,powered:true}).display,'RISC');
+ assert.equal(measure({...s,isolated:''}).display,'----');
+ assert.equal(measure({...s,redNode:null}).display,'----');
 });
