@@ -9,7 +9,7 @@
     "Enginyeria"
   ],
   "iconPath": "M5 24h15m0-8h30v16H20m30-8h30",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "status": "published",
   "access": "public",
   "entry": "labs/lab-005/",
@@ -19,5 +19,12 @@
     "resistències",
     "Ohm",
     "Kirchhoff"
+  ],
+  "features": [
+    "resistive-practice",
+    "exercise-codes",
+    "guided-solution",
+    "illustrated-foundations",
+    "illustrated-help"
   ]
 }
