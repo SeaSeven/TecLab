@@ -15,7 +15,25 @@ function markings(){
  return '<path d="M'+x+' '+y+'l'+dx+' -28" stroke="'+color+'" stroke-width="5"/><circle cx="'+(x+dx)+'" cy="'+(y-28)+'" r="6" fill="'+color+'" stroke="white"/>';
  }).join('')+'<g class="node" data-node="'+id+'" role="button" tabindex="0" aria-label="Connectar al node '+id+'"><circle cx="'+x+'" cy="'+y+'" r="11"/><text x="'+(x+16)+'" y="'+(y+5)+'">'+id+'</text></g>').join('');
 }
+// Quan una resistència està aïllada, representem els seus terminals de prova
+// físicament separats de D/E. Els dos contactes sempre conserven els nodes lògics.
+function isolatedResistorCircuit(){
+ const r=s.isolated,terminalA=r==='R1'?'A':'B',terminalB=r==='R1'?'B':'C';
+ const selected=node=>s.redNode===node?'red':s.blackNode===node?'black':'';
+ const terminal=(node,x)=>{
+  const col=selected(node)==='red'?'#ff7874':selected(node)==='black'?'#f1f7ff':'#53c5e9';
+  const contact=selected(node)?'<circle cx="'+x+'" cy="125" r="25" fill="none" stroke="'+col+'" stroke-width="5"/>':'';
+  return '<g class="node isolated-contact" data-node="'+node+'" role="button" tabindex="0" aria-label="Contacte '+node+' de '+r+'"><circle cx="'+x+'" cy="125" r="22" fill="'+col+'" stroke="#fff" stroke-width="4"/>'+contact+'<text x="'+x+'" y="177" font-size="23" text-anchor="middle" fill="#f0f8fc">'+node+'</text></g>';
+ };
+ const label='<text x="250" y="62" font-size="24" text-anchor="middle" font-weight="bold" fill="#f5d48d">'+r+' · ? Ω</text>';
+ const lead='<path d="M145 125H222M278 125H355" fill="none" stroke="#bdd1d9" stroke-width="7" stroke-linecap="round"/>';
+ const resistor='<rect x="222" y="103" width="56" height="44" rx="5" fill="#dca35e" stroke="#f9d997" stroke-width="3"/>';
+ const visual='<rect x="44" y="15" width="412" height="225" rx="16" fill="'+(s.view==='physical'?'#e9ddbb':'#122934')+'" stroke="#607b89" stroke-width="3" opacity=".35"/>';
+ const mark='<text x="250" y="218" font-size="15" text-anchor="middle" fill="#c9dce5">Resistència separada del circuit · contactes de mesura accessibles</text>';
+ return '<svg viewBox="0 0 500 260" role="group" aria-label="Resistència '+r+' aïllada amb els terminals '+terminalA+' i '+terminalB+'">'+visual+lead+resistor+label+terminal(terminalA,120)+terminal(terminalB,380)+mark+'</svg>';
+}
 function circuit(){
+ if(ex.mode==='OHM'&&s.isolated)return isolatedResistorCircuit();
  const ohmsTask=ex.mode==='OHM';
  const labels='<g fill="#eaf2f5" font-size="16"><text x="88" y="139">'+fmt(ex.voltage)+' V</text><text x="203" y="21">R1 '+(ohmsTask?'?':fmt(ex.r1,0)+' Ω')+'</text><text x="304" y="187">R2 '+(ohmsTask?'?':fmt(ex.r2,0)+' Ω')+'</text></g>';
  const schema='<path class="wire" d="M75 44H146M194 44H220M264 44H405V164M405 208V246H75V167M75 104V44"/><path d="M75 104v18m-15 0h30m-24 12h18m-9 0v33" stroke="#e4ca84" stroke-width="4" fill="none"/><rect class="resistor" x="220" y="30" width="44" height="28" rx="3"/><rect class="resistor" x="390" y="164" width="30" height="44" rx="3"/>';
