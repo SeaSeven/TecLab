@@ -4,6 +4,7 @@ const el=id=>document.getElementById(id);
 const num=(n,d=3)=>Number(n.toPrecision(d)).toLocaleString('ca-ES');
 const opts=[['inicial','Inicial'],['intermedi','Intermedi'],['avancat','Avançat']];
 let current=null;
+let requestedMode='random';
 let state={wave:'sin',frequency:1000,vpp:2,offset:0,duty:50,phase:0,output:false};
 let scope={time:0.0002,volts:1};
 function randomSeed(){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]}
@@ -45,9 +46,9 @@ el('reset').onclick=()=>{resetState();refresh()};
 el('voltsScale').onchange=e=>{scope.volts=Number(e.target.value);paintScope()};
 el('timeScale').onchange=e=>{scope.time=Number(e.target.value);paintScope()};
 el('voltsScale').value=String(scope.volts);el('timeScale').value=String(scope.time);
-loadExercise('inicial',randomSeed())}
+if(current){const oldState={...state},oldScope={...scope};loadExercise(current.level,current.seed,requestedMode);state=oldState;scope=oldScope;el('voltsScale').value=String(scope.volts);el('timeScale').value=String(scope.time);renderControls();refresh()}else loadExercise('inicial',randomSeed())}
 function resetState(){state={wave:'sin',frequency:1000,vpp:2,offset:0,duty:50,phase:0,output:false}}
-function loadExercise(level,seed,requested='random'){current=exercise(level,seed,requested);el('level').value=level;renderTypes();el('code').value=codeFor(level,seed,requested);el('task').textContent=scenario();el('codeMessage').textContent='';resetState();scope={time:.0002,volts:1};el('voltsScale').value='1';el('timeScale').value='.0002';el('feedback').textContent='Configura el generador i prem «Comprova».';el('feedback').parentElement.dataset.ok='false';el('feedback').parentElement.dataset.checked='false';selectedParam='frequency';entry='';entryUnit=1;renderControls();refresh()}
+function loadExercise(level,seed,requested='random'){requestedMode=requested;current=exercise(level,seed,requested);el('level').value=level;renderTypes();el('code').value=codeFor(level,seed,requested);el('task').textContent=scenario();el('codeMessage').textContent='';resetState();scope={time:.0002,volts:1};el('voltsScale').value='1';el('timeScale').value='.0002';el('feedback').textContent='Configura el generador i prem «Comprova».';el('feedback').parentElement.dataset.ok='false';el('feedback').parentElement.dataset.checked='false';selectedParam='frequency';entry='';entryUnit=1;renderControls();refresh()}
 
 const params={frequency:{label:'FREQ',min:1,max:100000,step:1,unit:'Hz'},vpp:{label:'AMPL',min:.1,max:20,step:.1,unit:'Vpp'},offset:{label:'OFFSET',min:-10,max:10,step:.1,unit:'V'},duty:{label:'DUTY',min:5,max:95,step:1,unit:'%'},phase:{label:'PHASE',min:0,max:359,step:1,unit:'°'}};
 let selectedParam='frequency',entry='',entryUnit=1;
@@ -69,7 +70,7 @@ function renderControls(){
  el('units').querySelectorAll('button').forEach(b=>b.onclick=()=>keypress(b.dataset.unit));
  updateEditor()
 }
-function refresh(){el('lcdTitle').textContent=waves[state.wave];el('lcdValues').textContent=`${num(state.frequency)} Hz · ${num(state.vpp)} Vpp · ${num(state.offset)} V DC`;el('lcdStatus').textContent=`PWM ${state.duty}% · FASE ${state.phase}° · ${state.output?'SORTIDA ACTIVA':'SORTIDA INACTIVA'}`;el('power').textContent='OUTPUT · '+(state.output?'ON':'OFF');el('power').setAttribute('aria-pressed',String(state.output));el('waveButtons').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.wave===state.wave)));paintScope()}
+function refresh(){el('lcdTitle').textContent=waves[state.wave];el('lcdValues').textContent=`${num(state.frequency)} Hz · ${num(state.vpp)} Vpp · ${num(state.offset)} V DC`;updateEditor();el('lcdStatus').textContent=`PWM ${state.duty}% · FASE ${state.phase}° · ${state.output?'SORTIDA ACTIVA':'SORTIDA INACTIVA'}`;el('power').textContent='OUTPUT · '+(state.output?'ON':'OFF');el('power').setAttribute('aria-pressed',String(state.output));el('waveButtons').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.wave===state.wave)));paintScope()}
 function visualChecks(){const b=bounds(state),visible=b.min>=-scope.volts*4&&b.max<=scope.volts*4;const cycles=state.frequency*scope.time*10;return {ok:state.output&&visible&&cycles>=1&&cycles<=8,visible,cycles}}
 function paintScope(){const svg=el('scopeSvg');if(!svg)return;const lines=[];for(let x=0;x<=600;x+=60)lines.push(`<line x1="${x}" y1="0" x2="${x}" y2="300" stroke="#2c515b" stroke-width="1"/>`);for(let y=0;y<=300;y+=37.5)lines.push(`<line x1="0" y1="${y}" x2="600" y2="${y}" stroke="#2c515b" stroke-width="1"/>`);const points=[];for(let x=0;x<=600;x+=.75){const t=x/600*scope.time*10;const v=sample(state,t);points.push((x?'L':'M')+x.toFixed(2)+' '+(150-v/scope.volts*37.5).toFixed(2))}svg.innerHTML=`<defs><clipPath id="genClip"><rect x="0" y="0" width="600" height="300"/></clipPath></defs>`+lines.join('')+`<path d="${points.join(' ')}" clip-path="url(#genClip)" stroke="#f1d369" stroke-width="2" fill="none"/><text x="12" y="22" fill="#bddeea" font-size="13">${num(scope.volts)} V/div · ${num(scope.time*1000)} ms/div</text>`;const info=visualChecks();el('scopeStatus').textContent=!state.output?'Sense senyal: activa OUTPUT.':!info.visible?'Traça retallada: augmenta VOLTS/DIV.':info.cycles>8?'Massa cicles: redueix TIME/DIV.':info.cycles<1?'Menys d’un període: augmenta TIME/DIV.':'Senyal visible: '+num(info.cycles)+' períodes a la pantalla.'}
 tab('laboratori');
