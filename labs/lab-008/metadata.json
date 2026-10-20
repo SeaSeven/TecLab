@@ -1,7 +1,7 @@
 {
   "id": "LAB-008",
   "title": "Generador de funcions",
-  "description": "Generador de funcions interactiu amb senyals configurables, oscil·loscopi simplificat i exercicis recuperables en tres nivells.",
+  "description": "Generador de funcions amb botons i teclat, simulació High-Z/50 Ω, oscil·loscopi, tres nivells, conversions i codis recuperables.",
   "courses": [
     "EE10",
     "EE30",
@@ -9,7 +9,7 @@
     "Enginyeria"
   ],
   "iconPath": "M4 24h10c5-19 14-19 19 0s14 19 19 0 14-19 19 0h7",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "status": "published",
   "access": "public",
   "entry": "labs/lab-008/",
@@ -31,6 +31,15 @@
     "random-per-level",
     "basic-oscilloscope",
     "feedback",
-    "illustrated-help"
+    "illustrated-help",
+    "parameter-keypad",
+    "digit-selection",
+    "rotary-touch-control",
+    "load-impedance",
+    "output-limits",
+    "automatic-readings",
+    "peak-rms-period-exercises",
+    "training-mode",
+    "expanded-foundations"
   ]
 }
