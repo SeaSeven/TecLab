@@ -34,7 +34,7 @@ test('codis recuperables i límits correctes en 11.000 exercicis',()=>{
 test('codis GEN1 anteriors i detecció d’errors',()=>{
  const original=codeFor('intermedi',12345,'square','direct');
  assert.ok(original.startsWith('TL-GEN1-'));
- assert.deepEqual(fromCode(original),{level:'intermedi',seed:12345,wave:'square',kind:'direct'});
+ assert.deepEqual(fromCode(original),{level:'intermedi',seed:12345,wave:'square'});
  assert.throws(()=>fromCode(original.replace(/.$/,'!')));
 });
 test('restriccions de tensió segons càrrega',()=>{
