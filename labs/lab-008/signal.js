@@ -56,7 +56,7 @@ export function fromCode(raw){
  if(checksum(body)!==match[6])throw Error('El codi conté un error de transcripció.');
  const seed=parseInt(match[3],36);
  if(!Number.isSafeInteger(seed)||seed>0xFFFFFFFF)throw Error('Llavor incorrecta.');
- return {level:levels[Number(match[2])-1],seed,wave:codeWaves[match[4]],kind:match[5]?codeKinds[match[5]]:'direct'};
+ return match[5]?{level:levels[Number(match[2])-1],seed,wave:codeWaves[match[4]],kind:codeKinds[match[5]]}:{level:levels[Number(match[2])-1],seed,wave:codeWaves[match[4]]};
 }
 function prng(seed){let x=seed>>>0;return ()=>{x=(Math.imul(x,1664525)+1013904223)>>>0;return x/4294967296}}
 const pick=(r,arr)=>arr[Math.floor(r()*arr.length)];
