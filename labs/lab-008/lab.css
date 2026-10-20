@@ -58,3 +58,10 @@
 #feedbackDetails{padding:12px 18px;border-top:1px solid #718291;margin-top:10px}
 #feedbackDetails li{padding:3px}
 @media(max-width:560px){.gen-measurements{grid-template-columns:repeat(2,minmax(0,1fr))}.gen-load{flex-wrap:wrap}}
+
+.gen-real-capture{max-width:850px;margin:auto;pointer-events:none}
+.gen-real-capture .gen-case{width:100%;font-size:.88rem}
+.gen-real-capture button,.gen-real-capture input,.gen-real-capture select{cursor:default}
+.gen-real-capture .gen-knob{max-width:86px;max-height:86px}
+.gen-guide input[type=range]{width:100%;accent-color:#e6bd72}
+.gen-guide #demoValue{font-weight:700;color:#f2d577;margin-left:8px}
