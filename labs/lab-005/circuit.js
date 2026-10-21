@@ -1,5 +1,15 @@
 import { seededRandom, checksum } from '../../shared/services/exercises.js';
-export const number=x=>Number(x).toLocaleString('ca-ES',{maximumSignificantDigits:5});
+// Two decimals normally; small values retain at least two significant figures.
+export function displayDecimals(value){const a=Math.abs(value);return a?Math.min(20,Math.max(2,1-Math.floor(Math.log10(a)))):2;}
+export function number(value){const places=displayDecimals(value);return Number(value).toLocaleString('ca-ES',{maximumFractionDigits:places,minimumFractionDigits:Math.abs(value)>0&&Math.abs(value)<1?places:0});}
+export function answerTolerance(expected,unit=1){
+ if(!Number.isFinite(expected)||!Number.isFinite(unit)||unit<=0)throw new RangeError('Unitat o resultat de referència no vàlid.');
+ const scaled=Math.abs(expected/unit);
+ // Half a hundredth of the selected unit, tightened where two significant
+ // figures require more decimal places. This is independent of typed zeros.
+ const step=Math.min(.01,scaled?10**(Math.floor(Math.log10(scaled))-1):.01)*unit;
+ return Math.max(Math.abs(expected)*.02,step/2)+Number.EPSILON*Math.max(Math.abs(expected),unit)*8;
+}
 export function solve(node,voltage){
  const resistance=n=>n.type==='R'?n.value:n.type==='S'?n.children.reduce((s,c)=>s+resistance(c),0):1/n.children.reduce((s,c)=>s+1/resistance(c),0);
  const visit=(n,v)=>{const r=resistance(n),i=v/r;return {...n,resistance:r,voltage:v,current:i,power:v*i,...(n.children?{children:n.children.map(c=>visit(c,n.type==='P'?v:i*resistance(c)))}:{})};};
@@ -14,4 +24,4 @@ export function generate(count,seed){codeOf(count,seed);const rng=seededRandom(s
  const build=(n,type,depth=0)=>{if(n===1)return {type:'R',id:'R'+(++serial),value:pick([100,150,220,330,470,680,1000,1500,2200])};const left=1+Math.floor(rng()*(n-1));return {type,id:'G'+(++group),children:[build(left,type==='S'?'P':'S',depth+1),build(n-left,type==='S'?'P':'S',depth+1)]};};
  const voltage=pick([6,9,12,24,36,48]),root=solve(build(count,rng()<.65?'S':'P'),voltage);return {count,seed,voltage,root,code:codeOf(count,seed)};
 }
-export function checkAnswer(raw,unit,expected){if(String(raw).trim()==='')return 'empty';const value=Number(String(raw).trim().replace(',','.'))*unit;if(!Number.isFinite(value))return 'invalid';const tol=Math.max(Math.abs(expected)*.02+Number.EPSILON*Math.max(1,Math.abs(expected))*8,1e-10);if(Math.abs(value-expected)<=tol)return 'correct';if(Math.abs(value*1000-expected)<=tol||Math.abs(value/1000-expected)<=tol)return 'units';return 'incorrect';}
+export function checkAnswer(raw,unit,expected){if(String(raw).trim()==='')return 'empty';const value=Number(String(raw).trim().replace(',','.'))*unit;if(!Number.isFinite(value))return 'invalid';const tol=answerTolerance(expected,unit);if(Math.abs(value-expected)<=tol)return 'correct';if(Math.abs(value*1000-expected)<=tol||Math.abs(value/1000-expected)<=tol)return 'units';return 'incorrect';}

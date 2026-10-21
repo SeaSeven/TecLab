@@ -6,3 +6,20 @@ test('Circuit mixt conegut: 100 Ω + (200 Ω ∥ 200 Ω), font 12 V',()=>{const 
 test('900 circuits: Ohm, Kirchhoff, potències i nombre de components',()=>{for(let n=2;n<=10;n++)for(let seed=0;seed<100;seed++){const ex=generate(n,seed);assert.equal(leaves(ex.root).length,n);close(leaves(ex.root).reduce((s,r)=>s+r.power,0),ex.root.power);for(const g of groups(ex.root)){if(g.type==='S'){close(g.children.reduce((s,c)=>s+c.voltage,0),g.voltage);g.children.forEach(c=>close(c.current,g.current));}else{close(g.children.reduce((s,c)=>s+c.current,0),g.current);g.children.forEach(c=>close(c.voltage,g.voltage));}}}});
 test('Codis: reproducció, límits i errors de transcripció',()=>{for(const seed of [0,1,0xffffffff]){const c=codeOf(10,seed);assert.deepEqual(readCode(c),{count:10,seed});assert.deepEqual(generate(10,seed),generate(...Object.values(readCode(c))));}assert.throws(()=>readCode('TL-CC1-4-123-FFFF'));assert.throws(()=>codeOf(11,2));});
 test('Respostes: unitats, decimals, marge i entrades invàlides',()=>{assert.equal(checkAnswer('60',.001,.06),'correct');assert.equal(checkAnswer('0,06',1,.06),'correct');assert.equal(checkAnswer('60',1,.06),'units');assert.equal(checkAnswer('12.24',1,12),'correct');assert.equal(checkAnswer('12.25',1,12),'incorrect');assert.equal(checkAnswer('Infinity',1,12),'invalid');assert.equal(checkAnswer('',1,12),'empty');});
+
+test('Arrodoniment: dos decimals o almenys dues xifres significatives',async()=>{
+ const {number,answerTolerance}=await import('../labs/lab-005/circuit.js');
+ assert.equal(number(12.345),'12,35');
+ assert.equal(number(.0246),'0,025');
+ assert.equal(number(.005),'0,0050');
+ assert.equal(checkAnswer('.25',1,.246),'correct');
+ assert.equal(checkAnswer('.24',1,.246),'incorrect');
+ assert.equal(checkAnswer('.025',1,.0246),'correct');
+ assert.equal(checkAnswer('.02',1,.0246),'incorrect');
+ assert.equal(checkAnswer('24.60',.001,.0246),'correct');
+ assert.equal(checkAnswer('0',1,.001234),'incorrect');
+ assert.equal(checkAnswer('.0012',1,.001234),'correct');
+ assert.equal(checkAnswer('24.6',1,.0246),'units');
+ assert.ok(answerTolerance(.0246,1)<.00051);
+ assert.ok(answerTolerance(.0246,.001)<.0005);
+});
