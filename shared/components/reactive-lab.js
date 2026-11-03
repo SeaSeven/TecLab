@@ -8,7 +8,7 @@ function schematic(q){
   if(q.connection==='parallel'){
     const paths=q.parts.map((p,i)=>{
       const x=155+i*145;
-      const shape=p.type==='C'? `<path d="M${x-11} 90v40m22-40v40"/>`:
+      const shape=p.type==='C'? `<path d="M${x-19} 100h38m-38 13h38"/>`:
          `<path d="M${x} 89c-26 0-26 11 0 11c-26 0-26 11 0 11c-26 0-26 11 0 11c-26 0-26 11 0 11"/>`;
       return `<path class="wire" d="M${x} 55V90M${x} 130V160"/><g class="component">${shape}</g><text class="part-label" x="${x}" y="40">${escape(p.label)}</text>`;
     }).join('');
