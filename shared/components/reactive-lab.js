@@ -5,7 +5,17 @@ let level=1,exercise=null,tab='laboratori',showSolution=false;
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function fmt(n,d=3){return Number(n.toPrecision(d)).toLocaleString('ca-ES',{maximumFractionDigits:8});}
 function schematic(q){
-  const parts=q.parts.map((p,i)=>({ ...p,x:110+i*150 }));
+  if(q.connection==='parallel'){
+    const paths=q.parts.map((p,i)=>{
+      const x=155+i*145;
+      const shape=p.type==='C'? `<path d="M${x-11} 90v40m22-40v40"/>`:
+         `<path d="M${x} 89c-26 0-26 11 0 11c-26 0-26 11 0 11c-26 0-26 11 0 11c-26 0-26 11 0 11"/>`;
+      return `<path class="wire" d="M${x} 55V90M${x} 130V160"/><g class="component">${shape}</g><text class="part-label" x="${x}" y="40">${escape(p.label)}</text>`;
+    }).join('');
+    const right=155+(q.parts.length-1)*145;
+    return `<svg class="reactive-schematic" role="img" aria-label="Components connectats en paral·lel entre dos nodes" viewBox="0 0 ${right+120} 200"><path class="wire" d="M65 55H${right+35}M65 160H${right+35}"/><circle cx="65" cy="55" r="4" fill="#edbd72"/><circle cx="65" cy="160" r="4" fill="#edbd72"/>${paths}<text x="20" y="110" class="part-name">Nodes</text><text x="${(right+65)/2}" y="188" class="part-name">Connexió en paral·lel</text></svg>`;
+  }
+    const parts=q.parts.map((p,i)=>({ ...p,x:110+i*150 }));
   const total=parts.length*150+100;
   const y=102;
   return `<svg class="reactive-schematic" role="img" aria-label="Esquema de components connectats en ${q.connection==='parallel'?'paral·lel':'sèrie'}" viewBox="0 0 ${total} 205" preserveAspectRatio="xMidYMid meet">
