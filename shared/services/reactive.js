@@ -112,7 +112,8 @@ export function generate(mode,level,seed=randomSeed(),forcedKind=null){
   if(!MODES.includes(mode)||![1,2,3].includes(level))throw new RangeError('Laboratori o nivell invàlid');
   const r=seededRandom(seed);
   const kinds=level===1?(mode==='002'?3:2):level===2?2:3;
-  const kind=forcedKind===null?Math.floor(r()*kinds):forcedKind;
+  const generatedKind=Math.floor(r()*kinds); // Consumeix sempre la mateixa extracció, també en recuperar un codi.
+  const kind=forcedKind===null?generatedKind:forcedKind;
   if(!Number.isInteger(kind)||kind<0||kind>=kinds)throw new RangeError('Tipus d’exercici no vàlid');
   const q=mode==='002'?question002(level,kind,r):question003(level,kind,r);
   return {...q,mode,level,seed,kind,code:makeCode(mode,level,seed,kind)};
