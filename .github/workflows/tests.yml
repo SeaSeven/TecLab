@@ -30,3 +30,20 @@ jobs:
         with:
           name: lab-008-captura
           path: /tmp/lab008-screenshot.png
+      - name: Previsualitzar LAB-002 i LAB-003 en Chromium
+        run: |
+          python3 -m http.server 8766 > /tmp/teclab-reactius.log 2>&1 &
+          sleep 2
+          BROWSER=$(command -v google-chrome || command -v chromium)
+          for LAB in 002 003; do
+            "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --virtual-time-budget=4000 --dump-dom "http://127.0.0.1:8766/labs/lab-$LAB/" > "/tmp/lab-$LAB-dom.html"
+            grep 'class="reactive-cover"' "/tmp/lab-$LAB-dom.html"
+            "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --virtual-time-budget=4000 --window-size=1440,1000 --screenshot="/tmp/lab-$LAB-captura.png" "http://127.0.0.1:8766/labs/lab-$LAB/"
+          done
+      - name: Captures dels laboratoris reactius
+        uses: actions/upload-artifact@v4
+        with:
+          name: lab-002-003-captures
+          path: |
+            /tmp/lab-002-captura.png
+            /tmp/lab-003-captura.png
