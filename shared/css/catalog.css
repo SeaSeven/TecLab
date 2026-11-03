@@ -1,0 +1,57 @@
+/* Portada per àrees · revisió 1. La resta de laboratoris manté els estils existents. */
+.catalog-home{display:grid;gap:58px}
+.catalog-hero{padding:22px 0 4px;position:relative}
+.catalog-hero h1{margin:14px 0 20px;max-width:860px;font-size:clamp(38px,6vw,72px)}
+.catalog-hero .intro{max-width:720px}
+.catalog-stats{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:28px;font-size:13px;color:var(--muted)}
+.catalog-stats strong{font:700 22px system-ui;color:var(--ink);margin-right:5px}
+.catalog-stats a{margin-left:auto;font-weight:650;text-decoration:none}
+.catalog-stats a:hover{text-decoration:underline}
+.catalog-section-heading{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:20px}
+.catalog-section-heading .eyebrow{margin:0 0 8px}
+.catalog-section-heading h2{margin:0;font-size:clamp(25px,3vw,32px)}
+.catalog-section-heading h2 small{font-size:16px;color:var(--muted);font-weight:400}
+.catalog-section-heading>p{color:var(--muted);font-size:14px;max-width:360px;margin:0}
+.catalog-areas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.catalog-area{display:flex;flex-direction:column;align-items:stretch;text-align:left;min-height:234px;padding:22px;background:linear-gradient(145deg,#213240,#172530);border:1px solid var(--line);border-radius:16px;color:var(--ink);transition:border-color .15s,background .15s}
+.catalog-area:hover,.catalog-area[aria-pressed=true]{border-color:var(--amber);background:#263746}
+.catalog-area[aria-pressed=true]{box-shadow:inset 0 0 0 1px var(--amber)}
+.catalog-area-top{display:flex;justify-content:space-between;align-items:start;margin-bottom:23px}
+.catalog-area-symbol{font-size:34px;line-height:1;color:var(--amber);font-weight:400}
+.catalog-area-number{font:12px var(--mono);color:var(--muted)}
+.catalog-area strong{font-size:18px;line-height:1.25;margin-bottom:9px}
+.catalog-area-description{color:var(--muted);font-size:12px;line-height:1.5;flex:1}
+.catalog-area-count{display:flex;justify-content:space-between;color:var(--amber);font-size:12px;margin-top:19px}
+.catalog-toolbar{display:grid;grid-template-columns:minmax(230px,1.5fr) minmax(190px,1fr) minmax(150px,.6fr);gap:14px;padding:17px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.catalog-field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.catalog-field span{font-size:12px;color:var(--muted)}
+.catalog-field input,.catalog-field select{width:100%;min-width:0;background:#111c27}
+.catalog-active-area{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px;padding:12px 16px;background:var(--accent-soft);border-radius:9px;color:var(--ink);font-size:13px}
+.catalog-active-area button,.catalog-clear{font-size:12px;color:var(--amber);background:transparent;border:1px solid var(--line);padding:8px 11px}
+.catalog-groups{display:grid;gap:38px;margin-top:27px}
+.catalog-group-title{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.catalog-group-title>span{font:12px var(--mono);color:var(--amber)}
+.catalog-group-title h3{font-size:18px;margin:0}
+.catalog-group-title small{color:var(--muted)}
+.catalog-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.catalog-lab-card{display:flex;flex-direction:column;padding:23px}
+.catalog-lab-card .catalog-visual{height:91px;display:flex;align-items:center;margin:0 0 12px;overflow:hidden}
+.catalog-lab-card .catalog-visual svg{width:100%;max-width:270px;height:85px}
+.catalog-lab-card .catalog-card-area{text-transform:uppercase;letter-spacing:1.1px;font-size:10px;color:var(--amber)}
+.catalog-lab-card h3{font-size:21px;line-height:1.3;margin:8px 0 0}
+.catalog-lab-card p{font-size:13px;line-height:1.65;flex:1;margin:11px 0 16px}
+.catalog-card-foot{display:flex;flex-direction:column;gap:11px;margin-top:auto}
+.catalog-card-foot .catalog-course-list{font-size:11px;color:var(--muted)}
+.catalog-card-foot a{font-size:13px;text-decoration:none;font-weight:650;align-self:flex-start}
+.catalog-card-foot a:hover{text-decoration:underline}
+.catalog-card-foot a::after{content:' ↗'}
+.catalog-lab-card .badge.is-planned{color:#c7d0d8;border-color:#52606f;background:#26303b}
+.catalog-empty{padding:28px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.catalog-empty h3{margin:0}
+.catalog-empty p{margin-bottom:0;color:var(--muted)}
+.catalog-code{margin-top:0}
+#catalog-list{scroll-margin-top:20px}
+@media(max-width:980px){.catalog-areas{grid-template-columns:repeat(2,minmax(0,1fr))}.catalog-area{min-height:190px}}
+@media(max-width:700px){.catalog-home{gap:40px}.catalog-stats{gap:16px}.catalog-stats a{margin-left:0;width:100%}.catalog-section-heading{align-items:start;flex-direction:column;gap:6px}.catalog-areas{gap:10px}.catalog-area{padding:16px;min-height:200px}.catalog-area strong{font-size:16px}.catalog-toolbar{grid-template-columns:1fr}.catalog-card-grid{grid-template-columns:1fr}.catalog-group-title h3{font-size:17px}}
+@media(max-width:400px){.catalog-areas{grid-template-columns:1fr}.catalog-area{min-height:0}.catalog-area-top{margin-bottom:10px}.catalog-area-description{min-height:0}}
+@media(prefers-reduced-motion:reduce){.catalog-area{transition:none}}
