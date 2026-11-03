@@ -1,0 +1,63 @@
+/* LAB-002/003: mateix llenguatge visual que la resta de TecLab */
+.reactive-main{max-width:1240px}
+.reactive-main>.eyebrow{margin-top:24px}
+.reactive-main h1{font-size:clamp(34px,4.1vw,51px);letter-spacing:-1.5px;margin:10px 0 12px}
+.reactive-main .intro{font-size:16px}
+.reactive-cover{padding:34px;border-radius:18px;background:linear-gradient(115deg,#24384a,#192530 70%);border:1px solid #506070}
+.reactive-cover h2{font-size:clamp(29px,4vw,43px);max-width:800px;margin:12px 0}
+.reactive-cover>p{max-width:690px;color:var(--muted)}
+.reactive-kicker,.reactive-task-header{color:var(--amber);font:12px var(--mono);letter-spacing:1px}
+.reactive-cover-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0}
+.reactive-cover-grid>div{padding:20px;border:1px solid var(--line);background:#14212e;border-radius:11px}
+.reactive-cover-grid span{display:block;font:13px var(--mono);color:var(--amber);margin-bottom:12px}
+.reactive-cover-grid strong{font-size:16px}
+.reactive-cover-grid p{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:0}
+.reactive-workspace{display:grid;grid-template-columns:minmax(230px,290px) minmax(0,1fr);gap:20px;align-items:start}
+.reactive-controls,.reactive-practice,.reactive-reading{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:24px;min-width:0}
+.reactive-controls h2{margin:0 0 20px;font-size:21px}
+.reactive-controls label{display:block;color:var(--muted);font-size:13px;margin:17px 0 7px}
+.reactive-controls select,.reactive-controls>button,.reactive-controls input{width:100%}
+.reactive-controls>button{margin-top:13px}
+.reactive-code-row{display:flex;gap:6px}
+.reactive-code-row input{font:11px var(--mono);width:100%;flex:1}
+.reactive-code-row button{padding:8px}
+#recover-form{display:grid;gap:7px}
+.reactive-small{color:#f0c287;font-size:12px}
+.reactive-task-header{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px}
+.reactive-practice h2{font-size:25px;margin:17px 0 12px}
+.reactive-prompt{font-size:16px;line-height:1.7}
+.reactive-circuit{border:1px solid #42586a;background:#111d29;border-radius:10px;overflow:auto;margin:19px 0;padding:10px}
+.reactive-schematic{display:block;width:100%;min-width:450px;max-height:225px}
+.reactive-schematic .wire,.reactive-schematic .component{stroke:#edbd72;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.reactive-schematic .part-label{fill:#e5eff4;font:14px var(--mono);text-anchor:middle}
+.reactive-schematic .part-name{fill:#acbecb;font:11px system-ui;text-anchor:middle}
+.reactive-schematic .diagram-note{font:10px system-ui;fill:#b3bfcc}
+.reactive-plot-title{color:#cedae4;font-size:13px;font-weight:600}
+.reactive-chart{margin:18px 0;padding:14px;background:#132231;border:1px solid #435469;border-radius:10px}
+.reactive-chart svg{width:100%;height:auto;max-height:175px;margin-top:10px}
+.reactive-chart .axis{stroke:#aabac7;fill:none;stroke-width:1.3}
+.reactive-chart .grid-line{stroke:#aabac7;stroke-opacity:.18}
+.reactive-chart .wave{stroke:#f0b860;stroke-width:2.5;fill:none}
+.reactive-chart .axis-text{fill:#acbdc9;font-size:12px}
+.reactive-graph-note{font-size:12px;color:var(--muted);margin:4px 0}
+.reactive-answer{padding:20px;background:#21313e;border-radius:10px;border:1px solid #4a6071}
+.reactive-answer>label{display:block;font-weight:650;margin-bottom:10px}
+.reactive-answer label span{font-weight:400;color:var(--muted)}
+.reactive-answer-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.reactive-answer-row input{flex:1;min-width:160px}
+.reactive-unit{font-family:var(--mono);color:var(--amber);min-width:24px}
+.reactive-feedback{padding:14px 16px;margin-top:15px;border:1px solid;border-radius:8px;font-size:14px;font-weight:650}
+.reactive-feedback.correct{background:#133a2d;color:#b2f3cf;border-color:#2e9b69}
+.reactive-feedback.incorrect{background:#442426;color:#ffd0cd;border-color:#bf555b}
+.reactive-solution-button{margin-top:18px}
+.reactive-solution{background:#16232e;padding:20px;margin-top:10px;border-radius:9px;border:1px solid var(--line)}
+.reactive-solution h3{margin:0 0 10px}
+.reactive-solution p{font-size:14px}
+.reactive-reading{max-width:980px}
+.reactive-reading h2{font-size:29px;margin-top:0}
+.reactive-reading h3{font-size:20px;color:#efc48b;margin-top:28px}
+.reactive-reading p{line-height:1.85;color:#cbd6df}
+.reactive-example{margin:25px 0;padding:20px;border-left:4px solid var(--amber);background:#142534;border-radius:0 10px 10px 0}
+.reactive-example p{margin-bottom:0}
+@media(max-width:850px){.reactive-workspace{grid-template-columns:1fr}.reactive-controls{display:block}.reactive-cover-grid{grid-template-columns:1fr}.reactive-cover{padding:23px}}
+@media(max-width:520px){.reactive-controls,.reactive-practice,.reactive-reading{padding:17px}.reactive-answer-row button{width:100%}.reactive-task-header{font-size:10px}}
