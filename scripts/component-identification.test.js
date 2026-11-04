@@ -72,3 +72,20 @@ test('els codis TL-CI1 anteriors continuen generant el mateix enunciat',()=>{
   assert.equal(q.code,makeComponentCode(x.lab,x.level,x.kind,x.seed));
  }
 });
+
+test('LAB-010: nous exercicis de reconeixement, bandes i associació',()=>{
+ const kinds={1:[0,1,2],2:[0,1,2],3:[0,1,2,3,4]};
+ for(const [lev,types] of Object.entries(kinds))for(const kind of types)for(let seed=1;seed<=100;seed++){
+   const q=generateComponent('010',Number(lev),seed,kind);
+   const saved=readComponentCode(q.code);
+   assert.deepEqual(generateComponent(saved.lab,saved.level,saved.seed,saved.kind),q);
+   assert.ok(q.title&&q.question&&q.visual);
+   if(q.choices)assert.ok(q.choices.includes(q.answer));
+   else assert.ok(Number.isFinite(q.answer));
+   if(Number(lev)===3&&(kind===3||kind===4)){
+     assert.equal(q.visual.component,'inductor-network');
+     const [a,b]=q.visual.values;
+     assert.ok(Math.abs(q.answer-(kind===3?a+b:a*b/(a+b)))<1e-9);
+   }
+ }
+});
