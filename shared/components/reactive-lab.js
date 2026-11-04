@@ -1,7 +1,7 @@
 import {generate,readCode,checkAnswer,capacitorCharge,inductorRise,seriesAC} from '../../shared/services/reactive.js';
 const lab=document.querySelector('#reactive-app'),mode=document.body.dataset.lab;
 const title=mode==='002'?'Components reactius en corrent continu':'Anàlisi de circuits en corrent altern';
-let level=1,exercise=null,tab='laboratori',showSolution=false;
+let level=1,exercise=generate(mode,1),tab='laboratori',showSolution=false;
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function fmt(n,d=3){return Number(n.toPrecision(d)).toLocaleString('ca-ES',{maximumFractionDigits:8});}
 function schematic(q){
@@ -95,7 +95,7 @@ function workspace(){
 function render(){
  document.title=title+' | TecLab';
  document.querySelectorAll('[data-tab]').forEach(b=>{b.classList.toggle('active',b.dataset.tab===tab);b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false');});
- if(tab==='laboratori'){lab.innerHTML=exercise?workspace():home();}
+ if(tab==='laboratori'){lab.innerHTML=workspace();}
  else lab.innerHTML=tab==='fonaments'?fundamentals():help();
  const enter=lab.querySelector('#enter-lab');if(enter)enter.onclick=()=>{exercise=generate(mode,level);render();};
  const lvl=lab.querySelector('#reactive-level');if(lvl)lvl.onchange=()=>{level=Number(lvl.value);exercise=generate(mode,level);showSolution=false;render();};
