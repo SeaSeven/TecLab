@@ -38,3 +38,21 @@
 .component-example{border-left:4px solid var(--amber);padding:20px;background:#132331;border-radius:0 9px 9px 0}
 @media(max-width:850px){.component-workspace{grid-template-columns:1fr}}
 @media(max-width:520px){.component-panel,.component-article{padding:17px}.component-visual{min-height:180px;padding:10px}.component-visual svg{height:185px}}
+
+/* Fonaments i Ajuda il·lustrats, reutilitzant els gràfics del mateix laboratori. */
+.component-guide{max-width:1080px}
+.component-illustrated{display:grid;grid-template-columns:minmax(240px,1fr) minmax(0,1.25fr);gap:20px;align-items:center;margin:18px 0 30px;padding:16px;background:#142634;border:1px solid #405668;border-radius:12px}
+.component-illustrated svg{display:block;width:100%;height:auto;max-height:210px;background:radial-gradient(ellipse at center,#284051,#152634);border-radius:9px}
+.component-illustrated p{font-size:14px;line-height:1.75;margin:6px 0 10px}
+.component-illustrated strong{color:#f0c58c}
+.component-guide h3{padding-top:5px}
+@media(max-width:700px){.component-illustrated{grid-template-columns:1fr}.component-illustrated svg{max-height:190px}}
+
+.component-color-reference{margin:22px 0 32px;padding:18px;background:#142634;border:1px solid #405668;border-radius:12px}
+.component-color-reference h4{margin:0 0 10px;color:#f0c58c}
+.component-color-table-wrap{overflow-x:auto}
+.component-color-table{width:100%;border-collapse:collapse;font-size:14px;min-width:440px}
+.component-color-table th,.component-color-table td{padding:10px 12px;text-align:left;border-bottom:1px solid #405668}
+.component-color-table th{font-size:12px;color:#bfcdda}
+.component-swatch{display:inline-block;vertical-align:middle;width:24px;height:18px;border:1px solid #8795a4;border-radius:4px;margin-right:12px}
+.component-color-reference>p:last-child{font-size:13px}

@@ -10,6 +10,17 @@ export function threeDigit(code,base='pF'){
  const n=Number(String(code).slice(0,2))*10**Number(String(code)[2]);
  return {value:n,unit:base};
 }
+// Codificació històrica de condensadors de pel·lícula: 3 bandes de valor,
+// dues xifres significatives i multiplicador en picofarads.
+// No s'infereixen tolerància ni tensió a partir de bandes addicionals,
+// perquè els sistemes canvien segons fabricant i tecnologia.
+export function capacitorBands(bands){
+ if(!Array.isArray(bands)||bands.length!==3)throw Error('Calen tres bandes de valor');
+ const [a,b,m]=bands;
+ if(!(a in colorNumber)||!(b in colorNumber)||!(m in colorNumber)||colorNumber[a]===0)
+  throw Error('Colors de capacitat no vàlids');
+ return {value:(10*colorNumber[a]+colorNumber[b])*10**colorNumber[m],unit:'pF'};
+}
 export function axialBands(bands){
  if(!Array.isArray(bands)||bands.length!==4)throw Error('Calen quatre bandes');
  const [a,b,m,t]=bands;
@@ -35,6 +46,25 @@ function capacitor(level,kind,r){
  const pair=pick(r,[10,12,15,22,33,47,68]),exp=rand(r,1,5),code=String(pair)+exp, pf=threeDigit(code).value,nf=pf/1000;
  const mark=pick(r,['J','K','M']), tol=tolerance[mark];
  const body={component:'ceramic',mark:code,tag:mark,unit:'nF'};
+ if(level===1&&kind===2){
+  const colors=[digits[Math.floor(pair/10)],digits[pair%10],digits[exp]];
+  return {title:'Lectura de bandes de colors',question:'En aquest condensador de pel·lícula amb codi històric de tres bandes, quina capacitat nominal indica, en nF? Les bandes representen dues xifres i multiplicador en pF.',visual:{component:'banded-capacitor',bands:colors},answer:capacitorBands(colors).value/1000,unit:'nF',solution:colors.join(' · ')+' = '+pair+' × 10^'+exp+' pF = '+fmt(nf)+' nF. Aquestes tres bandes no indiquen ni la tolerància ni la tensió nominal.'};
+ }
+ if(level===2&&kind===2){
+  const colors=[digits[Math.floor(pair/10)],digits[pair%10],digits[exp]];
+  return {title:'Bandes i conversió d’unitats',question:'Calcula la capacitat d’aquest condensador codificat per tres bandes, en µF. Fes servir dues xifres significatives i el multiplicador en pF.',visual:{component:'banded-capacitor',bands:colors},answer:capacitorBands(colors).value/1e6,unit:'µF',solution:colors.join(' · ')+' = '+fmt(pf)+' pF = '+fmt(pf/1e6)+' µF.'};
+ }
+ if(level===3&&kind===3){
+  const colors=[digits[Math.floor(pair/10)],digits[pair%10],digits[exp]];
+  return {title:'Identificació d’un marcatge per bandes',question:'Un condensador amb tres bandes de valor indica quants picofarads? No assumeixis cap codi de tolerància o tensió.',visual:{component:'banded-capacitor',bands:colors},answer:capacitorBands(colors).value,unit:'pF',solution:'Primera banda = '+Math.floor(pair/10)+', segona = '+pair%10+', tercera = ×10^'+exp+'. C = '+fmt(pf)+' pF.'};
+ }
+ if(level===3&&(kind===4||kind===5)){
+  const base=pick(r,[10,22,47,100,220,470]);
+  const other=pick(r,[10,22,47,100,220,470]);
+  const conn=kind===4?'parallel':'series';
+  const result=conn==='parallel'?base+other:base*other/(base+other);
+  return {title:'Associació bàsica de condensadors',question:'Calcula la capacitat equivalent de C1 i C2 en '+(conn==='parallel'?'paral·lel':'sèrie')+', en nF. Considera components ideals sense càrrega inicial.',visual:{component:'capacitor-network',connection:conn,values:[base,other]},answer:result,unit:'nF',solution:conn==='parallel'?'Ceq = C1 + C2 = '+base+' + '+other+' = '+fmt(result)+' nF.':'Ceq = (C1 × C2)/(C1 + C2) = ('+base+' × '+other+')/('+base+' + '+other+') = '+fmt(result)+' nF.'};
+ }
  if(level===1&&kind===0)return {title:'Lectura d’un condensador ceràmic',question:'Quina capacitat té aquest condensador, en nF? El codi de tres dígits s’expressa en pF.',visual:body,answer:nf,unit:'nF',solution:code+' = '+pair+' × 10^'+exp+' pF = '+fmt(nf)+' nF.'};
  if(level===1)return {title:'Conversió d’unitats',question:'Expressa en pF el valor nominal del condensador indicat.',visual:{component:'film',mark:fmt(nf)+' nF'},answer:pf,unit:'pF',solution:fmt(nf)+' nF = '+fmt(pf)+' pF.'};
  if(level===2&&kind===0)return {title:'Marcatge de tolerància',question:'Quina tolerància percentual correspon a la lletra indicada? Adopta la convenció J = ±5 %, K = ±10 %, M = ±20 %.',visual:body,answer:tol,unit:'%',solution:'La lletra '+mark+' correspon a una tolerància de ±'+tol+' %.'};
@@ -48,6 +78,18 @@ function inductor(level,kind,r){
  const first=Math.floor(pair/10),second=pair%10;
  const band=[digits[first],digits[second],digits[exp],pick(r,['daurat','platejat'])];
  const decoded=axialBands(band);
+ if(level===1&&kind===2){
+  return {title:'Reconeixement d’una inductància axial',question:'Quin tipus de component mostra la il·lustració?',visual:{component:'axial',bands:band},choices:['Inductància axial','Condensador de pel·lícula','Resistència variable'],answer:'Inductància axial',solution:'La peça representa una inductància axial amb bandes. Els codis de colors poden variar segons el fabricant; cal comprovar la convenció aplicable.'};
+ }
+ if(level===2&&kind===2){
+  return {title:'Convertir una lectura per bandes',question:'Llegeix les tres bandes de valor del component i expressa la inductància en mH. La quarta banda és la tolerància.',visual:{component:'axial',bands:band},answer:decoded.value/1000,unit:'mH',solution:'Les bandes indiquen '+fmt(decoded.value)+' µH; dividint per 1.000 obtenim '+fmt(decoded.value/1000)+' mH.'};
+ }
+ if(level===3&&(kind===3||kind===4)){
+  const a=pick(r,[10,22,47,100,220,470]),b=pick(r,[10,22,47,100,220,470]);
+  const connection=kind===3?'series':'parallel';
+  const equivalent=connection==='series'?a+b:a*b/(a+b);
+  return {title:'Associació bàsica d’inductàncies',question:'Troba la inductància equivalent de L1 i L2 connectades en '+(connection==='series'?'sèrie':'paral·lel')+', en mH. Suposa bobines ideals sense acoblament magnètic.',visual:{component:'inductor-network',connection,values:[a,b]},answer:equivalent,unit:'mH',solution:connection==='series'?'Leq = L1 + L2 = '+a+' + '+b+' = '+fmt(equivalent)+' mH.':'Leq = L1·L2/(L1 + L2) = '+a+' × '+b+'/('+a+' + '+b+') = '+fmt(equivalent)+' mH.'};
+ }
  if(level===1&&kind===0)return {title:'Marcatge numèric d’una inductància',question:'Amb la convenció de tres dígits en µH, quina inductància nominal indica el codi?',visual:{component:'axial',mark:code},answer:micro,unit:'µH',solution:code+' = '+pair+' × 10^'+exp+' µH = '+fmt(micro)+' µH.'};
  if(level===1)return {title:'Conversió d’inductància',question:'Converteix el valor nominal indicat de µH a mH.',visual:{component:'axial',mark:fmt(micro)+' µH'},answer:micro/1000,unit:'mH',solution:fmt(micro)+' µH / 1000 = '+fmt(micro/1000)+' mH.'};
  if(level===2&&kind===0)return {title:'Lectura de bandes de colors',question:'Calcula la inductància nominal en µH. Bandes llegides d’esquerra a dreta: dues xifres, multiplicador i tolerància.',visual:{component:'axial',bands:band},answer:decoded.value,unit:'µH',solution:band.slice(0,3).join(', ')+' → '+fmt(decoded.value)+' µH.'};
@@ -59,8 +101,11 @@ function inductor(level,kind,r){
 export function generateComponent(lab,level,seed=randomSeed(),forcedKind=null){
  if(!['009','010'].includes(lab)||![1,2,3].includes(level))throw Error('Laboratori o nivell no vàlid');
  const r=seededRandom(seed);
- const count=level===3?3:2;
- const selected=Math.floor(r()*count); // consumir també en restaurar
+ const oldCount=level===3?3:2;
+ const count=lab==='009'?(level===3?6:3):(level===3?5:3);
+ // Una sola extracció aleatòria: els codis TL-CI1 existents amb kind
+ // explícit conserven exactament els mateixos valors d'exercici.
+ const selected=Math.floor(r()*count);
  const kind=forcedKind===null?selected:forcedKind;
  if(!Number.isInteger(kind)||kind<0||kind>=count)throw Error('Tipus d’exercici no vàlid');
  const q=lab==='009'?capacitor(level,kind,r):inductor(level,kind,r);
