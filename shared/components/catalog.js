@@ -1,6 +1,6 @@
 export function renderCatalog(app, metadata, visuals) {
   const areas = [
-    {id:'components', number:'01', title:'Components electrònics', short:'Components', desc:'Identificació, codificació i característiques dels components.', labs:['LAB-001'], symbol:'◫'},
+    {id:'components', number:'01', title:'Components electrònics', short:'Components', desc:'Identificació, codificació i característiques dels components.', labs:['LAB-001','LAB-009','LAB-010'], symbol:'◫'},
     {id:'circuits', number:'02', title:'Anàlisi de circuits', short:'Circuits', desc:'Circuits resistius, components reactius i corrent altern.', labs:['LAB-002','LAB-003','LAB-005'], symbol:'⌁'},
     {id:'instruments', number:'03', title:'Instrumentació i mesures', short:'Instrumentació', desc:'Multímetre, oscil·loscopi i generadors de funcions.', labs:['LAB-006','LAB-007','LAB-008'], symbol:'◉'},
     {id:'signals', number:'04', title:'Senyals i aplicacions', short:'Senyals', desc:'Generació, modulació i aplicacions de senyals.', labs:['LAB-004'], symbol:'∿'}
@@ -15,6 +15,10 @@ export function renderCatalog(app, metadata, visuals) {
   const normalize=s=>String(s).toLocaleLowerCase('ca').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   const svgFor=l=>{
     if(l.id==='LAB-001') return visuals.resistorFigure(['yellow','violet','red','gold'],{hero:true});
+    if(l.id==='LAB-002') return '<svg viewBox="0 0 300 105" role="img" aria-label="Circuit RC i RL amb resposta transitòria"><g fill="none" stroke="#eebc70" stroke-width="2.5"><path d="M15 52h28m0-20v40m11-40v40m0-20h28m0 0c0-15 12-15 12 0s12 15 12 0 12-15 12 0h12"/><path d="M152 81V27h128" stroke="#637e8d" stroke-width="1.5"/><path d="M152 81Q174 81 191 58T280 28" stroke="#f0c778" stroke-width="3"/></g><text x="18" y="17" fill="#bdd0d9" font-size="11">C · L / CC</text><text x="248" y="95" fill="#bdd0d9" font-size="10">t →</text></svg>';
+    if(l.id==='LAB-003') return '<svg viewBox="0 0 300 105" role="img" aria-label="Circuit RLC i ones alternes desfasades"><g fill="none" stroke="#eebc70" stroke-width="2.3"><path d="M10 58h18l6-11 10 22 10-22 6 11h17m0-22v44m12-44v44m0-22h19m0 0c0-16 12-16 12 0s12 16 12 0 12-16 12 0h12"/><path d="M174 53q15-38 30 0t30 0 30 0 30 0" stroke="#efbd72"/><path d="M174 65q15-38 30 0t30 0 30 0 30 0" stroke="#79bbcd"/></g><text x="12" y="21" fill="#bdd0d9" font-size="11">RLC / CA</text></svg>';
+    if(l.id==='LAB-009') return '<svg viewBox="0 0 300 105" role="img" aria-label="Condensadors ceràmics i electrolítics"><g stroke="#eebc70" stroke-width="2.5"><circle cx="80" cy="50" r="30" fill="#986d39"/><rect x="165" y="16" width="65" height="71" rx="8" fill="#324a55"/><path d="M165 33h65" stroke="#7ab8c5"/><path d="M76 12v-10m12 10v-10M180 87v15m34-15v15"/></g><text x="80" y="56" fill="#18212a" text-anchor="middle" font-size="16">104</text><text x="197" y="55" fill="#dbe9eb" text-anchor="middle" font-size="12">100 µF</text></svg>';
+    if(l.id==='LAB-010') return '<svg viewBox="0 0 300 105" role="img" aria-label="Inductància axial i bobina toroidal"><g fill="none" stroke="#eebc70" stroke-width="4"><path d="M18 55h30c0-37 17-37 17 0s17 37 17 0 17-37 17 0 17 37 17 0h35"/><circle cx="230" cy="55" r="35" stroke="#739bab" stroke-width="12"/><circle cx="230" cy="55" r="17" stroke="#efbd72" stroke-width="2"/></g></svg>';
     if(l.id==='LAB-005') return visuals.circuitCardFigure();
     if(l.id==='LAB-006') return visuals.scopeFigure();
     if(l.id==='LAB-007') return '<svg viewBox="0 0 90 90" aria-hidden="true"><rect x="20" y="3" width="50" height="84" rx="10" stroke="#eebc70" fill="#253c49" stroke-width="3"/><rect x="28" y="13" width="34" height="19" rx="3" stroke="#9bd0a5" fill="#abcbb3" stroke-width="2"/><circle cx="45" cy="53" r="14" stroke="#f3cd85" fill="#344b57" stroke-width="3"/><path d="M45 43v-8M39 79v-9M51 79v-9" stroke="#f3cd85" stroke-width="3"/></svg>';
@@ -24,13 +28,13 @@ export function renderCatalog(app, metadata, visuals) {
   const card=l=>{
     const available=l.status==='published';
     const area=areaFor(l.id);
-    return `<article class="card catalog-lab-card">
+    return `<article class="card catalog-lab-card"><a class="catalog-card-hit" href="#lab-${esc(l.id.slice(4))}" aria-label="${available?'Obrir':'Consultar'} ${esc(l.title)}"></a>
       <div class="card-top"><span class="id">${esc(l.id)}</span><span class="badge ${available?'is-published':'is-planned'}">${available?'Disponible':'En preparació'}</span></div>
       <div class="catalog-visual">${svgFor(l)}</div>
       <div class="catalog-card-area">${esc(area?.short || 'Laboratori')}</div>
       <h3>${esc(l.title)}</h3>
       <p>${esc(l.description)}</p>
-      <div class="catalog-card-foot"><span class="catalog-course-list">${esc(l.courses.join(' · '))}</span><a href="#lab-${esc(l.id.slice(4))}">${available?'Obrir el laboratori':'Consultar la fitxa'}</a></div>
+      <div class="catalog-card-foot"><span class="catalog-course-list">${esc(l.courses.join(' · '))}</span><span class="catalog-link-text">${available?'Obrir el laboratori':'Consultar la fitxa'}</span></div>
     </article>`;
   };
   const availableCount=metadata.filter(l=>l.status==='published').length;
