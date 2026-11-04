@@ -37,7 +37,8 @@ jobs:
           BROWSER=$(command -v google-chrome || command -v chromium)
           for LAB in 002 003; do
             "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --virtual-time-budget=4000 --dump-dom "http://127.0.0.1:8766/labs/lab-$LAB/" > "/tmp/lab-$LAB-dom.html"
-            grep 'class="reactive-cover"' "/tmp/lab-$LAB-dom.html"
+            grep 'class="reactive-workspace"' "/tmp/lab-$LAB-dom.html"
+            grep 'id="reactive-level"' "/tmp/lab-$LAB-dom.html"
             "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --virtual-time-budget=4000 --window-size=1440,1000 --screenshot="/tmp/lab-$LAB-captura.png" "http://127.0.0.1:8766/labs/lab-$LAB/"
           done
       - name: Captures dels laboratoris reactius
