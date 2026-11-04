@@ -78,6 +78,18 @@ function inductor(level,kind,r){
  const first=Math.floor(pair/10),second=pair%10;
  const band=[digits[first],digits[second],digits[exp],pick(r,['daurat','platejat'])];
  const decoded=axialBands(band);
+ if(level===1&&kind===2){
+  return {title:'Reconeixement d’una inductància axial',question:'Quin tipus de component mostra la il·lustració?',visual:{component:'axial',bands:band},choices:['Inductància axial','Condensador de pel·lícula','Resistència variable'],answer:'Inductància axial',solution:'La peça representa una inductància axial amb bandes. Els codis de colors poden variar segons el fabricant; cal comprovar la convenció aplicable.'};
+ }
+ if(level===2&&kind===2){
+  return {title:'Convertir una lectura per bandes',question:'Llegeix les tres bandes de valor del component i expressa la inductància en mH. La quarta banda és la tolerància.',visual:{component:'axial',bands:band},answer:decoded.value/1000,unit:'mH',solution:'Les bandes indiquen '+fmt(decoded.value)+' µH; dividint per 1.000 obtenim '+fmt(decoded.value/1000)+' mH.'};
+ }
+ if(level===3&&(kind===3||kind===4)){
+  const a=pick(r,[10,22,47,100,220,470]),b=pick(r,[10,22,47,100,220,470]);
+  const connection=kind===3?'series':'parallel';
+  const equivalent=connection==='series'?a+b:a*b/(a+b);
+  return {title:'Associació bàsica d’inductàncies',question:'Troba la inductància equivalent de L1 i L2 connectades en '+(connection==='series'?'sèrie':'paral·lel')+', en mH. Suposa bobines ideals sense acoblament magnètic.',visual:{component:'inductor-network',connection,values:[a,b]},answer:equivalent,unit:'mH',solution:connection==='series'?'Leq = L1 + L2 = '+a+' + '+b+' = '+fmt(equivalent)+' mH.':'Leq = L1·L2/(L1 + L2) = '+a+' × '+b+'/('+a+' + '+b+') = '+fmt(equivalent)+' mH.'};
+ }
  if(level===1&&kind===0)return {title:'Marcatge numèric d’una inductància',question:'Amb la convenció de tres dígits en µH, quina inductància nominal indica el codi?',visual:{component:'axial',mark:code},answer:micro,unit:'µH',solution:code+' = '+pair+' × 10^'+exp+' µH = '+fmt(micro)+' µH.'};
  if(level===1)return {title:'Conversió d’inductància',question:'Converteix el valor nominal indicat de µH a mH.',visual:{component:'axial',mark:fmt(micro)+' µH'},answer:micro/1000,unit:'mH',solution:fmt(micro)+' µH / 1000 = '+fmt(micro/1000)+' mH.'};
  if(level===2&&kind===0)return {title:'Lectura de bandes de colors',question:'Calcula la inductància nominal en µH. Bandes llegides d’esquerra a dreta: dues xifres, multiplicador i tolerància.',visual:{component:'axial',bands:band},answer:decoded.value,unit:'µH',solution:band.slice(0,3).join(', ')+' → '+fmt(decoded.value)+' µH.'};
@@ -90,7 +102,7 @@ export function generateComponent(lab,level,seed=randomSeed(),forcedKind=null){
  if(!['009','010'].includes(lab)||![1,2,3].includes(level))throw Error('Laboratori o nivell no vàlid');
  const r=seededRandom(seed);
  const oldCount=level===3?3:2;
- const count=lab==='009'?(level===3?6:3):oldCount;
+ const count=lab==='009'?(level===3?6:3):(level===3?5:3);
  // Una sola extracció aleatòria: els codis TL-CI1 existents amb kind
  // explícit conserven exactament els mateixos valors d'exercici.
  const selected=Math.floor(r()*count);
