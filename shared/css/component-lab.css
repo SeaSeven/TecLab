@@ -47,3 +47,12 @@
 .component-illustrated strong{color:#f0c58c}
 .component-guide h3{padding-top:5px}
 @media(max-width:700px){.component-illustrated{grid-template-columns:1fr}.component-illustrated svg{max-height:190px}}
+
+.component-color-reference{margin:22px 0 32px;padding:18px;background:#142634;border:1px solid #405668;border-radius:12px}
+.component-color-reference h4{margin:0 0 10px;color:#f0c58c}
+.component-color-table-wrap{overflow-x:auto}
+.component-color-table{width:100%;border-collapse:collapse;font-size:14px;min-width:440px}
+.component-color-table th,.component-color-table td{padding:10px 12px;text-align:left;border-bottom:1px solid #405668}
+.component-color-table th{font-size:12px;color:#bfcdda}
+.component-swatch{display:inline-block;vertical-align:middle;width:24px;height:18px;border:1px solid #8795a4;border-radius:4px;margin-right:12px}
+.component-color-reference>p:last-child{font-size:13px}
