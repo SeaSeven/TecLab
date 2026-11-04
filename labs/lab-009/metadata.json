@@ -1,7 +1,7 @@
 {
   "id": "LAB-009",
   "title": "Codificació de condensadors",
-  "description": "Identificació de condensadors ceràmics, de pel·lícula i electrolítics; lectura de marcatges, capacitats, toleràncies i polaritat.",
+  "description": "Identificació de condensadors ceràmics, de pel·lícula i electrolítics, marcatges, unitats, toleràncies, polaritat i exercicis recuperables.",
   "courses": [
     "EE10",
     "EE30",
@@ -9,8 +9,8 @@
     "Enginyeria"
   ],
   "iconPath": "M8 24h29m0-16v32m10-32v32m0-16h29",
-  "version": "0.1.0",
-  "status": "planned",
+  "version": "1.0.0",
+  "status": "published",
   "access": "public",
   "entry": "labs/lab-009/",
   "tabs": [
@@ -19,9 +19,15 @@
     "ajuda"
   ],
   "features": [
-    "planned-component-identification",
-    "planned-three-levels",
-    "planned-exercise-codes"
+    "three-levels",
+    "random-exercises",
+    "exercise-codes",
+    "component-identification",
+    "graphic-components",
+    "tolerance-practice",
+    "illustrated-foundations",
+    "illustrated-help",
+    "enhanced-feedback"
   ],
   "tags": [
     "condensadors",
