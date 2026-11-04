@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {threeDigit,axialBands,range,makeComponentCode,readComponentCode,generateComponent,checkComponentAnswer} from '../shared/services/component-identification.js';
+import {threeDigit,capacitorBands,axialBands,range,makeComponentCode,readComponentCode,generateComponent,checkComponentAnswer} from '../shared/services/component-identification.js';
 const close=(a,b)=>assert.ok(Math.abs(a-b)<=1e-9*Math.max(1,Math.abs(b)),`${a} != ${b}`);
 test('condensadors: codificació convencional',()=>{
  assert.deepEqual(threeDigit('104'),{value:100000,unit:'pF'});
@@ -37,4 +37,38 @@ test('validació de resposta amb tolerància numèrica',()=>{
  const pick={answer:'Inductància toroidal',choices:['Inductància toroidal','Condensador electrolític']};
  assert.equal(checkComponentAnswer('Inductància toroidal',pick).ok,true);
  assert.equal(checkComponentAnswer('Condensador electrolític',pick).ok,false);
+});
+
+test('condensadors històrics de tres bandes',()=>{
+ assert.deepEqual(capacitorBands(['groc','violeta','taronja']),{value:47000,unit:'pF'});
+ assert.throws(()=>capacitorBands(['negre','violeta','taronja']));
+ assert.throws(()=>capacitorBands(['groc','violeta','daurat']));
+});
+test('LAB-009 inclou bandes i associacions als tres nivells i codis recuperables',()=>{
+ const kindsByLevel={1:[0,1,2],2:[0,1,2],3:[0,1,2,3,4,5]};
+ for(const [level,kinds] of Object.entries(kindsByLevel))for(const kind of kinds)for(let seed=1;seed<=100;seed++){
+  const q=generateComponent('009',Number(level),seed,kind);
+  assert.equal(q.kind,kind);
+  assert.ok(Number.isFinite(q.answer)||q.choices?.includes(q.answer));
+  const restored=readComponentCode(q.code);
+  assert.deepEqual(generateComponent(restored.lab,restored.level,restored.seed,restored.kind),q);
+  if(kind===2&&Number(level)<3||kind===3&&Number(level)===3)assert.equal(q.visual.component,'banded-capacitor');
+  if(Number(level)===3&&(kind===4||kind===5)){
+   assert.equal(q.visual.component,'capacitor-network');
+   const [a,b]=q.visual.values;
+   assert.ok(Math.abs(q.answer-(kind===4?a+b:a*b/(a+b)))<1e-8);
+  }
+ }
+});
+test('els codis TL-CI1 anteriors continuen generant el mateix enunciat',()=>{
+ const prior=[
+  {lab:'009',level:1,seed:13,kind:0},
+  {lab:'009',level:2,seed:37,kind:1},
+  {lab:'009',level:3,seed:251,kind:2},
+  {lab:'010',level:3,seed:251,kind:2}
+ ];
+ for(const x of prior){
+  const q=generateComponent(x.lab,x.level,x.seed,x.kind);
+  assert.equal(q.code,makeComponentCode(x.lab,x.level,x.kind,x.seed));
+ }
 });
