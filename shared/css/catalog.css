@@ -55,3 +55,11 @@
 @media(max-width:700px){.catalog-home{gap:40px}.catalog-stats{gap:16px}.catalog-stats a{margin-left:0;width:100%}.catalog-section-heading{align-items:start;flex-direction:column;gap:6px}.catalog-areas{gap:10px}.catalog-area{padding:16px;min-height:200px}.catalog-area strong{font-size:16px}.catalog-toolbar{grid-template-columns:1fr}.catalog-card-grid{grid-template-columns:1fr}.catalog-group-title h3{font-size:17px}}
 @media(max-width:400px){.catalog-areas{grid-template-columns:1fr}.catalog-area{min-height:0}.catalog-area-top{margin-bottom:10px}.catalog-area-description{min-height:0}}
 @media(prefers-reduced-motion:reduce){.catalog-area{transition:none}}
+
+/* Accés amb tota la targeta, inclosa la il·lustració */
+.catalog-lab-card{position:relative}
+.catalog-lab-card .catalog-card-hit{position:absolute;inset:0;z-index:2;border-radius:inherit;outline-offset:3px}
+.catalog-lab-card:focus-within{border-color:var(--amber);box-shadow:0 0 0 2px rgba(228,163,74,.4)}
+.catalog-lab-card .catalog-link-text{font-size:13px;color:var(--amber);font-weight:650}
+.catalog-lab-card .catalog-link-text::after{content:' ↗'}
+.catalog-lab-card:hover .catalog-link-text{text-decoration:underline}
