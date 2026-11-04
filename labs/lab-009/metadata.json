@@ -1,0 +1,35 @@
+{
+  "id": "LAB-009",
+  "title": "Codificació de condensadors",
+  "description": "Identificació de condensadors ceràmics, de pel·lícula i electrolítics; lectura de marcatges, capacitats, toleràncies i polaritat.",
+  "courses": [
+    "EE10",
+    "EE30",
+    "EEB0",
+    "Enginyeria"
+  ],
+  "iconPath": "M8 24h29m0-16v32m10-32v32m0-16h29",
+  "version": "0.1.0",
+  "status": "planned",
+  "access": "public",
+  "entry": "labs/lab-009/",
+  "tabs": [
+    "laboratori",
+    "fonaments",
+    "ajuda"
+  ],
+  "features": [
+    "planned-component-identification",
+    "planned-three-levels",
+    "planned-exercise-codes"
+  ],
+  "tags": [
+    "condensadors",
+    "codificació",
+    "picofarads",
+    "nanofarads",
+    "microfarads",
+    "polaritat",
+    "tolerància"
+  ]
+}
