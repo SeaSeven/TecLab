@@ -295,5 +295,75 @@
       "training-mode",
       "expanded-foundations"
     ]
+  },
+  {
+    "id": "LAB-009",
+    "title": "Codificació de condensadors",
+    "description": "Identificació de condensadors ceràmics, de pel·lícula i electrolítics; lectura de marcatges, capacitats, toleràncies i polaritat.",
+    "courses": [
+      "EE10",
+      "EE30",
+      "EEB0",
+      "Enginyeria"
+    ],
+    "iconPath": "M8 24h29m0-16v32m10-32v32m0-16h29",
+    "version": "0.1.0",
+    "status": "planned",
+    "access": "public",
+    "entry": "labs/lab-009/",
+    "tabs": [
+      "laboratori",
+      "fonaments",
+      "ajuda"
+    ],
+    "features": [
+      "planned-component-identification",
+      "planned-three-levels",
+      "planned-exercise-codes"
+    ],
+    "tags": [
+      "condensadors",
+      "codificació",
+      "picofarads",
+      "nanofarads",
+      "microfarads",
+      "polaritat",
+      "tolerància"
+    ]
+  },
+  {
+    "id": "LAB-010",
+    "title": "Codificació d'inductàncies",
+    "description": "Identificació de bobines i inductàncies; codificació numèrica, bandes de colors, unitats, tolerància i encapsulats.",
+    "courses": [
+      "EE10",
+      "EE30",
+      "EEB0",
+      "Enginyeria"
+    ],
+    "iconPath": "M5 30h10c0-25 12-25 12 0c0-25 12-25 12 0c0-25 12-25 12 0c0-25 12-25 12 0h10",
+    "version": "0.1.0",
+    "status": "planned",
+    "access": "public",
+    "entry": "labs/lab-010/",
+    "tabs": [
+      "laboratori",
+      "fonaments",
+      "ajuda"
+    ],
+    "features": [
+      "planned-component-identification",
+      "planned-three-levels",
+      "planned-exercise-codes"
+    ],
+    "tags": [
+      "bobines",
+      "inductàncies",
+      "codificació",
+      "microhenrys",
+      "mil·lihenrys",
+      "bandes de colors",
+      "tolerància"
+    ]
   }
 ]
