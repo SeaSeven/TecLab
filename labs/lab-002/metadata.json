@@ -1,15 +1,34 @@
 {
   "id": "LAB-002",
-  "title": "Codificació de condensadors",
-  "description": "Llegeix marcatges i treballa amb les unitats de capacitat.",
+  "title": "Components reactius en corrent continu",
+  "description": "Condensadors i inductàncies: codificació, associacions, transitoris RC/RL i exercicis recuperables.",
   "courses": [
     "EE10",
     "EE30",
-    "EEB0"
+    "EEB0",
+    "Enginyeria"
   ],
   "iconPath": "M8 24h29m0-16v32m10-32v32m0-16h29",
-  "version": "0.1.0",
-  "status": "planned",
+  "version": "1.0.0",
+  "status": "published",
   "access": "public",
-  "entry": "labs/lab-002/"
+  "entry": "labs/lab-002/",
+  "tags": [
+    "condensadors",
+    "inductàncies",
+    "codificació",
+    "corrent continu",
+    "RC",
+    "RL",
+    "transitoris"
+  ],
+  "features": [
+    "three-levels",
+    "exercise-codes",
+    "reactive-associations",
+    "transient-response",
+    "illustrated-foundations",
+    "illustrated-help",
+    "enhanced-feedback"
+  ]
 }

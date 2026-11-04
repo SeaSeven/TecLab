@@ -34,33 +34,71 @@
   },
   {
     "id": "LAB-002",
-    "title": "Codificació de condensadors",
-    "description": "Llegeix marcatges i treballa amb les unitats de capacitat.",
+    "title": "Components reactius en corrent continu",
+    "description": "Condensadors i inductàncies: codificació, associacions, transitoris RC/RL i exercicis recuperables.",
     "courses": [
       "EE10",
       "EE30",
-      "EEB0"
+      "EEB0",
+      "Enginyeria"
     ],
     "iconPath": "M8 24h29m0-16v32m10-32v32m0-16h29",
-    "version": "0.1.0",
-    "status": "planned",
+    "version": "1.0.0",
+    "status": "published",
     "access": "public",
-    "entry": "labs/lab-002/"
+    "entry": "labs/lab-002/",
+    "tags": [
+      "condensadors",
+      "inductàncies",
+      "codificació",
+      "corrent continu",
+      "RC",
+      "RL",
+      "transitoris"
+    ],
+    "features": [
+      "three-levels",
+      "exercise-codes",
+      "reactive-associations",
+      "transient-response",
+      "illustrated-foundations",
+      "illustrated-help",
+      "enhanced-feedback"
+    ]
   },
   {
     "id": "LAB-003",
-    "title": "Codificació d’inductàncies",
-    "description": "Relaciona els codis de colors i els marcatges amb la inductància.",
+    "title": "Anàlisi de circuits en corrent altern",
+    "description": "Reactàncies, impedància, fase i circuits RC, RL i RLC sinusoidals amb tres nivells i codis recuperables.",
     "courses": [
       "EE10",
       "EE30",
-      "EEB0"
+      "EEB0",
+      "Enginyeria"
     ],
     "iconPath": "M5 30h10c0-25 12-25 12 0c0-25 12-25 12 0c0-25 12-25 12 0c0-25 12-25 12 0h10",
-    "version": "0.1.0",
-    "status": "planned",
+    "version": "1.0.0",
+    "status": "published",
     "access": "public",
-    "entry": "labs/lab-003/"
+    "entry": "labs/lab-003/",
+    "tags": [
+      "corrent altern",
+      "impedància",
+      "reactància",
+      "RLC",
+      "ressonància",
+      "fase"
+    ],
+    "features": [
+      "three-levels",
+      "exercise-codes",
+      "reactance",
+      "series-impedance",
+      "rlc-resonance",
+      "illustrated-foundations",
+      "illustrated-help",
+      "enhanced-feedback"
+    ]
   },
   {
     "id": "LAB-004",
@@ -256,6 +294,88 @@
       "peak-rms-period-exercises",
       "training-mode",
       "expanded-foundations"
+    ]
+  },
+  {
+    "id": "LAB-009",
+    "title": "Codificació de condensadors",
+    "description": "Identificació de condensadors ceràmics, de pel·lícula i electrolítics, marcatges, unitats, toleràncies, polaritat i exercicis recuperables.",
+    "courses": [
+      "EE10",
+      "EE30",
+      "EEB0",
+      "Enginyeria"
+    ],
+    "iconPath": "M8 24h29m0-16v32m10-32v32m0-16h29",
+    "version": "1.0.0",
+    "status": "published",
+    "access": "public",
+    "entry": "labs/lab-009/",
+    "tabs": [
+      "laboratori",
+      "fonaments",
+      "ajuda"
+    ],
+    "features": [
+      "three-levels",
+      "random-exercises",
+      "exercise-codes",
+      "component-identification",
+      "graphic-components",
+      "tolerance-practice",
+      "illustrated-foundations",
+      "illustrated-help",
+      "enhanced-feedback"
+    ],
+    "tags": [
+      "condensadors",
+      "codificació",
+      "picofarads",
+      "nanofarads",
+      "microfarads",
+      "polaritat",
+      "tolerància"
+    ]
+  },
+  {
+    "id": "LAB-010",
+    "title": "Codificació d'inductàncies",
+    "description": "Identificació de bobines i inductàncies, codis numèrics, bandes de colors, unitats, toleràncies i exercicis recuperables.",
+    "courses": [
+      "EE10",
+      "EE30",
+      "EEB0",
+      "Enginyeria"
+    ],
+    "iconPath": "M5 30h10c0-25 12-25 12 0c0-25 12-25 12 0c0-25 12-25 12 0c0-25 12-25 12 0h10",
+    "version": "1.0.0",
+    "status": "published",
+    "access": "public",
+    "entry": "labs/lab-010/",
+    "tabs": [
+      "laboratori",
+      "fonaments",
+      "ajuda"
+    ],
+    "features": [
+      "three-levels",
+      "random-exercises",
+      "exercise-codes",
+      "component-identification",
+      "graphic-components",
+      "tolerance-practice",
+      "illustrated-foundations",
+      "illustrated-help",
+      "enhanced-feedback"
+    ],
+    "tags": [
+      "bobines",
+      "inductàncies",
+      "codificació",
+      "microhenrys",
+      "mil·lihenrys",
+      "bandes de colors",
+      "tolerància"
     ]
   }
 ]

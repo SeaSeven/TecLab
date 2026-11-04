@@ -1,0 +1,41 @@
+{
+  "id": "LAB-010",
+  "title": "Codificació d'inductàncies",
+  "description": "Identificació de bobines i inductàncies, codis numèrics, bandes de colors, unitats, toleràncies i exercicis recuperables.",
+  "courses": [
+    "EE10",
+    "EE30",
+    "EEB0",
+    "Enginyeria"
+  ],
+  "iconPath": "M5 30h10c0-25 12-25 12 0c0-25 12-25 12 0c0-25 12-25 12 0c0-25 12-25 12 0h10",
+  "version": "1.0.0",
+  "status": "published",
+  "access": "public",
+  "entry": "labs/lab-010/",
+  "tabs": [
+    "laboratori",
+    "fonaments",
+    "ajuda"
+  ],
+  "features": [
+    "three-levels",
+    "random-exercises",
+    "exercise-codes",
+    "component-identification",
+    "graphic-components",
+    "tolerance-practice",
+    "illustrated-foundations",
+    "illustrated-help",
+    "enhanced-feedback"
+  ],
+  "tags": [
+    "bobines",
+    "inductàncies",
+    "codificació",
+    "microhenrys",
+    "mil·lihenrys",
+    "bandes de colors",
+    "tolerància"
+  ]
+}
