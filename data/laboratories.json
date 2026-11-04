@@ -299,7 +299,7 @@
   {
     "id": "LAB-009",
     "title": "Codificació de condensadors",
-    "description": "Identificació de condensadors ceràmics, de pel·lícula i electrolítics, marcatges, unitats, toleràncies, polaritat i exercicis recuperables.",
+    "description": "Identificació de condensadors ceràmics, de pel·lícula, electrolítics i de bandes de colors; marcatges, tolerància, polaritat i associacions bàsiques.",
     "courses": [
       "EE10",
       "EE30",
@@ -307,7 +307,7 @@
       "Enginyeria"
     ],
     "iconPath": "M8 24h29m0-16v32m10-32v32m0-16h29",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "status": "published",
     "access": "public",
     "entry": "labs/lab-009/",
@@ -325,7 +325,11 @@
       "tolerance-practice",
       "illustrated-foundations",
       "illustrated-help",
-      "enhanced-feedback"
+      "enhanced-feedback",
+      "historic-capacitor-color-bands",
+      "basic-series-parallel-associations",
+      "expanded-illustrated-foundations",
+      "expanded-illustrated-help"
     ],
     "tags": [
       "condensadors",
@@ -334,7 +338,10 @@
       "nanofarads",
       "microfarads",
       "polaritat",
-      "tolerància"
+      "tolerància",
+      "bandes de colors",
+      "associació en sèrie",
+      "associació en paral·lel"
     ]
   },
   {
