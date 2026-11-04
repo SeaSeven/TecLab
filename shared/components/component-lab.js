@@ -13,11 +13,12 @@ function figure(v){
  }
  if(v.component==='inductor-network'){
    const [a,b]=v.values,parallel=v.connection==='parallel';
-   const loops=x=>`M${x-36} 107c0-22 18-22 18 0c0-22 18-22 18 0c0-22 18-22 18 0c0-22 18-22 18 0`;
+   const hcoil=x=>`M${x} 116c0-20 18-20 18 0c0-20 18-20 18 0c0-20 18-20 18 0c0-20 18-20 18 0`;
+   const vcoil=x=>`M${x} 85c-20 0-20 14 0 14c-20 0-20 14 0 14c-20 0-20 14 0 14c-20 0-20 14 0 14`;
    const drawing=parallel
-   ?`<path d="M50 35H470 M50 195H470 M160 35V107 M160 125V195 M360 35V107 M360 125V195"/><path d="${loops(160)} ${loops(360)}"/>`
-   :`<path d="M30 116H115 M187 116H320 M392 116H490"/><path d="${loops(151)} ${loops(356)}"/>`;
-   return `<svg viewBox="0 0 520 230" role="img" aria-label="Dues inductàncies ${parallel?'en paral·lel':'en sèrie'}"><g stroke="#edbd72" stroke-width="3.5" fill="none">${drawing}</g><g fill="#dae7ed" font-size="19"><text x="${parallel?160:151}" y="25" text-anchor="middle">L1</text><text x="${parallel?360:356}" y="25" text-anchor="middle">L2</text><text x="260" y="222" text-anchor="middle">${a} mH · ${b} mH</text></g></svg>`;
+   ?`<path d="M50 35H470 M50 195H470 M160 35V85 M160 141V195 M360 35V85 M360 141V195"/><path d="${vcoil(160)} ${vcoil(360)}"/>`
+   :`<path d="M30 116H110 M182 116H310 M382 116H490"/><path d="${hcoil(110)} ${hcoil(310)}"/>`;
+   return `<svg viewBox="0 0 520 230" role="img" aria-label="Dues inductàncies ${parallel?'en paral·lel':'en sèrie'}"><g stroke="#edbd72" stroke-width="3.5" fill="none">${drawing}</g><g fill="#dae7ed" font-size="19"><text x="${parallel?160:146}" y="25" text-anchor="middle">L1</text><text x="${parallel?360:346}" y="25" text-anchor="middle">L2</text><text x="260" y="222" text-anchor="middle">${a} mH · ${b} mH</text></g></svg>`;
  }
  if(v.component==='capacitor-network'){
   const [a,b]=v.values,parallel=v.connection==='parallel';
