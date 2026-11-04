@@ -48,3 +48,21 @@ jobs:
           path: |
             /tmp/lab-002-captura.png
             /tmp/lab-003-captura.png
+      - name: Previsualitzar LAB-009 i LAB-010 en Chromium
+        run: |
+          python3 -m http.server 8767 > /tmp/teclab-components.log 2>&1 &
+          sleep 2
+          BROWSER=$(command -v google-chrome || command -v chromium)
+          for LAB in 009 010; do
+            "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --virtual-time-budget=4000 --dump-dom "http://127.0.0.1:8767/labs/lab-$LAB/" > "/tmp/lab-$LAB-dom.html"
+            grep 'class="component-workspace"' "/tmp/lab-$LAB-dom.html"
+            grep 'id="component-level"' "/tmp/lab-$LAB-dom.html"
+            "$BROWSER" --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --virtual-time-budget=4000 --window-size=1440,1000 --screenshot="/tmp/lab-$LAB-captura.png" "http://127.0.0.1:8767/labs/lab-$LAB/"
+          done
+      - name: Captures dels nous laboratoris de components
+        uses: actions/upload-artifact@v4
+        with:
+          name: lab-009-010-captures
+          path: |
+            /tmp/lab-009-captura.png
+            /tmp/lab-010-captura.png
