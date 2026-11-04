@@ -28,7 +28,7 @@ function route(focus=false){
  // El peu de pàgina és comú i conserva l'enllaç d'autoria.
  const [id,...parts]=location.hash.slice(1).split('/');
  if(id==='credits')credits();
- else if(id==='lab-008')location.replace(new URL('../../labs/lab-008/index.html',import.meta.url).href); else if(id==='lab-007')location.replace(new URL('../../labs/lab-007/index.html',import.meta.url).href); else if(id==='lab-002'||id==='lab-003')location.replace(new URL('../../labs/'+id+'/index.html',import.meta.url).href); else if(id==='lab-006')renderLab006(app,parts);
+ else if(id==='lab-008')location.replace(new URL('../../labs/lab-008/index.html',import.meta.url).href); else if(id==='lab-007')location.replace(new URL('../../labs/lab-007/index.html',import.meta.url).href); else if(['lab-002','lab-003','lab-009','lab-010'].includes(id))location.replace(new URL('../../labs/'+id+'/index.html',import.meta.url).href); else if(id==='lab-006')renderLab006(app,parts);
  else if(id==='lab-005')renderLab005(app,parts);
  else if(id==='lab-001')renderLab001(app,parts);
  else if(id.startsWith('lab-'))upcoming(id.slice(4),parts[0]);
