@@ -5,7 +5,7 @@ import {validateSession} from './session.js';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=(v,d=2)=>typeof v==='number'&&Number.isFinite(v)?v.toLocaleString('ca-ES',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
 const phaseName=i=>Number.isInteger(i)?'L'+(i+1):'—';
-const pointName=p=>({PCC:'P0',DRIVE:'P1',CTRL:'P2'})[p]??p??'—';
+const pointName=p=>({PCC:'P0',DRIVE:'P1',CTRL:'P2',DC24:'24 V CC'})[p]??p??'—';
 function settingTable(r){
  const s=r.settings;
  const lines=[];
