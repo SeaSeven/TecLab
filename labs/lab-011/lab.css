@@ -14,3 +14,14 @@
 .pq-bus-line{display:block;height:18px;width:4px;border-radius:2px;background:#9db5c2}
 .pq-wiring [data-arm].active{background:var(--amber);border-color:var(--amber);color:#17212c}
 .pq-wiring [data-arm]{font-size:12px;padding:6px 8px}
+
+/* Panell físic únic de connexions: conductors, set cables i borns de l'equip. */
+.pq-stage{margin:0 0 18px;padding:18px}
+.pq-stage h2{font-size:19px;margin:0 0 8px}
+#pq-wiring-canvas{width:100%;overflow:hidden;border-radius:12px;background:#142633}
+.pq-wiring-svg{display:block;width:100%;height:auto;max-height:65vh;touch-action:none;user-select:none}
+.pq-drag-head{cursor:grab;outline:none}
+.pq-drag-head:active{cursor:grabbing}
+.pq-drag-head:focus-visible circle{stroke:#fff;stroke-width:5}
+.pq-placement{padding:10px 12px;margin-top:8px;background:#152732;border:1px solid #465d69;border-radius:7px;color:#c4d5de;font:11px/1.7 var(--mono);overflow-wrap:anywhere}
+@media(max-width:720px){.pq-stage{padding:10px}.pq-wiring-svg{min-width:680px;max-height:none}#pq-wiring-canvas{overflow-x:auto}}
