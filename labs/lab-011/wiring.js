@@ -1,38 +1,120 @@
-// Connexions manuals dels terminals de tensió i de les pinces, per punt de mesura.
-// Les connexions són completament virtuals; no representen una maniobra segura real.
-export function emptyWiring(phases){
- return {
-   voltage:Array.from({length:phases},()=>({positive:null,negative:null})),
-   clamps:Array.from({length:phases},()=>({conductor:null,direction:1}))
+// Vista física de connexions CA: tots els cables surten del mateix instrument.
+const NS='http://www.w3.org/2000/svg';
+const labels=['P0','P1','P2'];
+const busIds=['PCC','DRIVE','CTRL'];
+const colors={L1:'#d8a95c',L2:'#c4cad1',L3:'#d9909c',N:'#75ade0',PE:'#83ba91'};
+const wires=[
+ ...['V1','V2','V3'].map((id,i)=>({id,kind:'v',index:i,color:'#eebd70',sx:430+i*34,sy:417})),
+ {id:'VN',kind:'n',color:'#77b4e9',sx:532,sy:417},
+ ...['I1','I2','I3'].map((id,i)=>({id,kind:'i',index:i,color:['#f4d084','#89d7b1','#c3b3f1'][i],sx:582+i*34,sy:417}))
+];
+const nodeList=phases=>labels.flatMap((label,p)=>['L1',...(phases>1?['L2','L3']:[]),'N','PE'].map((c,i)=>({point:busIds[p],label,conductor:c,x:80+p*330+130,y:109+i*38})));
+const getWire=(settings,w)=>{
+ const v=w.kind==='v'?settings.voltageChannels[w.index]:settings.voltageChannels[0];
+ const c=w.kind==='i'?settings.currentChannels[w.index]:null;
+ if(w.kind==='v')return v?.positivePoint&&v.positive?{point:v.positivePoint,conductor:v.positive}:null;
+ if(w.kind==='n')return v?.negativePoint&&v.negative?{point:v.negativePoint,conductor:v.negative}:null;
+ return c?.pointId&&c.conductor?{point:c.pointId,conductor:c.conductor}:null;
+};
+function assign(settings,w,target){
+ const conductor=target?.conductor??null,point=target?.point??null;
+ if(w.kind==='v')Object.assign(settings.voltageChannels[w.index],{positive:conductor,positivePoint:point});
+ else if(w.kind==='n')settings.voltageChannels.forEach(v=>Object.assign(v,{negative:conductor,negativePoint:point}));
+ else Object.assign(settings.currentChannels[w.index],{conductor,pointId:point});
+}
+const svgEl=(name,attrs={},value='')=>{
+ const el=document.createElementNS(NS,name);
+ for(const [key,val] of Object.entries(attrs))el.setAttribute(key,String(val));
+ if(value)el.textContent=value;
+ return el;
+};
+export function mountWiring(host,scenario,settings,onChange){
+ const nodes=nodeList(scenario.phases),svg=svgEl('svg',{viewBox:'0 0 1100 490',class:'pq-wiring-svg',role:'group','aria-label':'Connexions virtuals: arrossega les sondes i pinces als conductors'});
+ svg.append(svgEl('rect',{width:1100,height:490,rx:12,fill:'#142633',stroke:'#577182'}));
+ for(let p=0;p<3;p++){
+   const x=80+p*330;
+   svg.append(svgEl('rect',{x,y:45,width:270,height:280,rx:10,fill:'#203643',stroke:'#547080'}));
+   svg.append(svgEl('text',{x:x+12,y:73,fill:'#f0d2a3','font-size':17,'font-weight':700},labels[p]));
+   svg.append(svgEl('text',{x:x+48,y:73,fill:'#d5e1e8','font-size':12},['Entrada quadre general','Branca del variador','Quadre de control'][p]));
+   for(const node of nodes.filter(n=>n.point===busIds[p])){
+     const cy=node.y,color=colors[node.conductor];
+     svg.append(svgEl('text',{x:x+15,y:cy+5,fill:'#e2ebf0','font-size':13},node.conductor));
+     svg.append(svgEl('line',{x1:x+58,y1:cy,x2:x+232,y2:cy,stroke:color,'stroke-width':5,'stroke-linecap':'round'}));
+     svg.append(svgEl('circle',{cx:node.x,cy,r:9,fill:'#172631',stroke:color,'stroke-width':2}));
+   }
+ }
+ svg.append(svgEl('rect',{x:930,y:345,width:152,height:55,rx:8,fill:'#28413f',stroke:'#648a7c'}));
+ svg.append(svgEl('text',{x:942,y:367,fill:'#d2e6de','font-size':15},'24 V CC'));
+ svg.append(svgEl('text',{x:942,y:386,fill:'#b4d0c8','font-size':11},'Circuit de control'));
+ svg.append(svgEl('rect',{x:350,y:400,width:400,height:80,rx:13,fill:'#30444f',stroke:'#94adb6','stroke-width':2}));
+ svg.append(svgEl('text',{x:373,y:465,fill:'#edd7a6','font-size':15,'font-weight':700},'TECLAB · ANALITZADOR PQ'));
+ const parts=new Map();
+ const rest=(w,i)=>({x:390+i*48,y:361});
+ const loc=(target,w,i)=>{
+   const node=target&&nodes.find(n=>n.point===target.point&&n.conductor===target.conductor);
+   return node??rest(w,i);
  };
-}
-export function availableNodes(scenario){
- return [...Array.from({length:scenario.phases},(_,i)=>'L'+(i+1)),'N'];
-}
-export function assertWiring(scenario,wiring){
- if(!wiring||!Array.isArray(wiring.voltage)||!Array.isArray(wiring.clamps)||
- wiring.voltage.length!==scenario.phases||wiring.clamps.length!==scenario.phases)throw new RangeError('Connexions no vàlides.');
- const nodes=availableNodes(scenario);
- for(const v of wiring.voltage){
-   if(![null,...nodes].includes(v.positive)||![null,...nodes].includes(v.negative))
-     throw new RangeError('Terminal de tensió no disponible.');
+ function refresh(w,i,temp){
+   const {path,head,title}=parts.get(w.id),at=temp??loc(getWire(settings,w),w,i);
+   path.setAttribute('d','M'+w.sx+','+w.sy+' C'+w.sx+','+(w.sy-100)+' '+at.x+','+(at.y+90)+' '+at.x+','+at.y);
+   head.setAttribute('transform','translate('+at.x+' '+at.y+')');
+   const target=getWire(settings,w);
+   const name=w.id+(target?' · '+labels[busIds.indexOf(target.point)]+' '+target.conductor:' · lliure');
+   title.textContent=name;
+   head.setAttribute('aria-label',name+'. Arrossega, o prem Retorn i mou amb fletxes.');
  }
- for(const c of wiring.clamps){
-   if(![null,...nodes].includes(c.conductor)||![1,-1].includes(c.direction))
-     throw new RangeError('Pinça o sentit no disponible.');
- }
- return true;
-}
-export function nodePhase(node){return /^L[123]$/.test(node)?Number(node.slice(1))-1:null;}
-export function setWiringTerminal(wiring,kind,slot,node){
- const next=structuredClone(wiring);
- if(kind==='positive'||kind==='negative')next.voltage[slot][kind]=node;
- else if(kind==='clamp')next.clamps[slot].conductor=node;
- else throw new RangeError('Terminal desconegut.');
- return next;
-}
-export function invertWiringClamp(wiring,slot){
- const next=structuredClone(wiring);
- next.clamps[slot].direction*=-1;
- return next;
+ const nearest=(x,y)=>{
+   let best=null,dist=25;
+   for(const node of nodes){const d=Math.hypot(x-node.x,y-node.y);if(d<dist){best=node;dist=d;}}
+   return best;
+ };
+ const xy=event=>{
+   const box=svg.getBoundingClientRect(),scale=Math.min(box.width/1100,box.height/490);
+   return {x:(event.clientX-box.left-(box.width-1100*scale)/2)/scale,y:(event.clientY-box.top-(box.height-490*scale)/2)/scale};
+ };
+ wires.forEach((w,i)=>{
+   const path=svgEl('path',{fill:'none',stroke:w.color,'stroke-width':3.5,'stroke-linecap':'round','pointer-events':'none'});
+   svg.append(path,svgEl('circle',{cx:w.sx,cy:w.sy,r:7,fill:w.color}));
+   svg.append(svgEl('text',{x:w.sx-9,y:w.sy+24,'font-size':11,fill:'#dce9ee'},w.id));
+   const head=svgEl('g',{tabindex:0,role:'button',class:'pq-drag-head'});
+   head.append(svgEl('circle',{r:18,fill:'#ebf0f1',stroke:w.color,'stroke-width':3}));
+   head.append(svgEl('text',{'text-anchor':'middle',y:5,'font-size':14,'font-weight':700,fill:'#263540','pointer-events':'none'},w.kind==='i'?'◖◗':'◆'));
+   const title=svgEl('title');head.append(title);svg.append(head);
+   parts.set(w.id,{path,head,title});
+   let dragging=null,keyboard=null;
+   head.addEventListener('pointerdown',event=>{
+     if(event.pointerType==='mouse'&&event.button!==0)return;
+     dragging={id:event.pointerId,...xy(event)};
+     head.setPointerCapture(event.pointerId);event.preventDefault();
+   });
+   head.addEventListener('pointermove',event=>{
+     if(!dragging||event.pointerId!==dragging.id)return;
+     Object.assign(dragging,xy(event));refresh(w,i,dragging);
+   });
+   head.addEventListener('pointerup',event=>{
+     if(!dragging||event.pointerId!==dragging.id)return;
+     const point=nearest(dragging.x,dragging.y);
+     // PE no és una entrada de tensió representada en aquest model; no simulem cap lectura de PE.
+     assign(settings,w,point&&point.conductor!=='PE'&&(w.kind!=='i'||point.conductor!=='N')?point:null);
+     dragging=null;refresh(w,i);onChange?.();
+   });
+   head.addEventListener('pointercancel',()=>{dragging=null;refresh(w,i);});
+   head.addEventListener('keydown',event=>{
+     if(event.key==='Escape'){keyboard=null;assign(settings,w,null);refresh(w,i);onChange?.();event.preventDefault();return;}
+     if(event.key==='Enter'||event.key===' '){
+       if(keyboard===null)keyboard=loc(getWire(settings,w),w,i);
+       else{const point=nearest(keyboard.x,keyboard.y);assign(settings,w,point&&point.conductor!=='PE'&&(w.kind!=='i'||point.conductor!=='N')?point:null);keyboard=null;refresh(w,i);onChange?.();}
+       event.preventDefault();return;
+     }
+     const shifts={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
+     if(shifts[event.key]){
+       keyboard??=loc(getWire(settings,w),w,i);
+       keyboard={x:keyboard.x+shifts[event.key][0]*(event.shiftKey?30:10),y:keyboard.y+shifts[event.key][1]*(event.shiftKey?30:10)};
+       refresh(w,i,keyboard);event.preventDefault();
+     }
+   });
+   refresh(w,i);
+ });
+ host.replaceChildren(svg);
+ return {redraw:()=>wires.forEach((w,i)=>refresh(w,i))};
 }
