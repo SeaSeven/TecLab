@@ -8,19 +8,31 @@ const wires=[
  {id:'VN',kind:'n',color:'#77b4e9',sx:532,sy:417},
  ...['I1','I2','I3'].map((id,i)=>({id,kind:'i',index:i,color:['#f4d084','#89d7b1','#c3b3f1'][i],sx:582+i*34,sy:417}))
 ];
-const nodeList=phases=>labels.flatMap((label,p)=>['L1',...(phases>1?['L2','L3']:[]),'N','PE'].map((c,i)=>({point:busIds[p],label,conductor:c,x:80+p*330+130,y:109+i*38})));
+// Dues places de connexió a cada conductor: identitat física separada de l'estat elèctric.
+const nodeList=phases=>labels.flatMap((label,p)=>
+ ['L1',...(phases>1?['L2','L3']:[]),'N','PE'].flatMap((conductor,i)=>
+ [0,1].map(socket=>({point:busIds[p],label,conductor,socket,x:80+p*330+97+socket*72,y:109+i*38}))));
+export function findFreeSocket(nodes,wires,settings,wire,point,conductor,preferred=null){
+ const used=new Set(wires.filter(w=>w.id!==wire.id).map(w=>{
+   const t=getWire(settings,w);
+   return t?.point===point&&t.conductor===conductor?t.socket:null;
+ }).filter(v=>v!==null&&v!==undefined));
+ const available=nodes.filter(n=>n.point===point&&n.conductor===conductor&&!used.has(n.socket));
+ if(!available.length)return null;
+ return available.find(n=>n.socket===preferred)??available[0];
+}
 const getWire=(settings,w)=>{
  const v=w.kind==='v'?settings.voltageChannels[w.index]:settings.voltageChannels[0];
  const c=w.kind==='i'?settings.currentChannels[w.index]:null;
- if(w.kind==='v')return v?.positivePoint&&v.positive?{point:v.positivePoint,conductor:v.positive}:null;
- if(w.kind==='n')return v?.negativePoint&&v.negative?{point:v.negativePoint,conductor:v.negative}:null;
- return c?.pointId&&c.conductor?{point:c.pointId,conductor:c.conductor}:null;
+ if(w.kind==='v')return v?.positivePoint&&v.positive?{point:v.positivePoint,conductor:v.positive,socket:v.positiveSocket??0}:null;
+ if(w.kind==='n')return v?.negativePoint&&v.negative?{point:v.negativePoint,conductor:v.negative,socket:v.negativeSocket??0}:null;
+ return c?.pointId&&c.conductor?{point:c.pointId,conductor:c.conductor,socket:c.socket??0}:null;
 };
 function assign(settings,w,target){
- const conductor=target?.conductor??null,point=target?.point??null;
- if(w.kind==='v')Object.assign(settings.voltageChannels[w.index],{positive:conductor,positivePoint:point});
- else if(w.kind==='n')settings.voltageChannels.forEach(v=>Object.assign(v,{negative:conductor,negativePoint:point}));
- else Object.assign(settings.currentChannels[w.index],{conductor,pointId:point});
+ const conductor=target?.conductor??null,point=target?.point??null,socket=target?.socket??null;
+ if(w.kind==='v')Object.assign(settings.voltageChannels[w.index],{positive:conductor,positivePoint:point,positiveSocket:socket});
+ else if(w.kind==='n')settings.voltageChannels.forEach(v=>Object.assign(v,{negative:conductor,negativePoint:point,negativeSocket:socket}));
+ else Object.assign(settings.currentChannels[w.index],{conductor,pointId:point,socket});
 }
 const svgEl=(name,attrs={},value='')=>{
  const el=document.createElementNS(NS,name);
@@ -29,18 +41,19 @@ const svgEl=(name,attrs={},value='')=>{
  return el;
 };
 export function mountWiring(host,scenario,settings,onChange){
- const nodes=nodeList(scenario.phases),svg=svgEl('svg',{viewBox:'0 0 1100 490',class:'pq-wiring-svg',role:'group','aria-label':'Connexions virtuals: arrossega les sondes i pinces als conductors'});
+ const nodes=nodeList(scenario.phases),activeWires=wires.filter(w=>w.index===undefined||w.index<scenario.phases),svg=svgEl('svg',{viewBox:'0 0 1100 490',class:'pq-wiring-svg',role:'group','aria-label':'Connexions virtuals: arrossega les sondes i pinces als conductors'});
  svg.append(svgEl('rect',{width:1100,height:490,rx:12,fill:'#142633',stroke:'#577182'}));
  for(let p=0;p<3;p++){
    const x=80+p*330;
    svg.append(svgEl('rect',{x,y:45,width:270,height:280,rx:10,fill:'#203643',stroke:'#547080'}));
    svg.append(svgEl('text',{x:x+12,y:73,fill:'#f0d2a3','font-size':17,'font-weight':700},labels[p]));
    svg.append(svgEl('text',{x:x+48,y:73,fill:'#d5e1e8','font-size':12},['Entrada quadre general','Branca del variador','Quadre de control'][p]));
-   for(const node of nodes.filter(n=>n.point===busIds[p])){
-     const cy=node.y,color=colors[node.conductor];
-     svg.append(svgEl('text',{x:x+15,y:cy+5,fill:'#e2ebf0','font-size':13},node.conductor));
+   for(const conductor of [...new Set(nodes.filter(n=>n.point===busIds[p]).map(n=>n.conductor))]){
+     const pair=nodes.filter(n=>n.point===busIds[p]&&n.conductor===conductor);
+     const cy=pair[0].y,color=colors[conductor];
+     svg.append(svgEl('text',{x:x+15,y:cy+5,fill:'#e2ebf0','font-size':13},conductor));
      svg.append(svgEl('line',{x1:x+58,y1:cy,x2:x+232,y2:cy,stroke:color,'stroke-width':5,'stroke-linecap':'round'}));
-     svg.append(svgEl('circle',{cx:node.x,cy,r:9,fill:'#172631',stroke:color,'stroke-width':2}));
+     for(const node of pair)svg.append(svgEl('circle',{cx:node.x,cy,r:10,fill:'#172631',stroke:color,'stroke-width':2}));
    }
  }
  svg.append(svgEl('rect',{x:930,y:345,width:152,height:55,rx:8,fill:'#28413f',stroke:'#648a7c'}));
@@ -51,37 +64,49 @@ export function mountWiring(host,scenario,settings,onChange){
  const parts=new Map();
  const rest=(w,i)=>({x:390+i*48,y:361});
  const loc=(target,w,i)=>{
-   const node=target&&nodes.find(n=>n.point===target.point&&n.conductor===target.conductor);
+   const node=target&&nodes.find(n=>n.point===target.point&&n.conductor===target.conductor&&n.socket===(target.socket??0));
    return node??rest(w,i);
  };
  function refresh(w,i,temp){
-   const {path,head,title}=parts.get(w.id),at=temp??loc(getWire(settings,w),w,i);
+   const {path,head,title,arrow}=parts.get(w.id),at=temp??loc(getWire(settings,w),w,i);
    path.setAttribute('d','M'+w.sx+','+w.sy+' C'+w.sx+','+(w.sy-100)+' '+at.x+','+(at.y+90)+' '+at.x+','+at.y);
    head.setAttribute('transform','translate('+at.x+' '+at.y+')');
    const target=getWire(settings,w);
    const reversed=w.kind==='i'&&settings.currentChannels[w.index]?.inverted;
    const name=w.id+(target?' · '+labels[busIds.indexOf(target.point)]+' '+target.conductor:' · lliure')+(reversed?' · sentit invertit':'')+(w.kind==='i'?' · doble clic o tecla R per girar':'');
    title.textContent=name;
+   if(arrow)arrow.setAttribute('transform',reversed?'rotate(180)':'rotate(0)');
    head.setAttribute('aria-label',name+'. Arrossega, o prem Retorn i mou amb fletxes.');
  }
  const nearest=(x,y)=>{
-   let best=null,dist=25;
+   let best=null,dist=29;
    for(const node of nodes){const d=Math.hypot(x-node.x,y-node.y);if(d<dist){best=node;dist=d;}}
    return best;
+ };
+ const choose=(w,point)=>{
+   if(!point)return null;
+   return findFreeSocket(nodes,activeWires,settings,w,point.point,point.conductor,point.socket);
  };
  const xy=event=>{
    const box=svg.getBoundingClientRect(),scale=Math.min(box.width/1100,box.height/490);
    return {x:(event.clientX-box.left-(box.width-1100*scale)/2)/scale,y:(event.clientY-box.top-(box.height-490*scale)/2)/scale};
  };
- wires.filter(w=>w.index===undefined||w.index<scenario.phases).forEach((w,i)=>{
+ activeWires.forEach((w,i)=>{
    const path=svgEl('path',{fill:'none',stroke:w.color,'stroke-width':3.5,'stroke-linecap':'round','pointer-events':'none'});
    svg.append(path,svgEl('circle',{cx:w.sx,cy:w.sy,r:7,fill:w.color}));
    svg.append(svgEl('text',{x:w.sx-9,y:w.sy+24,'font-size':11,fill:'#dce9ee'},w.id));
    const head=svgEl('g',{tabindex:0,role:'button',class:'pq-drag-head'});
    head.append(svgEl('circle',{r:18,fill:'#ebf0f1',stroke:w.color,'stroke-width':3}));
-   head.append(svgEl('text',{'text-anchor':'middle',y:5,'font-size':14,'font-weight':700,fill:'#263540','pointer-events':'none'},w.kind==='i'?'◖◗':'◆'));
+   let arrow=null;
+   if(w.kind==='i'){
+     // La pinça disposa de mordasses i d'una fletxa física que gira 180 graus.
+     head.append(svgEl('path',{d:'M-9,-12 C-17,-6 -17,5 -9,11 M9,-12 C17,-6 17,5 9,11',stroke:'#263540','stroke-width':2,fill:'none','pointer-events':'none'}));
+     arrow=svgEl('g',{'pointer-events':'none'});
+     arrow.append(svgEl('path',{d:'M-10,0 H10 M4,-6 L10,0 L4,6',stroke:'#174f68','stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round',fill:'none'}));
+     head.append(arrow);
+   }else head.append(svgEl('path',{d:'M0,-9 L8,2 L0,11 L-8,2 Z',fill:'#263540','pointer-events':'none'}));
    const title=svgEl('title');head.append(title);svg.append(head);
-   parts.set(w.id,{path,head,title});
+   parts.set(w.id,{path,head,title,arrow});
    let dragging=null,keyboard=null;
    head.addEventListener('pointerdown',event=>{
      if(event.pointerType==='mouse'&&event.button!==0)return;
@@ -96,17 +121,22 @@ export function mountWiring(host,scenario,settings,onChange){
      if(!dragging||event.pointerId!==dragging.id)return;
      const point=nearest(dragging.x,dragging.y);
      // PE no és una entrada de tensió representada en aquest model; no simulem cap lectura de PE.
-     assign(settings,w,point??null);
+     if(!point)assign(settings,w,null);
+     else{
+       const slot=choose(w,point);
+       if(slot)assign(settings,w,slot);
+       // Si els dos allotjaments estan ocupats, es conserva la connexió prèvia.
+     }
      dragging=null;refresh(w,i);onChange?.();
    });
    head.addEventListener('pointercancel',()=>{dragging=null;refresh(w,i);});
-   if(w.kind==='i')head.addEventListener('dblclick',()=>{settings.currentChannels[w.index].inverted=!settings.currentChannels[w.index].inverted;onChange?.();});
+   if(w.kind==='i')head.addEventListener('dblclick',()=>{settings.currentChannels[w.index].inverted=!settings.currentChannels[w.index].inverted;refresh(w,i);onChange?.();});
    head.addEventListener('keydown',event=>{
-     if((event.key==='r'||event.key==='R')&&w.kind==='i'){settings.currentChannels[w.index].inverted=!settings.currentChannels[w.index].inverted;onChange?.();event.preventDefault();return;}
+     if((event.key==='r'||event.key==='R')&&w.kind==='i'){settings.currentChannels[w.index].inverted=!settings.currentChannels[w.index].inverted;refresh(w,i);onChange?.();event.preventDefault();return;}
      if(event.key==='Escape'){keyboard=null;assign(settings,w,null);refresh(w,i);onChange?.();event.preventDefault();return;}
      if(event.key==='Enter'||event.key===' '){
        if(keyboard===null)keyboard=loc(getWire(settings,w),w,i);
-       else{const point=nearest(keyboard.x,keyboard.y);assign(settings,w,point&&point.conductor!=='PE'&&(w.kind!=='i'||point.conductor!=='N')?point:null);keyboard=null;refresh(w,i);onChange?.();}
+       else{const point=nearest(keyboard.x,keyboard.y);if(!point)assign(settings,w,null);else{const slot=choose(w,point);if(slot)assign(settings,w,slot);}keyboard=null;refresh(w,i);onChange?.();}
        event.preventDefault();return;
      }
      const shifts={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
@@ -119,5 +149,5 @@ export function mountWiring(host,scenario,settings,onChange){
    refresh(w,i);
  });
  host.replaceChildren(svg);
- return {redraw:()=>wires.filter(w=>w.index===undefined||w.index<scenario.phases).forEach((w,i)=>refresh(w,i))};
+ return {redraw:()=>activeWires.forEach((w,i)=>refresh(w,i))};
 }
