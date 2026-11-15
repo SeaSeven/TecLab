@@ -7,9 +7,9 @@ export function defaultInstrument(scenario,pointId='PCC'){
  const phases=Array.from({length:scenario.phases},(_,i)=>i);
  return {
    pointId,topology:scenario.phases===3?'3P4W':'1P2W',
-   voltageChannels:phases.map(i=>({phase:i,enabled:true,positive:null,negative:null})),
+   voltageChannels:phases.map(i=>({phase:i,enabled:true,positive:null,negative:null,positivePoint:null,negativePoint:null})),
    currentChannels:phases.map(i=>({
-     phase:i,enabled:true,inverted:false,ctRatio:actualCtRatio(pointId),conductor:null
+     phase:i,enabled:true,inverted:false,ctRatio:actualCtRatio(pointId),conductor:null,pointId:null
    })),
    duration:30,interval:1,start:0
  };
@@ -37,17 +37,18 @@ const scale=(components,factor,shift=0)=>components.map(c=>({...c,rms:c.rms*Math
  angle:c.angle+shift}));
 
 // Diferència fasorial de tensió de dos terminals. N=referència ideal del model.
-function phasorVoltage(scenario,pointId,positive,negative,time){
- const get=terminal=>{
+function phasorVoltage(scenario,defaultPoint,channel,time){
+ const byTerminal=(terminal,pointId)=>{
    if(terminal==='N')return [];
    const match=/^L([1-3])$/.exec(terminal??'');
    if(!match||Number(match[1])>scenario.phases)return null;
+   if(!scenario.points.some(p=>p.id===pointId))return null;
    return baseComponents(scenario,pointId,Number(match[1])-1,time).voltage;
  };
- const a=get(positive),b=get(negative);
+ const a=byTerminal(channel.positive,channel.positivePoint??defaultPoint);
+ const b=byTerminal(channel.negative,channel.negativePoint??defaultPoint);
  if(!a||!b)return null;
- const orders=new Set([...a,...b].map(x=>x.order));
- return [...orders].sort((x,y)=>x-y).map(order=>{
+ return [...new Set([...a,...b].map(h=>h.order))].sort((x,y)=>x-y).map(order=>{
    const va=a.find(x=>x.order===order),vb=b.find(x=>x.order===order);
    const re=(va?.rms??0)*Math.cos(va?.angle??0)-(vb?.rms??0)*Math.cos(vb?.angle??0);
    const im=(va?.rms??0)*Math.sin(va?.angle??0)-(vb?.rms??0)*Math.sin(vb?.angle??0);
@@ -57,8 +58,8 @@ function phasorVoltage(scenario,pointId,positive,negative,time){
 function selectedVoltage(scenario,pointId,channel,time){
  if(!channel?.enabled)return null;
  if(Object.hasOwn(channel,'positive')||Object.hasOwn(channel,'negative'))
-   return phasorVoltage(scenario,pointId,channel.positive,channel.negative,time);
- return baseComponents(scenario,pointId,channel.phase,time).voltage; // fitxers de sessió anteriors
+   return phasorVoltage(scenario,pointId,channel,time);
+ return baseComponents(scenario,pointId,channel.phase,time).voltage; // recuperació antiga
 }
 function selectedCurrent(scenario,pointId,channel,time){
  if(!channel?.enabled)return null;
@@ -68,8 +69,10 @@ function selectedCurrent(scenario,pointId,channel,time){
    if(!match||Number(match[1])>scenario.phases)return null;
    phase=Number(match[1])-1;
  }
- const physical=baseComponents(scenario,pointId,phase,time).current;
- return scale(physical,channel.ctRatio/actualCtRatio(pointId),shift);
+ const point=channel.pointId??pointId;
+ if(!scenario.points.some(p=>p.id===point))return null;
+ const physical=baseComponents(scenario,point,phase,time).current;
+ return scale(physical,channel.ctRatio/actualCtRatio(point),shift);
 }
 
 export function instrumentSnapshot(scenario,settings,time){
@@ -89,8 +92,8 @@ export function instrumentSnapshot(scenario,settings,time){
    const power=v&&i?componentPower(v,i):null;
    rows.push({
      slot,voltagePhase:vc?.enabled?vc.phase:null,currentPhase:ic?.enabled?ic.phase:null,
-     voltageTerminals:vc?{positive:vc.positive??null,negative:vc.negative??null}:null,
-     currentConductor:ic?.conductor??null,
+     voltageTerminals:vc?{positive:vc.positive??null,negative:vc.negative??null,positivePoint:vc.positivePoint??null,negativePoint:vc.negativePoint??null}:null,
+     currentConductor:ic?.conductor??null,currentPoint:ic?.pointId??null,
      voltageRms:v?rms(v):null,currentRms:i?rms(i):null,
      voltageTHD:v?thd(v):null,currentTHD:i?thd(i):null,
      p:power?.p??null,q1:power?.q1??null,s:power?.s??null,
