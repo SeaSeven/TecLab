@@ -63,14 +63,3 @@ export function sessionFromJSON(json){
  validateSession(parsed);
  return copy(parsed);
 }
-// A GitHub Pages la recuperació local depèn del navegador i de la seva quota.
-// No es considera emmagatzematge remot ni garantia entre dispositius.
-export function saveLocalSession(session,storage=globalThis.localStorage){
- validateSession(session);
- storage.setItem('teclab:lab-011:'+session.caseCode,sessionToJSON(session));
-}
-export function loadLocalSession(code,storage=globalThis.localStorage){
- const canonical=parseCaseCode(code).code;
- const json=storage.getItem('teclab:lab-011:'+canonical);
- return json===null?null:sessionFromJSON(json);
-}
