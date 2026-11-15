@@ -91,3 +91,13 @@ Implementats a la branca `feature/lab-011-qualitat-xarxa`:
 **Verificació realitzada:** execució aïllada de 10 comprovacions funcionals sobre els mòduls combinats: codis únics, reconstitució, set famílies, RMS de la forma d'ona, error de TC, pinça invertida, fases creuades, no detecció de pertorbació fora del mostreig i exportació/importació de sessió. Resultat: 10/10 comprovacions satisfactòries. Encara no s'ha executat la suite `npm test` amb Node.js dins del repositori.
 
 **Pendent abans de publicar:** proves amb Node i navegador, validació numèrica exhaustiva, criteris de resolució temporal, assaig docent de la dificultat dels 30 casos, mecanisme de configuració accessible, UI, Fonaments/Ajuda i exportacions CSV/impressió. El generador actual es considera prototip tècnic: les famílies s'han distribuït, però no s'ha demostrat que les 30 variants siguin pedagògicament equivalents. L'etiqueta de desequilibri RMS es manté diferenciada del desequilibri de seqüència negativa.
+
+## Prototip d'interfície — fase 3 (15-11-2026)
+
+Fitxers nous: `labs/lab-011/index.html`, `lab.css`, `lab.js` i `metadata.json` amb estat `planned`. La pàgina presenta: obertura de cas per codi, 3 punts de mesura de CA, topologia, correspondència de fases, canals, TC, pinça invertida, paràmetres de captura, botons de l'analitzador, pantalles de mesures, espectre de tensió, forma d'ona de tensió i registre temporal. Permet desar una sessió local o transferir-la en JSON i consultar les adquisicions anteriors. Inclou primers textos de Fonaments i Ajuda. Tot queda separat de la branca principal.
+
+**Limitacions expressament pendents:** no hi ha encara pantalla completa de verificació de connexions ni exportació CSV/imprimible; els gràfics de corrent requereixen integrar les conseqüències de les pinces/TC a la forma d'ona; l'espectre representa la tensió del canal seleccionat però encara no un espectre de corrent capturat; l'estratègia de detecció d'esdeveniments és per mostreig discret; falta validació de navegador, accessibilitat i prova docent. No es marcarà `published` ni s'integrarà al catàleg principal fins a la validació.
+
+Referència formal d'ergonomia: analitzadors industrials amb pantalla de dades, controls de navegació i pantalles de magnituds, formes d'ona i harmònics; evitar la còpia d'imatges, marques i distribucions propietàries.
+
+**Verificació feta:** comprovació de sintaxi de tots els nous mòduls JavaScript, incloent la interfície i el fitxer de tests. No s'ha executat encara `npm test` ni una revisió real en navegador.
