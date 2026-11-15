@@ -10,10 +10,10 @@ const find=id=>root.querySelector('#'+id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(n,dec=2)=>Number.isFinite(n)?n.toLocaleString('ca-ES',{maximumFractionDigits:dec,minimumFractionDigits:dec}):'—';
 const number=(n,dec=2)=>Number.isFinite(n)?fmt(n,dec):'—';
-let scenario,session,activeTab='laboratori',screen='instant',selectedRecord=null,message='';
+let scenario,session,activeTab='laboratori',screen='instant',selectedRecord=null,message='',armedConnection=null;
 
 function tell(text){message=text;const item=find('pq-message');if(item)item.textContent=text;}
-function fresh(seed){scenario=generateCase(seed);session=newSession(scenario.code);selectedRecord=null;screen='instant';message='';paint();}
+function fresh(seed){scenario=generateCase(seed);session=newSession(scenario.code);selectedRecord=null;screen='instant';message='';armedConnection=null;paint();}
 function setSession(restored){scenario=generateCase(parseCaseCode(restored.caseCode).seed);session=restored;selectedRecord=null;screen='instant';message='';paint();}
 function download(name,data,mime='application/json'){
  const blob=new Blob([data],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');
@@ -60,9 +60,9 @@ function connectionPanel(){
  // Els botons del quadre permeten connectar cada extrem sense donar indicacions de correcció.
  return '<section class="panel pq-wiring"><h2>Connexions de l’analitzador</h2>'+
  '<p class="pq-note">Selecciona un extrem de sonda o una pinça i després un conductor. La polaritat i el sentit de la pinça condicionen les lectures.</p>'+
- '<div class="pq-terminal-guide">Conductors del punt: '+terminals.join(' · ')+'</div>'+
- '<div class="pq-form">'+s.voltageChannels.map((v,i)=>'<fieldset class="pq-wire-channel"><legend>Entrada V'+(i+1)+'</legend><div class="pq-config-row"><label>Sonda positiva<select data-connection="v-positive" data-slot="'+i+'">'+option(terminals,v.positive)+'</select></label><label>Sonda negativa<select data-connection="v-negative" data-slot="'+i+'">'+option(terminals,v.negative)+'</select></label></div></fieldset>').join('')+
- s.currentChannels.map((a,i)=>'<fieldset class="pq-wire-channel"><legend>Pinça I'+(i+1)+'</legend><label>Conductor<select data-connection="i-conductor" data-slot="'+i+'">'+option(currentOptions,a.conductor)+'</select></label><label class="pq-switch"><input type="checkbox" data-inverted="'+i+'" '+(a.inverted?'checked':'')+'> Sentit de pinça invertit (fletxa cap a la font)</label></fieldset>').join('')+
+ '<div class="pq-terminal-guide"><p class="pq-note">Selecciona una sonda o pinça, després prem el conductor on la col·loques.</p><div class="pq-conductor-map">'+terminals.map(t=>'<button type="button" class="pq-conductor" data-bus="'+t+'"><span class="pq-bus-line"></span><strong>'+t+'</strong></button>').join('')+'</div></div>'+
+ '<div class="pq-form">'+s.voltageChannels.map((v,i)=>'<fieldset class="pq-wire-channel"><legend>Entrada V'+(i+1)+'</legend><div class="pq-action-row"><button type="button" data-arm="v-positive" data-slot="'+i+'" class="'+(armedConnection?.kind==='v-positive'&&armedConnection?.slot===i?'active':'')+'">Sonda V'+(i+1)+' +</button><button type="button" data-arm="v-negative" data-slot="'+i+'" class="'+(armedConnection?.kind==='v-negative'&&armedConnection?.slot===i?'active':'')+'">Sonda V'+(i+1)+' −</button></div><div class="pq-config-row"><label>Sonda positiva<select data-connection="v-positive" data-slot="'+i+'">'+option(terminals,v.positive)+'</select></label><label>Sonda negativa<select data-connection="v-negative" data-slot="'+i+'">'+option(terminals,v.negative)+'</select></label></div></fieldset>').join('')+
+ s.currentChannels.map((a,i)=>'<fieldset class="pq-wire-channel"><legend>Pinça I'+(i+1)+'</legend><button type="button" data-arm="i-conductor" data-slot="'+i+'" class="'+(armedConnection?.kind==='i-conductor'&&armedConnection?.slot===i?'active':'')+'">Col·locar pinça I'+(i+1)+'</button><label>Conductor<select data-connection="i-conductor" data-slot="'+i+'">'+option(currentOptions,a.conductor)+'</select></label><label class="pq-switch"><input type="checkbox" data-inverted="'+i+'" '+(a.inverted?'checked':'')+'> Sentit de pinça invertit (fletxa cap a la font)</label></fieldset>').join('')+
  '</div><p class="pq-note">Els borns i les pinces representen connexions exclusivament virtuals.</p></section>';
 }
 function pointPicker(){
@@ -159,6 +159,19 @@ function attach(){
  root.querySelectorAll('[data-point]').forEach(el=>el.addEventListener('click',()=>{settings.pointId=el.dataset.point;const freshSettings=defaultInstrument(scenario,settings.pointId);session.settings={...freshSettings,start:settings.start,duration:settings.duration,interval:settings.interval};paint();}));
  on('#pq-topology','change',e=>{settings.topology=e.target.value;});
  for(const id of ['start','duration','interval'])on('#pq-'+id,'change',e=>{const n=Number(e.target.value);if(Number.isFinite(n))settings[id]=n;});
+ root.querySelectorAll('[data-arm]').forEach(button=>button.addEventListener('click',()=>{
+   const slot=Number(button.dataset.slot),kind=button.dataset.arm;
+   armedConnection={kind,slot};paint();
+ }));
+ root.querySelectorAll('[data-bus]').forEach(button=>button.addEventListener('click',()=>{
+   if(!armedConnection){tell('Selecciona primer l’extrem de sonda o la pinça.');return;}
+   const {slot,kind}=armedConnection,terminal=button.dataset.bus;
+   if(kind==='v-positive')settings.voltageChannels[slot].positive=terminal;
+   else if(kind==='v-negative')settings.voltageChannels[slot].negative=terminal;
+   else if(terminal!=='N')settings.currentChannels[slot].conductor=terminal;
+   else{tell('Aquesta pinça només admet conductors de fase en el model actual.');return;}
+   armedConnection=null;paint();
+ }));
  root.querySelectorAll('[data-connection]').forEach(el=>el.addEventListener('change',()=>{
    const slot=Number(el.dataset.slot),kind=el.dataset.connection,terminal=el.value||null;
    if(kind==='v-positive')settings.voltageChannels[slot].positive=terminal;
