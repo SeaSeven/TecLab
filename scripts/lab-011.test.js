@@ -6,6 +6,12 @@ import {defaultInstrument,instrumentSnapshot,acquireInstrument} from '../labs/la
 import {newSession,recordAcquisition,sessionToJSON,sessionFromJSON} from '../labs/lab-011/session.js';
 
 const nearly=(a,b,tol=1e-8)=>assert.ok(Math.abs(a-b)<=tol*Math.max(1,Math.abs(a),Math.abs(b)),a+' ≠ '+b);
+function wiredInstrument(s){
+ const settings=defaultInstrument(s);
+ settings.voltageChannels.forEach((v,i)=>{v.positive='L'+(i+1);v.negative='N';});
+ settings.currentChannels.forEach((v,i)=>{v.conductor='L'+(i+1);});
+ return settings;
+}
 test('30 codis individuals, diferents i recuperables',()=>{
  const entries=classCases(30);
  assert.equal(entries.length,30);
@@ -45,7 +51,7 @@ test('potència activa, aparent i FP són coherents',()=>{
  assert.ok(Math.abs(r.p)<=r.s+1e-9);
 });
 test('relació de TC errònia escala I i potències però no V',()=>{
- const s=generateCase(100000),correct=defaultInstrument(s);
+ const s=generateCase(100000),correct=wiredInstrument(s);
  const a=instrumentSnapshot(s,correct,3);
  const wrong=structuredClone(correct);wrong.currentChannels[0].ctRatio*=2;
  const b=instrumentSnapshot(s,wrong,3);
@@ -54,7 +60,7 @@ test('relació de TC errònia escala I i potències però no V',()=>{
  nearly(2*a.phases[0].p,b.phases[0].p);
 });
 test('pinça invertida canvia P i Q1, no I ni V',()=>{
- const s=generateCase(100000),settings=defaultInstrument(s);
+ const s=generateCase(100000),settings=wiredInstrument(s);
  const a=instrumentSnapshot(s,settings,3);
  settings.currentChannels[0].inverted=true;
  const b=instrumentSnapshot(s,settings,3);
@@ -66,7 +72,7 @@ test('pinça invertida canvia P i Q1, no I ni V',()=>{
 test('fase de corrent intercanviada altera potències sense alterar corrent RMS',()=>{
  const s=generateCase(100005); // Família D: xarxa trifàsica
  assert.equal(s.phases,3);
- const config=defaultInstrument(s);
+ const config=wiredInstrument(s);
  const a=instrumentSnapshot(s,config,4);
  config.currentChannels[0].phase=1;
  const b=instrumentSnapshot(s,config,4);
@@ -74,7 +80,7 @@ test('fase de corrent intercanviada altera potències sense alterar corrent RMS'
  assert.notEqual(a.phases[0].p,b.phases[0].p);
 });
 test('canal omès no inventa potència total',()=>{
- const s=generateCase(100005),settings=defaultInstrument(s);
+ const s=generateCase(100005),settings=wiredInstrument(s);
  settings.currentChannels[1].enabled=false;
  const x=instrumentSnapshot(s,settings,5);
  assert.equal(x.status,'incomplete');
@@ -96,7 +102,7 @@ test('mostreig lent pot perdre una pertorbació breu',()=>{
  assert.equal(capture.detectedEventIds.length,0);
 });
 test('adquisició conserva configuració i és coherent amb les mostres',()=>{
- const s=generateCase(100000),config=defaultInstrument(s);
+ const s=generateCase(100000),config=wiredInstrument(s);
  const record=acquireInstrument(s,config);
  assert.equal(record.rows.length,31);
  assert.equal(record.caseCode,s.code);
@@ -105,10 +111,41 @@ test('adquisició conserva configuració i és coherent amb les mostres',()=>{
 test('sessió exportada conserva totes les adquisicions',()=>{
  const s=generateCase(100000);
  const first=newSession(s.code);
+ first.settings=wiredInstrument(s);
  const next=recordAcquisition(first);
  assert.equal(first.acquisitions.length,0);
  const restored=sessionFromJSON(sessionToJSON(next));
  assert.deepEqual(restored,next);
  assert.equal(restored.acquisitions.length,1);
  assert.equal(restored.acquisitions[0].rows.length,31);
+});
+
+test('sense sondes ni pinces col·locades no es generen lectures de mesura',()=>{
+ const s=generateCase(100005),x=instrumentSnapshot(s,defaultInstrument(s),4);
+ assert.equal(x.status,'incomplete');
+ assert.equal(x.phases[0].voltageRms,null);
+ assert.equal(x.phases[0].currentRms,null);
+});
+test('invertir el sentit de les sondes canvia el signe de P però no els RMS',()=>{
+ const s=generateCase(100005),settings=wiredInstrument(s);
+ const a=instrumentSnapshot(s,settings,4).phases[0];
+ settings.voltageChannels[0].positive='N';
+ settings.voltageChannels[0].negative='L1';
+ const b=instrumentSnapshot(s,settings,4).phases[0];
+ nearly(a.voltageRms,b.voltageRms);
+ nearly(a.p,-b.p);
+});
+test('sondes fase-fase mostren tensió diferent a fase-neutre',()=>{
+ const s=generateCase(100005),settings=wiredInstrument(s);
+ const a=instrumentSnapshot(s,settings,4).phases[0].voltageRms;
+ settings.voltageChannels[0].negative='L2';
+ const b=instrumentSnapshot(s,settings,4).phases[0].voltageRms;
+ assert.ok(b>a*1.6&&b<a*1.9);
+});
+test('pinça absent dona corrent nul de lectura, no valor inventat',()=>{
+ const s=generateCase(100005),settings=wiredInstrument(s);
+ settings.currentChannels[0].conductor=null;
+ const x=instrumentSnapshot(s,settings,4);
+ assert.equal(x.phases[0].currentRms,null);
+ assert.equal(x.totalP,null);
 });
