@@ -82,8 +82,10 @@ function harmonicView(){
  const vChannel=selectedRecord.settings.voltageChannels[0];
  if(!vChannel?.enabled||vChannel.negative!=='N'||!/^L[1-3]$/.test(vChannel.positive??''))
    return '<p>Espectre no disponible per a aquesta connexió en la versió actual de l’instrument.</p>';
+ if(vChannel.positivePoint!==vChannel.negativePoint||!vChannel.positivePoint)
+   return '<p>Espectre no disponible per a aquesta combinació de punts de connexió.</p>';
  const phase=Number(vChannel.positive.slice(1))-1;
- const t=r.time,values=spectrum(scenario,selectedRecord.pointId,phase,t);
+ const t=r.time,values=spectrum(scenario,vChannel.positivePoint,phase,t);
  return '<p class="pq-note">Espectre de tensió per al canal de fase seleccionat, en l’instant de la mostra.</p>'+barSvg(values.map(v=>({order:v.order,value:v.voltageRms})),'V');
 }
 function waveView(){
@@ -92,9 +94,11 @@ function waveView(){
  if(!r||r.status!=='measured'||!ch?.enabled)return '<p>El canal de tensió no està disponible.</p>';
  if(ch.negative!=='N'||!/^L[1-3]$/.test(ch.positive??''))
    return '<p>Forma d’ona no disponible per a aquesta connexió en la versió actual de l’instrument.</p>';
+ if(ch.positivePoint!==ch.negativePoint||!ch.positivePoint)
+   return '<p>Forma d’ona no disponible per a aquesta combinació de punts de connexió.</p>';
  const phase=Number(ch.positive.slice(1))-1;
- const period=1/scenario.frequency,rows=waveform(scenario,selectedRecord.pointId,phase,r.time,period*3,320);
- return '<div class="pq-plot-key"><span>Tensió L'+(ch.phase+1)+' (V)</span></div>'+graphSvg(rows.map(v=>v.voltage),null,'Tensió (V)')+'<p class="pq-note">Representació de tres períodes de la tensió del canal seleccionat. Les formes d’ona de corrent s’incorporaran quan el model apliqui íntegrament les relacions de TC i el sentit de les pinces als senyals mostrats.</p>';
+ const period=1/scenario.frequency,rows=waveform(scenario,ch.positivePoint,phase,r.time,period*3,320);
+ return '<div class="pq-plot-key"><span>Tensió L'+(phase+1)+' (V)</span></div>'+graphSvg(rows.map(v=>v.voltage),null,'Tensió (V)')+'<p class="pq-note">Representació de tres períodes de la tensió del canal seleccionat. Les formes d’ona de corrent s’incorporaran quan el model apliqui íntegrament les relacions de TC i el sentit de les pinces als senyals mostrats.</p>';
 }
 function timelineView(){
  if(!selectedRecord)return '<p>No hi ha cap registre temporal seleccionat.</p>';
