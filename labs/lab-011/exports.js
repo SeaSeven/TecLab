@@ -34,7 +34,7 @@ function measureSection(record){
  const status=last?.status==='measured'?'Lectura disponible':last?.status==='incomplete'?'Canals incomplets':last?.status==='topology-incompatible'?'Topologia incompatible':'Sense lectura';
  const phaseRows=(last?.phases??[]).map(p=>'<tr><td>'+esc('Canal '+(p.slot+1))+'</td><td>'+num(p.voltageRms)+' V</td><td>'+num(p.currentRms)+' A</td><td>'+num(p.voltageTHD)+' %</td><td>'+num(p.currentTHD)+' %</td><td>'+num(p.p)+' W</td><td>'+num(p.q1)+' var</td><td>'+num(p.s)+' VA</td></tr>').join('');
  const ev=(record.detectedEventIds??[]).length?record.detectedEventIds.join(', '):'Cap esdeveniment capturat amb aquesta configuració';
- return '<section class="record"><h2>'+esc(record.id)+' · '+esc(record.pointId)+'</h2>'+
+ return '<section class="record"><h2>'+esc(record.id)+' · '+esc(record.pointId)+'</h2><p><strong>Codi de l’exercici:</strong> '+esc(record.caseCode)+'</p>'+
  '<p><strong>Temps simulat:</strong> '+num(record.start,2)+'–'+num(record.start+record.duration,2)+' s · <strong>Interval:</strong> '+num(record.interval,2)+' s · <strong>Mostres:</strong> '+record.rows.length+
  ' · <strong>Topologia configurada:</strong> '+esc(record.settings.topology)+'</p>'+
  '<p><strong>Estat instrumental:</strong> '+esc(status)+' · <strong>Esdeveniments capturats:</strong> '+esc(ev)+'</p>'+
