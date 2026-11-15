@@ -96,7 +96,7 @@ export function mountWiring(host,scenario,settings,onChange){
      if(!dragging||event.pointerId!==dragging.id)return;
      const point=nearest(dragging.x,dragging.y);
      // PE no és una entrada de tensió representada en aquest model; no simulem cap lectura de PE.
-     assign(settings,w,point&&point.conductor!=='PE'&&(w.kind!=='i'||point.conductor!=='N')?point:null);
+     assign(settings,w,point??null);
      dragging=null;refresh(w,i);onChange?.();
    });
    head.addEventListener('pointercancel',()=>{dragging=null;refresh(w,i);});
