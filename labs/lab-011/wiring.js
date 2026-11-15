@@ -59,7 +59,8 @@ export function mountWiring(host,scenario,settings,onChange){
    path.setAttribute('d','M'+w.sx+','+w.sy+' C'+w.sx+','+(w.sy-100)+' '+at.x+','+(at.y+90)+' '+at.x+','+at.y);
    head.setAttribute('transform','translate('+at.x+' '+at.y+')');
    const target=getWire(settings,w);
-   const name=w.id+(target?' · '+labels[busIds.indexOf(target.point)]+' '+target.conductor:' · lliure');
+   const reversed=w.kind==='i'&&settings.currentChannels[w.index]?.inverted;
+   const name=w.id+(target?' · '+labels[busIds.indexOf(target.point)]+' '+target.conductor:' · lliure')+(reversed?' · sentit invertit':'')+(w.kind==='i'?' · doble clic o tecla R per girar':'');
    title.textContent=name;
    head.setAttribute('aria-label',name+'. Arrossega, o prem Retorn i mou amb fletxes.');
  }
@@ -72,7 +73,7 @@ export function mountWiring(host,scenario,settings,onChange){
    const box=svg.getBoundingClientRect(),scale=Math.min(box.width/1100,box.height/490);
    return {x:(event.clientX-box.left-(box.width-1100*scale)/2)/scale,y:(event.clientY-box.top-(box.height-490*scale)/2)/scale};
  };
- wires.forEach((w,i)=>{
+ wires.filter(w=>w.index===undefined||w.index<scenario.phases).forEach((w,i)=>{
    const path=svgEl('path',{fill:'none',stroke:w.color,'stroke-width':3.5,'stroke-linecap':'round','pointer-events':'none'});
    svg.append(path,svgEl('circle',{cx:w.sx,cy:w.sy,r:7,fill:w.color}));
    svg.append(svgEl('text',{x:w.sx-9,y:w.sy+24,'font-size':11,fill:'#dce9ee'},w.id));
@@ -99,7 +100,9 @@ export function mountWiring(host,scenario,settings,onChange){
      dragging=null;refresh(w,i);onChange?.();
    });
    head.addEventListener('pointercancel',()=>{dragging=null;refresh(w,i);});
+   if(w.kind==='i')head.addEventListener('dblclick',()=>{settings.currentChannels[w.index].inverted=!settings.currentChannels[w.index].inverted;onChange?.();});
    head.addEventListener('keydown',event=>{
+     if((event.key==='r'||event.key==='R')&&w.kind==='i'){settings.currentChannels[w.index].inverted=!settings.currentChannels[w.index].inverted;onChange?.();event.preventDefault();return;}
      if(event.key==='Escape'){keyboard=null;assign(settings,w,null);refresh(w,i);onChange?.();event.preventDefault();return;}
      if(event.key==='Enter'||event.key===' '){
        if(keyboard===null)keyboard=loc(getWire(settings,w),w,i);
@@ -116,5 +119,5 @@ export function mountWiring(host,scenario,settings,onChange){
    refresh(w,i);
  });
  host.replaceChildren(svg);
- return {redraw:()=>wires.forEach((w,i)=>refresh(w,i))};
+ return {redraw:()=>wires.filter(w=>w.index===undefined||w.index<scenario.phases).forEach((w,i)=>refresh(w,i))};
 }
