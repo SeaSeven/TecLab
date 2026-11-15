@@ -39,7 +39,10 @@ const scale=(components,factor,shift=0)=>components.map(c=>({...c,rms:c.rms*Math
 // Diferència fasorial de tensió de dos terminals. N=referència ideal del model.
 function phasorVoltage(scenario,defaultPoint,channel,time){
  const byTerminal=(terminal,pointId)=>{
-   if(terminal==='N'||terminal==='PE')return []; // PE idealitzat a potencial de referència; no es modelen corrents de defecte.
+   // Entrades AC ideals: les components contínues de +24 V i 0 V no es mesuren.
+   // Es permet la connexió física sense imposar una decisió "correcta/incorrecta".
+   if(pointId==='DC24')return ['+24V','0V'].includes(terminal)?[]:null;
+   if(terminal==='N'||terminal==='PE')return []; // PE idealitzat a potencial de referència.
    const match=/^L([1-3])$/.exec(terminal??'');
    if(!match||Number(match[1])>scenario.phases)return null;
    if(!scenario.points.some(p=>p.id===pointId))return null;
@@ -65,6 +68,10 @@ function selectedCurrent(scenario,pointId,channel,time){
  if(!channel?.enabled)return null;
  let phase=channel.phase,shift=channel.inverted?Math.PI:0;
  const point=channel.pointId??pointId;
+ if(point==='DC24'){
+   // Pinça AC de tipus transformador: no respon al corrent continu estacionari.
+   return ['+24V','0V'].includes(channel.conductor)?[{order:1,rms:0,angle:0}]:null;
+ }
  if(!scenario.points.some(p=>p.id===point))return null;
  let physical;
  if(Object.hasOwn(channel,'conductor')){
