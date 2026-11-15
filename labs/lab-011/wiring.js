@@ -1,17 +1,21 @@
 // Vista física de connexions CA: tots els cables surten del mateix instrument.
 const NS='http://www.w3.org/2000/svg';
-const labels=['P0','P1','P2'];
-const busIds=['PCC','DRIVE','CTRL'];
-const colors={L1:'#d8a95c',L2:'#c4cad1',L3:'#d9909c',N:'#75ade0',PE:'#83ba91'};
+const labels=['P0','P1','P2','24 V CC'];
+const busIds=['PCC','DRIVE','CTRL','DC24'];
+const colors={L1:'#d8a95c',L2:'#c4cad1',L3:'#d9909c',N:'#75ade0',PE:'#83ba91','+24V':'#d4aa64','0V':'#71b6c6'};
 const wires=[
  ...['V1','V2','V3'].map((id,i)=>({id,kind:'v',index:i,color:'#eebd70',sx:430+i*34,sy:417})),
  {id:'VN',kind:'n',color:'#77b4e9',sx:532,sy:417},
  ...['I1','I2','I3'].map((id,i)=>({id,kind:'i',index:i,color:['#f4d084','#89d7b1','#c3b3f1'][i],sx:582+i*34,sy:417}))
 ];
 // Dues places de connexió a cada conductor: identitat física separada de l'estat elèctric.
-const nodeList=phases=>labels.flatMap((label,p)=>
- ['L1',...(phases>1?['L2','L3']:[]),'N','PE'].flatMap((conductor,i)=>
- [0,1].map(socket=>({point:busIds[p],label,conductor,socket,x:80+p*330+97+socket*72,y:109+i*38}))));
+const nodeList=phases=>[
+ ...labels.slice(0,3).flatMap((label,p)=>
+   ['L1',...(phases>1?['L2','L3']:[]),'N','PE'].flatMap((conductor,i)=>
+     [0,1].map(socket=>({point:busIds[p],label,conductor,socket,x:80+p*330+97+socket*72,y:109+i*38})))),
+ ...['+24V','0V'].flatMap((conductor,i)=>
+   [0,1].map(socket=>({point:'DC24',label:'24 V CC',conductor,socket,x:955+socket*67,y:354+i*34})))
+];
 export function findFreeSocket(nodes,wires,settings,wire,point,conductor,preferred=null){
  const used=new Set(wires.filter(w=>w.id!==wire.id).map(w=>{
    const t=getWire(settings,w);
@@ -56,9 +60,15 @@ export function mountWiring(host,scenario,settings,onChange){
      for(const node of pair)svg.append(svgEl('circle',{cx:node.x,cy,r:10,fill:'#172631',stroke:color,'stroke-width':2}));
    }
  }
- svg.append(svgEl('rect',{x:930,y:345,width:152,height:55,rx:8,fill:'#28413f',stroke:'#648a7c'}));
- svg.append(svgEl('text',{x:942,y:367,fill:'#d2e6de','font-size':15},'24 V CC'));
- svg.append(svgEl('text',{x:942,y:386,fill:'#b4d0c8','font-size':11},'Circuit de control'));
+ // Font de control CC: terminals físicament accessibles, no connectats a la xarxa CA.
+ svg.append(svgEl('rect',{x:914,y:309,width:176,height:94,rx:8,fill:'#28413f',stroke:'#648a7c'}));
+ svg.append(svgEl('text',{x:927,y:329,fill:'#d2e6de','font-size':14,'font-weight':700},'24 V CC · CONTROL'));
+ for(const conductor of ['+24V','0V']){
+   const pair=nodes.filter(n=>n.point==='DC24'&&n.conductor===conductor),y=pair[0].y;
+   svg.append(svgEl('text',{x:919,y:y+4,fill:'#d2e6de','font-size':10},conductor));
+   svg.append(svgEl('line',{x1:948,y1:y,x2:1063,y2:y,stroke:colors[conductor],'stroke-width':4,'stroke-linecap':'round'}));
+   for(const n of pair)svg.append(svgEl('circle',{cx:n.x,cy:n.y,r:10,fill:'#172631',stroke:colors[conductor],'stroke-width':2}));
+ }
  svg.append(svgEl('rect',{x:350,y:400,width:400,height:80,rx:13,fill:'#30444f',stroke:'#94adb6','stroke-width':2}));
  svg.append(svgEl('text',{x:373,y:465,fill:'#edd7a6','font-size':15,'font-weight':700},'TECLAB · ANALITZADOR PQ'));
  const parts=new Map();
@@ -120,7 +130,6 @@ export function mountWiring(host,scenario,settings,onChange){
    head.addEventListener('pointerup',event=>{
      if(!dragging||event.pointerId!==dragging.id)return;
      const point=nearest(dragging.x,dragging.y);
-     // PE no és una entrada de tensió representada en aquest model; no simulem cap lectura de PE.
      if(!point)assign(settings,w,null);
      else{
        const slot=choose(w,point);
