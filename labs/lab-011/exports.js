@@ -5,12 +5,13 @@ import {validateSession} from './session.js';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=(v,d=2)=>typeof v==='number'&&Number.isFinite(v)?v.toLocaleString('ca-ES',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
 const phaseName=i=>Number.isInteger(i)?'L'+(i+1):'—';
+const pointName=p=>({PCC:'P0',DRIVE:'P1',CTRL:'P2'})[p]??p??'—';
 function settingTable(r){
  const s=r.settings;
  const lines=[];
  for(let i=0;i<Math.max(s.voltageChannels?.length??0,s.currentChannels?.length??0);i++){
    const v=s.voltageChannels?.[i],c=s.currentChannels?.[i];
-   lines.push('<tr><td>'+esc('Canal '+(i+1))+'</td><td>'+esc(v?.enabled?(Object.hasOwn(v,'positive')?((v.positive??'—')+' / '+(v.negative??'—')):phaseName(v.phase)+' / N'):'Desactivat')+'</td><td>'+esc(c?.enabled?(Object.hasOwn(c,'conductor')?(c.conductor??'—'):phaseName(c.phase)):'Desactivat')+'</td><td>'+esc(c?.ctRatio??'—')+'</td><td>'+esc(c?.inverted?'Invertida':'Normal')+'</td></tr>');
+   lines.push('<tr><td>'+esc('Canal '+(i+1))+'</td><td>'+esc(v?.enabled?(Object.hasOwn(v,'positive')?(pointName(v.positivePoint)+' '+(v.positive??'—')+' / '+pointName(v.negativePoint)+' '+(v.negative??'—')):phaseName(v.phase)+' / N'):'Desactivat')+'</td><td>'+esc(c?.enabled?(Object.hasOwn(c,'conductor')?(pointName(c.pointId)+' '+(c.conductor??'—')):phaseName(c.phase)):'Desactivat')+'</td><td>'+esc(c?.ctRatio??'—')+'</td><td>'+esc(c?.inverted?'Invertida':'Normal')+'</td></tr>');
  }
  return '<table><thead><tr><th>Canal</th><th>Sondes V (+ / −)</th><th>Pinça I (conductor)</th><th>TC configurat</th><th>Pinça</th></tr></thead><tbody>'+lines.join('')+'</tbody></table>';
 }
@@ -34,7 +35,7 @@ function measureSection(record){
  const status=last?.status==='measured'?'Lectura disponible':last?.status==='incomplete'?'Canals incomplets':last?.status==='topology-incompatible'?'Topologia incompatible':'Sense lectura';
  const phaseRows=(last?.phases??[]).map(p=>'<tr><td>'+esc('Canal '+(p.slot+1))+'</td><td>'+num(p.voltageRms)+' V</td><td>'+num(p.currentRms)+' A</td><td>'+num(p.voltageTHD)+' %</td><td>'+num(p.currentTHD)+' %</td><td>'+num(p.p)+' W</td><td>'+num(p.q1)+' var</td><td>'+num(p.s)+' VA</td></tr>').join('');
  const ev=(record.detectedEventIds??[]).length?record.detectedEventIds.join(', '):'Cap esdeveniment capturat amb aquesta configuració';
- return '<section class="record"><h2>'+esc(record.id)+' · '+esc(record.pointId)+'</h2><p><strong>Codi de l’exercici:</strong> '+esc(record.caseCode)+'</p>'+
+ return '<section class="record"><h2>'+esc(record.id)+' · '+esc(pointName(record.pointId))+'</h2><p><strong>Codi de l’exercici:</strong> '+esc(record.caseCode)+'</p>'+
  '<p><strong>Temps simulat:</strong> '+num(record.start,2)+'–'+num(record.start+record.duration,2)+' s · <strong>Interval:</strong> '+num(record.interval,2)+' s · <strong>Mostres:</strong> '+record.rows.length+
  ' · <strong>Topologia configurada:</strong> '+esc(record.settings.topology)+'</p>'+
  '<p><strong>Estat instrumental:</strong> '+esc(status)+' · <strong>Esdeveniments capturats:</strong> '+esc(ev)+'</p>'+
