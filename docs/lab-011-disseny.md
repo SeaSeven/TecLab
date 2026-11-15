@@ -137,3 +137,11 @@ S'han definit dos allotjaments físics separats (sockets 0 i 1) per cadascun del
 Les pinces I1/I2/I3 mostren ara unes mordasses i una fletxa al cos de la pinça. El doble clic o la tecla R gira la fletxa 180 graus i canvia el seu acabat visual, mantenint la connexió i alterant el sentit de la mesura segons `inverted`. Es manté la prohibició de missatges de correcte/incorrecte.
 
 S'ha incorporat una prova automatitzada que comprova l'ocupació dels dos allotjaments i la impossibilitat d'ocupar-ne un tercer. Cal verificar visualment que l'arrossegament sigui còmode en Safari/Chrome i que els moviments de pinces amb doble clic no provoquin un desplaçament accidental.
+
+## Revisió del circuit de control 24 V CC (16-11-2026)
+
+La representació del circuit de 24 V CC incorpora ara borns visibles **+24 V** i **0 V**, cadascun amb dos allotjaments per a la col·locació física de sondes de tensió i pinces de corrent. Utilitzen el mateix sistema d'arrossegament, ocupació de sockets i registre de connexions que P0/P1/P2; l'analitzador no etiqueta aquestes col·locacions com a correctes o incorrectes.
+
+Per al prototip actual, les entrades de tensió i les pinces de corrent es modelen com a **acoblades a CA** (la pinça equival a un transformador de corrent que no mesura CC). Una parella de sondes entre +24 V i 0 V CC dona lectura de component alterna RMS 0 V i THD no definida, i una pinça en el conductor de CC mostra 0 A de component alterna. Això **no significa** que la tensió ni el corrent físics continus siguin zero. El motor conserva els valors del circuit de control com a esquema docent, sense modelar-ne encara el consum DC. Una futura versió pot afegir instrumentació explícita de CC, si el pla de pràctica ho requereix.
+
+L'informe etiquetarà les connexions a aquest punt com a «24 V CC», mostrarà els borns seleccionats i mantindrà el codi de l'exercici. S'han executat comprovacions de sintaxi de nou mòduls i quatre comprovacions funcionals (lectura CA de referència, lectures amb connexions a CC i preservació al JSON/PDF). Pendent la prova manual de l'arrossegament i de la impressió en Safari/Chrome.
