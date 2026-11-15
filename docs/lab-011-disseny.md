@@ -78,3 +78,16 @@ Pàgina pròpia que reutilitza capçalera, peu, paleta, tipografia i pestanyes T
 ## Canvis al portal, només en la fase d'integració
 
 Afegir LAB-011 a l'àrea Instrumentació de `shared/components/catalog.js`, crear `metadata.json`, adaptar l'encaminament de `shared/components/app.js`, executar `npm run build` i `npm test`. No marcar com a `published` fins a validar la pràctica al navegador i la coherència dels registres. No tocar els laboratoris existents.
+
+## Registre d'implementació de la fase 2 (15-11-2026)
+
+Implementats a la branca `feature/lab-011-qualitat-xarxa`:
+- `cases.js`: protocol `TL-PQ1`, biblioteca de set famílies, 30 casos inicials amb codis únics.
+- `model.js`: components harmònics vinculats a RMS, THD, P, S, Q1 i FP, formes d'ona, espectres i evolució temporal determinista.
+- `instrument.js`: relació de TC, inversió de pinça, correspondència de fases, canals desactivats i topologia incompatible.
+- `session.js`: historial d'adquisicions i exportació/importació de sessions versionades en JSON, amb opcions de desament local.
+- `scripts/lab-011.test.js`: proves automatitzades preparades per a `npm test`.
+
+**Verificació realitzada:** execució aïllada de 10 comprovacions funcionals sobre els mòduls combinats: codis únics, reconstitució, set famílies, RMS de la forma d'ona, error de TC, pinça invertida, fases creuades, no detecció de pertorbació fora del mostreig i exportació/importació de sessió. Resultat: 10/10 comprovacions satisfactòries. Encara no s'ha executat la suite `npm test` amb Node.js dins del repositori.
+
+**Pendent abans de publicar:** proves amb Node i navegador, validació numèrica exhaustiva, criteris de resolució temporal, assaig docent de la dificultat dels 30 casos, mecanisme de configuració accessible, UI, Fonaments/Ajuda i exportacions CSV/impressió. El generador actual es considera prototip tècnic: les famílies s'han distribuït, però no s'ha demostrat que les 30 variants siguin pedagògicament equivalents. L'etiqueta de desequilibri RMS es manté diferenciada del desequilibri de seqüència negativa.
