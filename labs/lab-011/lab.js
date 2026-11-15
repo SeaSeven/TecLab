@@ -89,7 +89,7 @@ function waveView(){
  const r=selectedRecord.rows.at(-1),ch=selectedRecord.settings.voltageChannels[0];
  if(!r||r.status!=='measured'||!ch?.enabled)return '<p>El canal de tensió no està disponible.</p>';
  const period=1/scenario.frequency,rows=waveform(scenario,selectedRecord.pointId,ch.phase,r.time,period*3,320);
- return '<div class="pq-plot-key"><span>Tensió L'+(ch.phase+1)+' (V)</span><span class="current">Corrent (A)</span></div>'+graphSvg(rows.map(v=>v.voltage),rows.map(v=>v.current),'Tensió (V)','Corrent (A)')+'<p class="pq-note">Representació temporal de tres períodes. Els canals de corrent se visualitzen sobre una escala comuna normalitzada per a comparació gràfica; les unitats de tensió i corrent són diferents.</p>';
+ return '<div class="pq-plot-key"><span>Tensió L'+(ch.phase+1)+' (V)</span></div>'+graphSvg(rows.map(v=>v.voltage),null,'Tensió (V)')+'<p class="pq-note">Representació de tres períodes de la tensió del canal seleccionat. Les formes d’ona de corrent s’incorporaran quan el model apliqui íntegrament les relacions de TC i el sentit de les pinces als senyals mostrats.</p>';
 }
 function timelineView(){
  if(!selectedRecord)return '<p>No hi ha cap registre temporal seleccionat.</p>';
