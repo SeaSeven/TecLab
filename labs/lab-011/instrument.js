@@ -39,7 +39,7 @@ const scale=(components,factor,shift=0)=>components.map(c=>({...c,rms:c.rms*Math
 // Diferència fasorial de tensió de dos terminals. N=referència ideal del model.
 function phasorVoltage(scenario,defaultPoint,channel,time){
  const byTerminal=(terminal,pointId)=>{
-   if(terminal==='N')return [];
+   if(terminal==='N'||terminal==='PE')return []; // PE idealitzat a potencial de referència; no es modelen corrents de defecte.
    const match=/^L([1-3])$/.exec(terminal??'');
    if(!match||Number(match[1])>scenario.phases)return null;
    if(!scenario.points.some(p=>p.id===pointId))return null;
@@ -64,14 +64,27 @@ function selectedVoltage(scenario,pointId,channel,time){
 function selectedCurrent(scenario,pointId,channel,time){
  if(!channel?.enabled)return null;
  let phase=channel.phase,shift=channel.inverted?Math.PI:0;
- if(Object.hasOwn(channel,'conductor')){
-   const match=/^L([1-3])$/.exec(channel.conductor??'');
-   if(!match||Number(match[1])>scenario.phases)return null;
-   phase=Number(match[1])-1;
- }
  const point=channel.pointId??pointId;
  if(!scenario.points.some(p=>p.id===point))return null;
- const physical=baseComponents(scenario,point,phase,time).current;
+ let physical;
+ if(Object.hasOwn(channel,'conductor')){
+   const match=/^L([1-3])$/.exec(channel.conductor??'');
+   if(match&&Number(match[1])<=scenario.phases)phase=Number(match[1])-1;
+   else if(channel.conductor==='PE')return [{order:1,rms:0,angle:0}]; // PE sense corrent de defecte simulat
+   else if(channel.conductor==='N'){
+     const currents=Array.from({length:scenario.phases},(_,p)=>baseComponents(scenario,point,p,time).current);
+     const orders=new Set(currents.flatMap(row=>row.map(h=>h.order)));
+     physical=[...orders].sort((a,b)=>a-b).map(order=>{
+       let re=0,im=0;
+       for(const row of currents){
+         const h=row.find(x=>x.order===order);
+         if(h){re-=h.rms*Math.cos(h.angle);im-=h.rms*Math.sin(h.angle);}
+       }
+       return {order,rms:Math.hypot(re,im),angle:Math.atan2(im,re)};
+     });
+   }else return null;
+ }
+ physical??=baseComponents(scenario,point,phase,time).current;
  return scale(physical,channel.ctRatio/actualCtRatio(point),shift);
 }
 
