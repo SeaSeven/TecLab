@@ -164,3 +164,36 @@ test('dos allotjaments físics del mateix conductor eviten la superposició',()=
  // Reposicionar un cable al seu propi allotjament no l'ocupa dues vegades.
  assert.equal(findFreeSocket(nodes,wires,settings,wires[0],'PCC','L1',0).socket,0);
 });
+
+test('les sondes es poden col·locar als dos borns de 24 V CC sense mesura AC fictícia',()=>{
+ const s=generateCase(100005),settings=wiredInstrument(s);
+ settings.voltageChannels[0].positive='+24V';
+ settings.voltageChannels[0].positivePoint='DC24';
+ settings.voltageChannels[0].negative='0V';
+ settings.voltageChannels[0].negativePoint='DC24';
+ const reading=instrumentSnapshot(s,settings,4).phases[0];
+ assert.equal(reading.voltageRms,0);
+ assert.equal(reading.voltageTHD,null);
+});
+test('una pinça AC sobre +24 V CC no registra corrent estacionari',()=>{
+ const s=generateCase(100005),settings=wiredInstrument(s);
+ settings.currentChannels[0].pointId='DC24';
+ settings.currentChannels[0].conductor='+24V';
+ const reading=instrumentSnapshot(s,settings,4).phases[0];
+ assert.equal(reading.currentRms,0);
+ assert.equal(reading.p,0);
+});
+test('les connexions a 24 V CC queden documentades a la sessió per a l’informe',()=>{
+ const s=generateCase(100005),settings=wiredInstrument(s);
+ settings.voltageChannels[0].positivePoint='DC24';
+ settings.voltageChannels[0].positive='+24V';
+ settings.voltageChannels[0].negativePoint='DC24';
+ settings.voltageChannels[0].negative='0V';
+ settings.currentChannels[0].pointId='DC24';
+ settings.currentChannels[0].conductor='+24V';
+ const session=newSession(s.code);
+ session.settings=settings;
+ const restored=sessionFromJSON(sessionToJSON(recordAcquisition(session)));
+ assert.equal(restored.acquisitions[0].settings.voltageChannels[0].positivePoint,'DC24');
+ assert.equal(restored.acquisitions[0].settings.currentChannels[0].conductor,'+24V');
+});
