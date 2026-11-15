@@ -141,19 +141,56 @@ export function instrumentSnapshot(scenario,settings,time){
    phases:rows,totalP,totalQ1,totalS,
    totalPowerFactor:totalS?totalP/totalS:null};
 }
+// El detector intern observa les lectures configurades al voltant de les
+// transicions temporals, independentment de l'interval de registre escollit.
+// Mai no mostra l'etiqueta secreta de l'escenari.
+export function captureInstrumentEvents(scenario,settings){
+ checkConfiguration(scenario,settings);
+ const {start,duration}=settings;
+ const end=start+duration,events=[];
+ for(const change of scenario.events){
+   const began=Math.max(start,change.start);
+   const finished=Math.min(end,change.start+change.duration);
+   if(finished<=began||change.duration<.02)continue;
+   const probe=Math.min(finished-1e-6,began+.01);
+   const referenceTime=Math.max(0,change.start-.001);
+   const baseline=instrumentSnapshot(scenario,settings,referenceTime);
+   const changed=instrumentSnapshot(scenario,settings,probe);
+   if(baseline.status==='topology-incompatible'||changed.status==='topology-incompatible')continue;
+   const observed=[];
+   for(let slot=0;slot<changed.phases.length;slot++){
+     const before=baseline.phases[slot],after=changed.phases[slot];
+     for(const [key,unit] of [['voltageRms','V'],['currentRms','A']]){
+       const old=before[key],value=after[key];
+       if(old===null||value===null||Math.abs(old)<1e-9)continue;
+       const delta=100*(value-old)/Math.abs(old);
+       if(Math.abs(delta)>=5)observed.push({
+         channel:slot+1,quantity:key==='voltageRms'?'Tensió RMS':'Corrent RMS',
+         unit,previous:old,observed:value,variationPercent:delta
+       });
+     }
+   }
+   if(observed.length)events.push({
+     start:began,duration:finished-began,measurements:observed,
+     truncatedAtStart:began>change.start,truncatedAtEnd:finished<change.start+change.duration
+   });
+ }
+ return events;
+}
 export function acquireInstrument(scenario,settings){
  checkConfiguration(scenario,settings);
  const base=acquireReal(scenario,{
    pointId:settings.pointId,start:settings.start,duration:settings.duration,interval:settings.interval
  });
  const rows=base.rows.map(row=>instrumentSnapshot(scenario,settings,row.time));
- const usable=rows.some(row=>row.status==='measured');
+ const capturedEvents=captureInstrumentEvents(scenario,settings);
  return {
    schemaVersion:1,caseCode:scenario.code,pointId:settings.pointId,
    start:settings.start,duration:settings.duration,interval:settings.interval,
    settings:JSON.parse(JSON.stringify(settings)),rows,
-   // Els esdeveniments s'observen només amb mostres que els capturen.
-   detectedEventIds:usable?base.detectedEventIds:[],
+   capturedEvents,
+   // Conservem el camp antic, sense codis interns del motor.
+   detectedEventIds:[],
    simulated:true
  };
 }
