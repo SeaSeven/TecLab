@@ -75,7 +75,7 @@ export function mountWiring(host,scenario,settings,onChange){
    const reversed=w.kind==='i'&&settings.currentChannels[w.index]?.inverted;
    const name=w.id+(target?' · '+labels[busIds.indexOf(target.point)]+' '+target.conductor:' · lliure')+(reversed?' · sentit invertit':'')+(w.kind==='i'?' · doble clic o tecla R per girar':'');
    title.textContent=name;
-   if(arrow)arrow.setAttribute('transform',reversed?'rotate(180)':'rotate(0)');
+   if(arrow){arrow.setAttribute('transform',reversed?'rotate(180)':'rotate(0)');head.classList.toggle('is-reversed',Boolean(reversed));}
    head.setAttribute('aria-label',name+'. Arrossega, o prem Retorn i mou amb fletxes.');
  }
  const nearest=(x,y)=>{
