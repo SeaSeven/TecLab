@@ -28,3 +28,20 @@
 
 /* La pinça invertida canvia d'orientació i d'acabat, sense colors de correcció. */
 .pq-drag-head.is-reversed circle{fill:#d2dbeb;stroke:#75a4e1;stroke-width:4}
+
+/* Pantalles de l'analitzador i manual integrat de l'equip. */
+.pq-table-wrap{width:100%;overflow-x:auto}
+.pq-table-wrap .pq-table{min-width:690px}
+.pq-channel-picker{display:flex;gap:7px;flex-wrap:wrap;margin:6px 0 14px}
+.pq-channel-picker button{font-size:12px;padding:6px 12px;background:#16303b;border:1px solid #42606c;color:#d6e6e9}
+.pq-channel-picker button.active{background:#315863;border-color:#9de2ec;color:#fff}
+.pq-screen-heading{font-size:15px;color:#c9dfe2;margin:18px 0 8px}
+.pq-screen .pq-chart{margin-bottom:12px}
+.pq-manual{max-width:1100px}
+.pq-manual .pq-manual-panel{padding:24px}
+.pq-manual .pq-manual-panel p{line-height:1.7;max-width:1020px}
+.pq-manual-figure{margin:16px 0;padding:12px;background:#102632;border:1px solid #395363;border-radius:9px}
+.pq-manual-svg{max-width:850px;width:100%;height:auto;display:block;margin:0 auto}
+.pq-manual-figure figcaption{color:#b5ced5;font-size:12px;line-height:1.5;margin-top:9px}
+.pq-manual sub{font-size:10px}
+@media(max-width:650px){.pq-manual .pq-manual-panel{padding:16px}}
