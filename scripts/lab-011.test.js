@@ -4,6 +4,7 @@ import {generateCase,codeForCase,parseCaseCode,classCases} from '../labs/lab-011
 import {baseComponents,phaseReading,realSnapshot,rms,thd,sampleWave,acquireReal} from '../labs/lab-011/model.js';
 import {defaultInstrument,instrumentSnapshot,acquireInstrument} from '../labs/lab-011/instrument.js';
 import {newSession,recordAcquisition,sessionToJSON,sessionFromJSON} from '../labs/lab-011/session.js';
+import {findFreeSocket} from '../labs/lab-011/wiring.js';
 
 const nearly=(a,b,tol=1e-8)=>assert.ok(Math.abs(a-b)<=tol*Math.max(1,Math.abs(a),Math.abs(b)),a+' ≠ '+b);
 function wiredInstrument(s){
@@ -148,4 +149,18 @@ test('pinça absent dona corrent nul de lectura, no valor inventat',()=>{
  const x=instrumentSnapshot(s,settings,4);
  assert.equal(x.phases[0].currentRms,null);
  assert.equal(x.totalP,null);
+});
+
+test('dos allotjaments físics del mateix conductor eviten la superposició',()=>{
+ const nodes=[{point:'PCC',conductor:'L1',socket:0},{point:'PCC',conductor:'L1',socket:1}];
+ const wires=[{id:'V1',kind:'v',index:0},{id:'V2',kind:'v',index:1},{id:'I1',kind:'i',index:0}];
+ const settings={
+   voltageChannels:[{positive:'L1',positivePoint:'PCC',positiveSocket:0},{positive:null,positivePoint:null}],
+   currentChannels:[{conductor:null,pointId:null}]
+ };
+ assert.equal(findFreeSocket(nodes,wires,settings,wires[1],'PCC','L1',0).socket,1);
+ settings.voltageChannels[1]={positive:'L1',positivePoint:'PCC',positiveSocket:1};
+ assert.equal(findFreeSocket(nodes,wires,settings,wires[2],'PCC','L1',0),null);
+ // Reposicionar un cable al seu propi allotjament no l'ocupa dues vegades.
+ assert.equal(findFreeSocket(nodes,wires,settings,wires[0],'PCC','L1',0).socket,0);
 });
