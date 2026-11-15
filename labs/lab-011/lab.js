@@ -1,6 +1,8 @@
 import {generateCase,codeForCase,parseCaseCode} from './cases.js';
 import {defaultInstrument,acquireInstrument} from './instrument.js';
-import {realSnapshot,waveform,spectrum} from './model.js';
+import {harmonicOrders,sampleWave} from './model.js';
+import {instrumentChannelComponents} from './instrument.js';
+import {foundationsManual,helpManual} from './manual.js';
 import {newSession,recordAcquisition,sessionToJSON,sessionFromJSON} from './session.js';
 import {openPrintableReport} from './exports.js';
 import {mountWiring} from './wiring.js';
@@ -11,7 +13,7 @@ const find=id=>root.querySelector('#'+id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(n,dec=2)=>Number.isFinite(n)?n.toLocaleString('ca-ES',{maximumFractionDigits:dec,minimumFractionDigits:dec}):'—';
 const number=(n,dec=2)=>Number.isFinite(n)?fmt(n,dec):'—';
-let scenario,session,activeTab='laboratori',screen='instant',selectedRecord=null,message='';
+let scenario,session,activeTab='laboratori',screen='instant',screenChannel=0,selectedRecord=null,message='';
 
 function tell(text){message=text;const item=find('pq-message');if(item)item.textContent=text;}
 function fresh(seed){scenario=generateCase(seed);session=newSession(scenario.code);selectedRecord=null;screen='instant';message='';paint();}
@@ -61,71 +63,91 @@ function settingsPanel(){
  const channelRow=(kind,arr)=>'<h3>Entrades '+kind+'</h3>'+arr.map((channel,i)=>'<label class="pq-switch"><input type="checkbox" data-enabled="'+kind+'" data-slot="'+i+'" '+(channel.enabled?'checked':'')+'> Canal '+kind+(i+1)+' actiu</label>').join('');
  return '<section class="panel"><h2>Configuració instrumental</h2><div class="pq-form"><label for="pq-topology">Topologia seleccionada</label><select id="pq-topology"><option value="1P2W" '+(s.topology==='1P2W'?'selected':'')+'>Monofàsica · 1P2W</option><option value="3P4W" '+(s.topology==='3P4W'?'selected':'')+'>Trifàsica · 3P4W</option></select><div class="pq-config-row"><label for="pq-start">Inici (s)<input id="pq-start" type="number" step="0.1" min="0" max="899" value="'+s.start+'"></label><label for="pq-duration">Durada (s)<input id="pq-duration" type="number" min="0.1" max="900" step=".1" value="'+s.duration+'"></label></div><label for="pq-interval">Interval de registre (s)</label><select id="pq-interval">'+[.05,.1,.2,.5,1,2,5,10,30].map(v=>'<option value="'+v+'" '+(s.interval===v?'selected':'')+'>'+fmt(v,2)+' s</option>').join('')+'</select><details class="pq-advanced"><summary>Canals, pinces i transformadors de corrent</summary>'+channelRow('V',s.voltageChannels)+channelRow('I',s.currentChannels)+s.currentChannels.map((c,i)=>'<div class="pq-config-row"><label>TC · I'+(i+1)+'<input data-ct="'+i+'" type="number" min="0.1" max="10000" step="0.1" value="'+c.ctRatio+'"></label></div>').join('')+'</details></div></section>';
 }
+function channelSelector(){
+ return '<div class="pq-channel-picker" role="group" aria-label="Canal visualitzat">'+
+ Array.from({length:scenario.phases},(_,i)=>'<button type="button" data-screen-channel="'+i+'" aria-pressed="'+(screenChannel===i)+'" class="'+(screenChannel===i?'active':'')+'">Canal '+(i+1)+'</button>').join('')+'</div>';
+}
 function readingView(){
- const row=selectedRecord?.rows.at(-1);
- const measured=row??null;
- const first=measured?.phases?.[0];
- const metrics=[
- ['Tensió L1',first?.voltageRms,'V'],['Corrent L1',first?.currentRms,'A'],
- ['Potència activa',measured?.totalP,'W'],['Potència aparent',measured?.totalS,'VA'],
- ['Reactiva fonamental',measured?.totalQ1,'var'],['Factor de potència',measured?.totalPowerFactor,''],
- ['THD tensió L1',first?.voltageTHD,'%'],['THD corrent L1',first?.currentTHD,'%'],
- ['Freqüència',selectedRecord?scenario.frequency:null,'Hz']
- ];
- return '<div class="pq-readings">'+metrics.map(([label,v,unit])=>'<div class="pq-reading"><span>'+esc(label)+'</span><strong>'+number(v,label.startsWith('Factor')?3:2)+'</strong><small>'+esc(unit)+'</small></div>').join('')+'</div><p class="pq-note">'+(row?'Lectures de la darrera mostra del registre seleccionat.':'Encara no hi ha cap adquisició. Configura l’equip i prem ADQUIRIR.')+'</p>';
+ if(!selectedRecord)return '<p>Encara no hi ha cap adquisició. Les mesures apareixeran en completar-ne una.</p>';
+ const row=selectedRecord.rows.at(-1);
+ if(!row)return '<p>Sense mostres.</p>';
+ const table='<table class="pq-table"><thead><tr><th>Entrada</th><th>U (V)</th><th>I (A)</th><th>P (W)</th><th>Q1 (var)</th><th>S (VA)</th><th>FP</th><th>THD-U (%)</th><th>THD-I (%)</th></tr></thead><tbody>'+
+ row.phases.map(p=>'<tr><td>'+(p.slot+1)+'</td><td>'+fmt(p.voltageRms)+'</td><td>'+fmt(p.currentRms)+'</td><td>'+fmt(p.p)+'</td><td>'+fmt(p.q1)+'</td><td>'+fmt(p.s)+'</td><td>'+fmt(p.powerFactor,3)+'</td><td>'+fmt(p.voltageTHD)+'</td><td>'+fmt(p.currentTHD)+'</td></tr>').join('')+
+ '</tbody></table>';
+ const totals='<div class="pq-readings">'+[
+  ['P total',row.totalP,'W'],['Q1 total',row.totalQ1,'var'],
+  ['S total',row.totalS,'VA'],['FP total',row.totalPowerFactor,''],['Freqüència',scenario.frequency,'Hz']
+ ].map(([label,value,unit])=>'<div class="pq-reading"><span>'+label+'</span><strong>'+fmt(value,label.includes('FP')?3:2)+'</strong><small>'+unit+'</small></div>').join('')+'</div>';
+ return '<p class="pq-note">Darrera mostra de '+esc(selectedRecord.id)+' · t = '+fmt(row.time,2)+' s</p><div class="pq-table-wrap">'+table+'</div>'+totals;
 }
 function harmonicView(){
- if(!selectedRecord)return '<p>Executa una adquisició per mostrar l’espectre del cas mesurat.</p>';
- const r=selectedRecord.rows.at(-1);
- if(!r||r.status!=='measured')return '<p>Els canals no permeten reconstruir l’espectre complet amb aquesta configuració.</p>';
- // El gràfic mostra només la tensió del punt; la instrumentació per canal s'aplicarà al registre.
- const vChannel=selectedRecord.settings.voltageChannels[0];
- if(!vChannel?.enabled||vChannel.negative!=='N'||!/^L[1-3]$/.test(vChannel.positive??''))
-   return '<p>Espectre no disponible per a aquesta connexió en la versió actual de l’instrument.</p>';
- if(vChannel.positivePoint!==vChannel.negativePoint||!vChannel.positivePoint)
-   return '<p>Espectre no disponible per a aquesta combinació de punts de connexió.</p>';
- const phase=Number(vChannel.positive.slice(1))-1;
- const t=r.time,values=spectrum(scenario,vChannel.positivePoint,phase,t);
- return '<p class="pq-note">Espectre de tensió per al canal de fase seleccionat, en l’instant de la mostra.</p>'+barSvg(values.map(v=>({order:v.order,value:v.voltageRms})),'V');
+ if(!selectedRecord)return '<p>Encara no hi ha dades harmòniques adquirides.</p>';
+ const last=selectedRecord.rows.at(-1);
+ if(!last)return '<p>No hi ha mostres disponibles.</p>';
+ const c=instrumentChannelComponents(scenario,selectedRecord.settings,screenChannel,last.time);
+ const content=key=>{
+   const components=c[key];
+   if(!components)return '<p class="pq-note">Canal sense lectura disponible.</p>';
+   const bars=harmonicOrders.map(order=>({order,value:components.find(h=>h.order===order)?.rms??0}));
+   return barSvg(bars,key==='voltage'?'V':'A');
+ };
+ return channelSelector()+'<p class="pq-note">Espectres del canal '+(screenChannel+1)+' en la darrera mostra (RMS per ordre).</p>'+
+ '<h3 class="pq-screen-heading">Harmònics de tensió</h3>'+content('voltage')+
+ '<h3 class="pq-screen-heading">Harmònics de corrent</h3>'+content('current');
 }
 function waveView(){
- if(!selectedRecord)return '<p>Executa una adquisició per mostrar una forma d’ona.</p>';
- const r=selectedRecord.rows.at(-1),ch=selectedRecord.settings.voltageChannels[0];
- if(!r||r.status!=='measured'||!ch?.enabled)return '<p>El canal de tensió no està disponible.</p>';
- if(ch.negative!=='N'||!/^L[1-3]$/.test(ch.positive??''))
-   return '<p>Forma d’ona no disponible per a aquesta connexió en la versió actual de l’instrument.</p>';
- if(ch.positivePoint!==ch.negativePoint||!ch.positivePoint)
-   return '<p>Forma d’ona no disponible per a aquesta combinació de punts de connexió.</p>';
- const phase=Number(ch.positive.slice(1))-1;
- const period=1/scenario.frequency,rows=waveform(scenario,ch.positivePoint,phase,r.time,period*3,320);
- return '<div class="pq-plot-key"><span>Tensió L'+(phase+1)+' (V)</span></div>'+graphSvg(rows.map(v=>v.voltage),null,'Tensió (V)')+'<p class="pq-note">Representació de tres períodes de la tensió del canal seleccionat. Les formes d’ona de corrent s’incorporaran quan el model apliqui íntegrament les relacions de TC i el sentit de les pinces als senyals mostrats.</p>';
+ if(!selectedRecord)return '<p>Encara no hi ha cap adquisició per mostrar formes d’ona.</p>';
+ const last=selectedRecord.rows.at(-1);
+ if(!last)return '<p>No hi ha mostres disponibles.</p>';
+ // Tres períodes de la freqüència fonamental, mostrejats visualment.
+ const period=1/scenario.frequency,dt=3*period/319;
+ const rows=Array.from({length:320},(_,i)=>{
+   const t=last.time+i*dt;
+   const c=instrumentChannelComponents(scenario,selectedRecord.settings,screenChannel,t);
+   return {
+     voltage:c.voltage?sampleWave(c.voltage,c.frequency,t):null,
+     current:c.current?sampleWave(c.current,c.frequency,t):null
+   };
+ });
+ const plot=(key,unit)=>rows.every(r=>r[key]!==null)?
+   graphSvg(rows.map(r=>r[key]),null,key==='voltage'?'Tensió (V)':'Corrent (A)'):
+   '<p class="pq-note">No hi ha lectura en aquest canal.</p>';
+ return channelSelector()+'<p class="pq-note">Tres períodes simulats del canal '+(screenChannel+1)+'. Cada magnitud té la seva pròpia escala vertical.</p>'+
+ '<h3 class="pq-screen-heading">Tensió instantània · V</h3>'+plot('voltage','V')+
+ '<h3 class="pq-screen-heading">Corrent instantani · A</h3>'+plot('current','A');
 }
 function timelineView(){
- if(!selectedRecord)return '<p>No hi ha cap registre temporal seleccionat.</p>';
- const rows=selectedRecord.rows,v=rows.map(r=>r.phases[0]?.voltageRms??NaN);
- if(!v.some(Number.isFinite))return '<p>No hi ha lectures de tensió disponibles.</p>';
- return graphSvg(v,null,'Tensió L1 (V)')+'<p class="pq-note">Inici: '+fmt(selectedRecord.start,1)+' s · Durada: '+fmt(selectedRecord.duration,1)+' s · Interval: '+fmt(selectedRecord.interval,2)+' s · Mostres: '+rows.length+'</p>';
+ if(!selectedRecord)return '<p>Encara no hi ha cap registre temporal seleccionat.</p>';
+ const rows=selectedRecord.rows,v=rows.map(r=>r.phases[screenChannel]?.voltageRms);
+ if(v.length<2||v.some(value=>!Number.isFinite(value)))return channelSelector()+'<p>No hi ha lectures temporals de tensió per a aquest canal.</p>';
+ return channelSelector()+graphSvg(v,null,'Tensió RMS canal '+(screenChannel+1)+' (V)')+
+ '<p class="pq-note">Inici: '+fmt(selectedRecord.start,1)+' s · Durada: '+fmt(selectedRecord.duration,1)+' s · Interval: '+fmt(selectedRecord.interval,2)+' s · Mostres: '+rows.length+'</p>';
+}
+function eventsView(){
+ if(!selectedRecord)return '<p>Encara no hi ha cap adquisició per consultar esdeveniments.</p>';
+ const events=selectedRecord.capturedEvents??[];
+ if(!events.length)return '<p>Sense variacions registrades per la detecció interna en aquesta adquisició.</p>';
+ return '<p class="pq-note">Variacions detectades sobre les lectures de l’instrument; no són diagnòstics de conformitat.</p><div class="pq-table-wrap"><table class="pq-table"><thead><tr><th>Inici (s)</th><th>Durada (s)</th><th>Canal</th><th>Magnitud</th><th>Anterior</th><th>Observada</th><th>Variació</th></tr></thead><tbody>'+
+ events.flatMap(event=>event.measurements.map(item=>'<tr><td>'+fmt(event.start,3)+'</td><td>'+fmt(event.duration,3)+'</td><td>'+item.channel+'</td><td>'+esc(item.quantity)+'</td><td>'+fmt(item.previous)+' '+esc(item.unit)+'</td><td>'+fmt(item.observed)+' '+esc(item.unit)+'</td><td>'+fmt(item.variationPercent,1)+' %</td></tr>')).join('')+
+ '</tbody></table></div><p class="pq-note">La durada es refereix al tram observat dins de la finestra configurada. Els valors de cada fila són magnituds mesurades.</p>';
 }
 function screenContent(){
  if(screen==='instant')return readingView();
  if(screen==='harmonics')return harmonicView();
  if(screen==='wave')return waveView();
  if(screen==='time')return timelineView();
+ if(screen==='events')return eventsView();
  return '<p>Pantalla no disponible.</p>';
 }
 function analyzer(){
- const screens=[['instant','Mesures'],['wave','Formes d’ona'],['harmonics','Harmònics'],['time','Registre temporal']];
+ const screens=[['instant','Mesures'],['wave','Formes d’ona'],['harmonics','Harmònics'],['time','Registre temporal'],['events','Esdeveniments']];
  return '<section class="pq-analyzer" aria-label="Analitzador de qualitat de xarxa virtual"><div class="pq-bezel"><div class="pq-hud"><span>TECLAB · PQ ANALYZER / MODEL V1</span><span><i class="pq-led '+(selectedRecord?'on':'')+'"></i>'+esc(selectedRecord?.id??'SENSE REGISTRE')+'</span></div><div class="pq-screen-nav">'+screens.map(([id,label])=>'<button data-screen="'+id+'" class="'+(id===screen?'active':'')+'" aria-pressed="'+(id===screen)+'">'+label+'</button>').join('')+'</div><div class="pq-screen" id="pq-screen">'+screenContent()+'</div></div><div class="pq-controls"><span class="pq-status">SIMULACIÓ · '+(scenario.phases===3?'3 FASES':'1 FASE')+'</span><div class="pq-action-row"><button id="pq-prev">◀ Pantalla</button><button class="primary" id="pq-measure">ADQUIRIR</button><button id="pq-next">Pantalla ▶</button></div></div><div id="pq-message" class="pq-message" role="status" aria-live="polite">'+esc(message)+'</div></section>';
 }
 function historyView(){
  return '<section class="panel pq-data-panel"><h2>Historial de mesures</h2><p class="pq-note">Cada adquisició conserva la configuració, les mostres i els instants simulats.</p><div class="pq-history">'+(session.acquisitions.length?session.acquisitions.map((r,i)=>'<button data-record="'+i+'" class="'+(selectedRecord?.id===r.id?'active':'')+'">'+esc(r.id)+' · '+esc(r.pointId)+' · '+fmt(r.start,1)+'–'+fmt(r.start+r.duration,1)+' s · '+r.rows.length+' mostres</button>').join(''):'<p class="pq-note">No s’han efectuat mesures.</p>')+'</div></section>';
 }
-function foundations(){
- return '<div class="pq-guide"><section class="panel"><h2>Què mesura un analitzador de qualitat de xarxa?</h2><p>Registra tensions, corrents, freqüència i potències, i pot analitzar la distorsió harmònica i esdeveniments temporals. Aquest instrument és una simulació educativa: cap dada prové d’una instal·lació real.</p></section><section class="panel"><h2>Valors eficaços i potències</h2><p>Els valors RMS inclouen les components fonamental i harmòniques. La potència activa P és la mitjana de la potència instantània. La potència aparent S es calcula amb els RMS i el factor de potència total és P/S.</p><p>La potència reactiva representada com Q1 es refereix exclusivament a la fonamental; en xarxes distorsionades no s’ha d’equiparar sense matisos amb una potència reactiva total.</p></section><section class="panel"><h2>Distorsió harmònica</h2><p>THD de tensió i THD de corrent són magnituds diferents. Es calcula la relació entre l’arrel quadrada de la suma dels quadrats dels valors RMS harmònics i el RMS de la fonamental, expressada en percentatge. Un espectre mostra l’ordre de cada harmònic.</p></section><section class="panel"><h2>Pertorbacions i adquisició</h2><p>Una pertorbació només pot quedar registrada si té lloc durant la finestra de mesura i el mostreig la captura. Per això, durada, interval i punt de mesura condicionen els resultats. Un registre sense cap esdeveniment capturat no prova que la xarxa estigui lliure de pertorbacions.</p></section><section class="panel"><h2>Connexions i transformadors de corrent</h2><p>Els transformadors de corrent requereixen una relació correcta per mostrar la magnitud real. Invertir una pinça de corrent altera el sentit assignat a la mesura, i intercanviar fases pot provocar lectures de potència que no corresponen a la càrrega. L’equip virtual mostra les lectures derivades de la configuració, sense indicar automàticament la configuració adequada.</p></section></div>';
-}
-function help(){
- return '<div class="pq-guide"><section class="panel"><h2>1. Obre el teu cas</h2><p>Utilitza el codi assignat pel docent. El codi reconstrueix les condicions de la xarxa però no conté les mesures que hagis fet. Per traslladar tota la sessió a un altre ordinador, exporta el fitxer JSON.</p></section><section class="panel"><h2>2. Punts de mesura i connexions</h2>'+scheme()+'<p>Selecciona el punt de mesura a l’esquema de la instal·lació. Arrossega les sondes i pinces des dels borns de l’analitzador fins als conductors de P0, P1 i P2. Pots canviar el sentit de les pinces amb doble clic o amb la tecla R. Per desconnectar un element, arrossega’l a una zona lliure. Les sondes i les pinces es desplacen sobre el quadre arrossegant-les. Després configura la topologia, els canals i la relació dels transformadors de corrent. Aquests controls canvien allò que mesura l’instrument.</p></section><section class="panel"><h2>3. Programa una adquisició</h2><p>Introdueix l’instant inicial, la durada i l’interval de mostreig. L’exercici disposa d’un temps simulat que permet repetir o desplaçar captures sense esperes reals. Prem ADQUIRIR.</p><div class="pq-help-example">Inici = 10 s · Durada = 30 s · Interval = 1 s → 31 mostres</div></section><section class="panel"><h2>4. Consulta pantalles</h2><p>Les tecles Mesures, Formes d’ona, Harmònics i Registre temporal permeten passar entre diferents representacions de les dades. Les lectures presentades corresponen al registre seleccionat. Si un canal està desconnectat, les magnituds que en depenen no es poden calcular completament.</p></section><section class="panel"><h2>5. Conserva el treball</h2><p>Genera un informe imprimible amb les mesures i utilitza la funció del navegador per desar-lo com a PDF. Exporta JSON si vols recuperar la sessió i continuar mesurant en un altre ordinador. L’historial inclou cada adquisició independent. El simulador no determina si la teva mesura és correcta ni redacta una conclusió de conformitat. El circuit de 24 V CC també es pot sondejar; l’analitzador està modelat amb entrades de CA, per això no registra la component contínua estacionària.</p></section></div>';
-}
+function foundations(){return foundationsManual();}
+function help(){return helpManual();}
 function paint(){
  document.querySelectorAll('[data-tab]').forEach(button=>{
    const current=button.dataset.tab===activeTab;
@@ -163,9 +185,10 @@ function attach(){
    settings.currentChannels[Number(el.dataset.inverted)].inverted=el.checked;
  }));
  root.querySelectorAll('[data-screen]').forEach(el=>el.addEventListener('click',()=>{screen=el.dataset.screen;paint();}));
- const screens=['instant','wave','harmonics','time'];
- on('#pq-prev','click',()=>{screen=screens[(screens.indexOf(screen)+3)%4];paint();});
- on('#pq-next','click',()=>{screen=screens[(screens.indexOf(screen)+1)%4];paint();});
+ root.querySelectorAll('[data-screen-channel]').forEach(el=>el.addEventListener('click',()=>{screenChannel=Number(el.dataset.screenChannel);paint();}));
+ const screens=['instant','wave','harmonics','time','events'];
+ on('#pq-prev','click',()=>{screen=screens[(screens.indexOf(screen)+screens.length-1)%screens.length];paint();});
+ on('#pq-next','click',()=>{screen=screens[(screens.indexOf(screen)+1)%screens.length];paint();});
  on('#pq-measure','click',()=>{try{session=recordAcquisition(session);selectedRecord=session.acquisitions.at(-1);message='Adquisició '+selectedRecord.id+' registrada.';paint();}catch(e){tell('Adquisició no disponible: '+e.message);}});
  root.querySelectorAll('[data-record]').forEach(el=>el.addEventListener('click',()=>{selectedRecord=session.acquisitions[Number(el.dataset.record)];paint();}));
 }
