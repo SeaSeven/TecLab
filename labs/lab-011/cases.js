@@ -34,7 +34,7 @@ function makePoint(id,label,ratio,factors){
 export function generateCase(seed){
  const rng=seededRandom(seed);
  const family=families[seed%families.length];
- const threePhase=family==='D'||family==='G'||rng()>.37;
+ const threePhase=true; // Referència comuna Pt 2.2: CA trifàsica 400/230 V, 50 Hz
  const phases=threePhase?3:1;
  const baseVoltage=230;
  const voltageScale=round(.985+rng()*.03);
