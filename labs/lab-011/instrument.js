@@ -7,9 +7,9 @@ export function defaultInstrument(scenario,pointId='PCC'){
  const phases=Array.from({length:scenario.phases},(_,i)=>i);
  return {
    pointId,topology:scenario.phases===3?'3P4W':'1P2W',
-   voltageChannels:phases.map(i=>({phase:i,enabled:true})),
+   voltageChannels:phases.map(i=>({phase:i,enabled:true,positive:null,negative:null})),
    currentChannels:phases.map(i=>({
-     phase:i,enabled:true,inverted:false,ctRatio:actualCtRatio(pointId)
+     phase:i,enabled:true,inverted:false,ctRatio:actualCtRatio(pointId),conductor:null
    })),
    duration:30,interval:1,start:0
  };
@@ -35,6 +35,43 @@ function checkConfiguration(scenario,settings){
 }
 const scale=(components,factor,shift=0)=>components.map(c=>({...c,rms:c.rms*Math.abs(factor),
  angle:c.angle+shift}));
+
+// Diferència fasorial de tensió de dos terminals. N=referència ideal del model.
+function phasorVoltage(scenario,pointId,positive,negative,time){
+ const get=terminal=>{
+   if(terminal==='N')return [];
+   const match=/^L([1-3])$/.exec(terminal??'');
+   if(!match||Number(match[1])>scenario.phases)return null;
+   return baseComponents(scenario,pointId,Number(match[1])-1,time).voltage;
+ };
+ const a=get(positive),b=get(negative);
+ if(!a||!b)return null;
+ const orders=new Set([...a,...b].map(x=>x.order));
+ return [...orders].sort((x,y)=>x-y).map(order=>{
+   const va=a.find(x=>x.order===order),vb=b.find(x=>x.order===order);
+   const re=(va?.rms??0)*Math.cos(va?.angle??0)-(vb?.rms??0)*Math.cos(vb?.angle??0);
+   const im=(va?.rms??0)*Math.sin(va?.angle??0)-(vb?.rms??0)*Math.sin(vb?.angle??0);
+   return {order,rms:Math.hypot(re,im),angle:Math.atan2(im,re)};
+ });
+}
+function selectedVoltage(scenario,pointId,channel,time){
+ if(!channel?.enabled)return null;
+ if(Object.hasOwn(channel,'positive')||Object.hasOwn(channel,'negative'))
+   return phasorVoltage(scenario,pointId,channel.positive,channel.negative,time);
+ return baseComponents(scenario,pointId,channel.phase,time).voltage; // fitxers de sessió anteriors
+}
+function selectedCurrent(scenario,pointId,channel,time){
+ if(!channel?.enabled)return null;
+ let phase=channel.phase,shift=channel.inverted?Math.PI:0;
+ if(Object.hasOwn(channel,'conductor')){
+   const match=/^L([1-3])$/.exec(channel.conductor??'');
+   if(!match||Number(match[1])>scenario.phases)return null;
+   phase=Number(match[1])-1;
+ }
+ const physical=baseComponents(scenario,pointId,phase,time).current;
+ return scale(physical,channel.ctRatio/actualCtRatio(pointId),shift);
+}
+
 export function instrumentSnapshot(scenario,settings,time){
  checkConfiguration(scenario,settings);
  const expectedTopology=scenario.phases===3?'3P4W':'1P2W';
@@ -47,14 +84,13 @@ export function instrumentSnapshot(scenario,settings,time){
  for(let slot=0;slot<n;slot++){
    const vc=settings.voltageChannels[slot];
    const ic=settings.currentChannels[slot];
-   const v=vc?.enabled?baseComponents(scenario,settings.pointId,vc.phase,time).voltage:null;
-   const physicalI=ic?.enabled?baseComponents(scenario,settings.pointId,ic.phase,time).current:null;
-   const ratio=ic?ic.ctRatio/actualCtRatio(settings.pointId):null;
-   // Una pinça invertida afegeix 180 graus; la RMS de corrent no canvia.
-   const i=physicalI?scale(physicalI,ratio,ic.inverted?Math.PI:0):null;
+   const v=selectedVoltage(scenario,settings.pointId,vc,time);
+   const i=selectedCurrent(scenario,settings.pointId,ic,time);
    const power=v&&i?componentPower(v,i):null;
    rows.push({
      slot,voltagePhase:vc?.enabled?vc.phase:null,currentPhase:ic?.enabled?ic.phase:null,
+     voltageTerminals:vc?{positive:vc.positive??null,negative:vc.negative??null}:null,
+     currentConductor:ic?.conductor??null,
      voltageRms:v?rms(v):null,currentRms:i?rms(i):null,
      voltageTHD:v?thd(v):null,currentTHD:i?thd(i):null,
      p:power?.p??null,q1:power?.q1??null,s:power?.s??null,
