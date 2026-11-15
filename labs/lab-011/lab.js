@@ -73,7 +73,7 @@ function casePanel(){
 }
 function settingsPanel(){
  const s=session.settings,options=Array.from({length:scenario.phases},(_,i)=>'<option value="'+i+'">L'+(i+1)+'</option>').join('');
- const channelRow=(kind,arr)=>'<h3>'+kind+'</h3>'+arr.map((c,i)=>'<div class="pq-config-row"><label>Canal '+(i+1)+'<select data-channel="'+kind+'" data-slot="'+i+'">'+Array.from({length:scenario.phases},(_,j)=>'<option value="'+j+'" '+(c.phase===j?'selected':'')+'>L'+(j+1)+'</option>').join('')+'</select></label><label class="pq-switch"><input type="checkbox" data-enabled="'+kind+'" data-slot="'+i+'" '+(c.enabled?'checked':'')+'> Actiu</label></div>').join('');
+ const channelRow=(kind,arr)=>'<h3>Entrades '+kind+'</h3>'+arr.map((channel,i)=>'<label class="pq-switch"><input type="checkbox" data-enabled="'+kind+'" data-slot="'+i+'" '+(channel.enabled?'checked':'')+'> Canal '+kind+(i+1)+' actiu</label>').join('');
  return '<section class="panel"><h2>Configuració instrumental</h2><div class="pq-form"><label for="pq-topology">Topologia seleccionada</label><select id="pq-topology"><option value="1P2W" '+(s.topology==='1P2W'?'selected':'')+'>Monofàsica · 1P2W</option><option value="3P4W" '+(s.topology==='3P4W'?'selected':'')+'>Trifàsica · 3P4W</option></select><div class="pq-config-row"><label for="pq-start">Inici (s)<input id="pq-start" type="number" step="0.1" min="0" max="899" value="'+s.start+'"></label><label for="pq-duration">Durada (s)<input id="pq-duration" type="number" min="0.1" max="900" step=".1" value="'+s.duration+'"></label></div><label for="pq-interval">Interval de registre (s)</label><select id="pq-interval">'+[.05,.1,.2,.5,1,2,5,10,30].map(v=>'<option value="'+v+'" '+(s.interval===v?'selected':'')+'>'+fmt(v,2)+' s</option>').join('')+'</select><details class="pq-advanced"><summary>Canals, pinces i transformadors de corrent</summary>'+channelRow('V',s.voltageChannels)+channelRow('I',s.currentChannels)+s.currentChannels.map((c,i)=>'<div class="pq-config-row"><label>TC · I'+(i+1)+'<input data-ct="'+i+'" type="number" min="0.1" max="10000" step="0.1" value="'+c.ctRatio+'"></label></div>').join('')+'</details></div></section>';
 }
 function readingView(){
@@ -177,10 +177,6 @@ function attach(){
    if(kind==='v-positive')settings.voltageChannels[slot].positive=terminal;
    if(kind==='v-negative')settings.voltageChannels[slot].negative=terminal;
    if(kind==='i-conductor')settings.currentChannels[slot].conductor=terminal;
- }));
- root.querySelectorAll('[data-channel]').forEach(el=>el.addEventListener('change',()=>{
-   const arr=el.dataset.channel==='V'?settings.voltageChannels:settings.currentChannels;
-   arr[Number(el.dataset.slot)].phase=Number(el.value);
  }));
  root.querySelectorAll('[data-enabled]').forEach(el=>el.addEventListener('change',()=>{
    const arr=el.dataset.enabled==='V'?settings.voltageChannels:settings.currentChannels;
