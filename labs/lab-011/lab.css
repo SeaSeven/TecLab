@@ -7,3 +7,10 @@
 .pq-wire-channel label{margin:5px 0;font-size:12px}
 .pq-wire-channel .pq-switch{display:flex;align-items:center;gap:6px}
 .pq-wire-channel .pq-switch input{width:auto}
+
+.pq-conductor-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(52px,1fr));gap:6px;margin:8px 0}
+.pq-conductor{display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 6px;background:#172f3e;border:1px solid #587081;color:#eef4f6;min-width:0}
+.pq-conductor:hover,.pq-conductor:focus-visible{border-color:var(--amber)}
+.pq-bus-line{display:block;height:18px;width:4px;border-radius:2px;background:#9db5c2}
+.pq-wiring [data-arm].active{background:var(--amber);border-color:var(--amber);color:#17212c}
+.pq-wiring [data-arm]{font-size:12px;padding:6px 8px}
