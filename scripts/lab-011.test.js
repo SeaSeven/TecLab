@@ -64,7 +64,7 @@ test('pinça invertida canvia P i Q1, no I ni V',()=>{
  nearly(a.phases[0].q1,-b.phases[0].q1);
 });
 test('fase de corrent intercanviada altera potències sense alterar corrent RMS',()=>{
- const s=generateCase(100002);
+ const s=generateCase(100005); // Família D: xarxa trifàsica
  assert.equal(s.phases,3);
  const config=defaultInstrument(s);
  const a=instrumentSnapshot(s,config,4);
@@ -74,7 +74,7 @@ test('fase de corrent intercanviada altera potències sense alterar corrent RMS'
  assert.notEqual(a.phases[0].p,b.phases[0].p);
 });
 test('canal omès no inventa potència total',()=>{
- const s=generateCase(100002),settings=defaultInstrument(s);
+ const s=generateCase(100005),settings=defaultInstrument(s);
  settings.currentChannels[1].enabled=false;
  const x=instrumentSnapshot(s,settings,5);
  assert.equal(x.status,'incomplete');
@@ -82,7 +82,6 @@ test('canal omès no inventa potència total',()=>{
  assert.equal(x.totalP,null);
 });
 test('captura temporal fora d’un sot de tensió no detecta esdeveniment',()=>{
- const s=generateCase(100002); // 100002 % 7 = 0? Revisar família explícitament a sota.
  const c=Array.from({length:7},(_,i)=>generateCase(100000+i)).find(c=>c.family==='C');
  assert.ok(c);
  const start=c.events[0].start;
