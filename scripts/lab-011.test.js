@@ -2,9 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateCase,codeForCase,parseCaseCode,classCases} from '../labs/lab-011/cases.js';
 import {baseComponents,phaseReading,realSnapshot,rms,thd,sampleWave,acquireReal} from '../labs/lab-011/model.js';
-import {defaultInstrument,instrumentSnapshot,acquireInstrument} from '../labs/lab-011/instrument.js';
+import {defaultInstrument,instrumentSnapshot,acquireInstrument,instrumentChannelComponents} from '../labs/lab-011/instrument.js';
 import {newSession,recordAcquisition,sessionToJSON,sessionFromJSON} from '../labs/lab-011/session.js';
 import {findFreeSocket} from '../labs/lab-011/wiring.js';
+import {buildInstrumentReport} from '../labs/lab-011/exports.js';
+import {foundationsManual,helpManual} from '../labs/lab-011/manual.js';
 
 const nearly=(a,b,tol=1e-8)=>assert.ok(Math.abs(a-b)<=tol*Math.max(1,Math.abs(a),Math.abs(b)),a+' ≠ '+b);
 function wiredInstrument(s){
@@ -196,4 +198,54 @@ test('les connexions a 24 V CC queden documentades a la sessió per a l’inform
  const restored=sessionFromJSON(sessionToJSON(recordAcquisition(session)));
  assert.equal(restored.acquisitions[0].settings.voltageChannels[0].positivePoint,'DC24');
  assert.equal(restored.acquisitions[0].settings.currentChannels[0].conductor,'+24V');
+});
+
+test('formes d’ona i harmònics corresponen a les sondes i pinces connectades',()=>{
+ const s=generateCase(100005),settings=wiredInstrument(s);
+ const components=instrumentChannelComponents(s,settings,0,5);
+ assert.ok(components.voltage.length>=1);
+ assert.ok(components.current.length>=1);
+ settings.currentChannels[0].inverted=true;
+ const flipped=instrumentChannelComponents(s,settings,0,5);
+ nearly(components.current[0].rms,flipped.current[0].rms);
+ const difference=Math.abs(Math.cos(components.current[0].angle-flipped.current[0].angle));
+ nearly(difference,1);
+ settings.currentChannels[0].ctRatio*=2;
+ const doubled=instrumentChannelComponents(s,settings,0,5);
+ nearly(doubled.current[0].rms,components.current[0].rms*2);
+});
+test('la captura interna troba un sot observable que el registre lent pot ometre',()=>{
+ const s=Array.from({length:7},(_,i)=>generateCase(100000+i)).find(c=>c.family==='C');
+ const settings=wiredInstrument(s);
+ const event=s.events.find(e=>e.kind==='sag');
+ Object.assign(settings,{start:event.start-.2,duration:3,interval:2});
+ const result=acquireInstrument(s,settings);
+ assert.ok(result.capturedEvents.length>0);
+ assert.ok(result.capturedEvents[0].measurements.some(x=>x.quantity==='Tensió RMS'));
+});
+test('no es generen esdeveniments amb les sondes i pinces sense connectar',()=>{
+ const s=Array.from({length:7},(_,i)=>generateCase(100000+i)).find(c=>c.family==='C');
+ const settings=defaultInstrument(s),event=s.events[0];
+ Object.assign(settings,{start:event.start-.2,duration:3,interval:1});
+ assert.deepEqual(acquireInstrument(s,settings).capturedEvents,[]);
+});
+test('l’informe conserva codi, esdeveniments, gràfics i configuració',()=>{
+ const s=Array.from({length:7},(_,i)=>generateCase(100000+i)).find(c=>c.family==='C');
+ const settings=wiredInstrument(s),event=s.events[0];
+ Object.assign(settings,{start:event.start-.2,duration:3,interval:1});
+ const session=newSession(s.code);
+ session.settings=settings;
+ const result=recordAcquisition(session);
+ const html=buildInstrumentReport(result,{generatedAt:new Date('2026-11-16T12:00:00Z')});
+ assert.ok(html.includes(s.code));
+ assert.ok(html.includes('Formes d’ona i espectres mesurats'));
+ assert.ok(html.includes('Registre d’esdeveniments capturats'));
+ assert.ok(html.includes('Sondes V (+ / −)'));
+});
+test('el manual descriu l’equip sense revelar famílies o respostes dels casos',()=>{
+ const foundations=foundationsManual(),help=helpManual();
+ assert.ok(foundations.includes('THD-U')&&foundations.includes('Q1'));
+ assert.ok(help.includes('ADQUIRIR')&&help.includes('PDF'));
+ assert.ok(!help.includes('EV-SAG'));
+ assert.ok(!foundations.includes('família G'));
 });
