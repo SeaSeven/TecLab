@@ -101,3 +101,13 @@ Fitxers nous: `labs/lab-011/index.html`, `lab.css`, `lab.js` i `metadata.json` a
 Referència formal d'ergonomia: analitzadors industrials amb pantalla de dades, controls de navegació i pantalles de magnituds, formes d'ona i harmònics; evitar la còpia d'imatges, marques i distribucions propietàries.
 
 **Verificació feta:** comprovació de sintaxi de tots els nous mòduls JavaScript, incloent la interfície i el fitxer de tests. No s'ha executat encara `npm test` ni una revisió real en navegador.
+
+## Canvi de prioritat de persistència i informe (15-11-2026)
+
+Després de la primera revisió visual, s'ha retirat el desament al navegador de la interfície i del mòdul de sessió. Es manté l'exportació/importació JSON com a única via de recuperació portable del treball. El codi de cas continua reconstruint només l'escenari.
+
+S'ha incorporat `exports.js`, que genera un informe HTML instrumental amb format A4 preparat per imprimir o desar com a PDF mitjançant el diàleg d'impressió del navegador. L'informe conté el codi de cas, la data de generació, cada adquisició, el punt de mesura, la configuració de canals i TC, la finestra temporal, lectures RMS/THD/potències i un gràfic temporal de tensió quan hi ha dades suficients. No incorpora diagnòstics ni conclusions sobre conformitat; identifica clarament que són dades simulades.
+
+**Limitació de la primera versió:** no es genera encara un PDF binari de manera directa. Safari i altres navegadors permeten l'opció d'imprimir/desar com a PDF; cal verificar-ne l'aspecte real amb proves d'impressió i de navegació. Falta comprovar gràfics harmònics, capçaleres i paginació d'informes llargs.
+
+Verificacions fetes: sintaxi dels set mòduls JS revisats; generació d'informe d'una sessió amb una adquisició i presència de la configuració, les mesures, el gràfic i l'avís de dades simulades; recuperació JSON íntegra. No s'ha fet una prova real de diàleg d'impressió.
