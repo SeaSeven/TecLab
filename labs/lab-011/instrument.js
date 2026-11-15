@@ -95,6 +95,18 @@ function selectedCurrent(scenario,pointId,channel,time){
  return scale(physical,channel.ctRatio/actualCtRatio(point),shift);
 }
 
+// Mostres de cada entrada amb les connexions i relacions de TC realment establertes.
+export function instrumentChannelComponents(scenario,settings,slot,time){
+ checkConfiguration(scenario,settings);
+ if(!Number.isInteger(slot)||slot<0||slot>=scenario.phases)throw new RangeError('Canal no disponible.');
+ if(settings.topology!==(scenario.phases===3?'3P4W':'1P2W'))
+   return {voltage:null,current:null,frequency:scenario.frequency};
+ return {
+   voltage:selectedVoltage(scenario,settings.pointId,settings.voltageChannels[slot],time),
+   current:selectedCurrent(scenario,settings.pointId,settings.currentChannels[slot],time),
+   frequency:scenario.frequency
+ };
+}
 export function instrumentSnapshot(scenario,settings,time){
  checkConfiguration(scenario,settings);
  const expectedTopology=scenario.phases===3?'3P4W':'1P2W';
