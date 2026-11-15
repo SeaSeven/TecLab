@@ -149,6 +149,8 @@ export function captureInstrumentEvents(scenario,settings){
  const {start,duration}=settings;
  const end=start+duration,events=[];
  for(const change of scenario.events){
+   // Només es detecta una transició si l'equip ja estava adquirint abans de l'inici.
+   if(change.start<start)continue;
    const began=Math.max(start,change.start);
    const finished=Math.min(end,change.start+change.duration);
    if(finished<=began||change.duration<.02)continue;
