@@ -25,3 +25,6 @@
 .pq-drag-head:focus-visible circle{stroke:#fff;stroke-width:5}
 .pq-placement{padding:10px 12px;margin-top:8px;background:#152732;border:1px solid #465d69;border-radius:7px;color:#c4d5de;font:11px/1.7 var(--mono);overflow-wrap:anywhere}
 @media(max-width:720px){.pq-stage{padding:10px}.pq-wiring-svg{min-width:680px;max-height:none}#pq-wiring-canvas{overflow-x:auto}}
+
+/* La pinça invertida canvia d'orientació i d'acabat, sense colors de correcció. */
+.pq-drag-head.is-reversed circle{fill:#d2dbeb;stroke:#75a4e1;stroke-width:4}
