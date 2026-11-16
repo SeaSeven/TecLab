@@ -6,7 +6,7 @@
     "EEB0"
   ],
   "iconPath": "M6 42h15l11-29 14 40 12-23 10 12h17",
-  "version": "1.0.0",
+  "version": "1.1.0-dev",
   "status": "published",
   "access": "public",
   "entry": "labs/lab-011/",
@@ -42,6 +42,8 @@
     "ac-only-dc-misconnection",
     "event-capture",
     "printable-measurement-report",
-    "instrument-user-manual"
+    "instrument-user-manual",
+    "commercial-ct-primary-secondary-selector",
+    "channel-switches-under-wiring"
   ]
 }
