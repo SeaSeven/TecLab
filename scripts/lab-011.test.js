@@ -77,7 +77,8 @@ test('fase de corrent intercanviada altera potències sense alterar corrent RMS'
  assert.equal(s.phases,3);
  const config=wiredInstrument(s);
  const a=instrumentSnapshot(s,config,4);
- config.currentChannels[0].phase=1;
+ // La fase la determina la col·locació física de la pinça, no el camp històric phase.
+ config.currentChannels[0].conductor='L2';
  const b=instrumentSnapshot(s,config,4);
  nearly(a.phases[1].currentRms,b.phases[0].currentRms);
  assert.notEqual(a.phases[0].p,b.phases[0].p);
