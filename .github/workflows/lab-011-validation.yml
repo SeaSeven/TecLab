@@ -8,6 +8,11 @@ on:
     paths:
       - 'labs/lab-011/**'
       - 'scripts/lab-011.test.js'
+      - 'scripts/catalog-areas.test.js'
+      - 'shared/components/catalog.js'
+      - 'shared/components/app.js'
+      - 'shared/css/catalog.css'
+      - 'data/laboratories.json'
       - 'shared/services/exercises.js'
       - '.github/workflows/lab-011-validation.yml'
   workflow_dispatch:
