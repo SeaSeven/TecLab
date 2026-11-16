@@ -12,8 +12,8 @@ import {CT_OPTIONS,CT_PRIMARY_5A,CT_PRIMARY_1A,applyCtSelection,ctSelection} fro
 const nearly=(a,b,tol=1e-8)=>assert.ok(Math.abs(a-b)<=tol*Math.max(1,Math.abs(a),Math.abs(b)),a+' ≠ '+b);
 function wiredInstrument(s){
  const settings=defaultInstrument(s);
- settings.voltageChannels.forEach((v,i)=>{v.positive='L'+(i+1);v.negative='N';});
- settings.currentChannels.forEach((v,i)=>{v.conductor='L'+(i+1);});
+ settings.voltageChannels.forEach((v,i)=>{v.enabled=true;v.positive='L'+(i+1);v.negative='N';});
+ settings.currentChannels.forEach((v,i)=>{v.enabled=true;v.conductor='L'+(i+1);applyCtSelection(v,'100/5');});
  return settings;
 }
 test('30 codis individuals, diferents i recuperables',()=>{
@@ -270,9 +270,9 @@ test('auditoria de la sèrie docent: 30 casos amb escenaris mesurables i reprodu
    for(const point of ['PCC','DRIVE','CTRL']){
      const config=defaultInstrument(s,point);
      config.voltageChannels.forEach((v,i)=>Object.assign(v,{
-       positive:'L'+(i+1),negative:'N',positivePoint:point,negativePoint:point
+       enabled:true,positive:'L'+(i+1),negative:'N',positivePoint:point,negativePoint:point
      }));
-     config.currentChannels.forEach((i,n)=>Object.assign(i,{conductor:'L'+(n+1),pointId:point}));
+     config.currentChannels.forEach((ch,n)=>{Object.assign(ch,{enabled:true,conductor:'L'+(n+1),pointId:point});applyCtSelection(ch,'100/5');});
      const now=instrumentSnapshot(s,config,0);
      assert.equal(now.status,'measured');
      assert.equal(now.phases.length,3);
@@ -301,9 +301,9 @@ test('30 casos: finestres comunes de 450 s cobreixen el mateix horitzó temporal
    const scenario=generateCase(parseCaseCode(entry.code).seed);
    const settings=defaultInstrument(scenario);
    settings.voltageChannels.forEach((ch,i)=>Object.assign(ch,{
-     positive:'L'+(i+1),negative:'N',positivePoint:'PCC',negativePoint:'PCC'
+     enabled:true,positive:'L'+(i+1),negative:'N',positivePoint:'PCC',negativePoint:'PCC'
    }));
-   settings.currentChannels.forEach((ch,i)=>Object.assign(ch,{conductor:'L'+(i+1),pointId:'PCC'}));
+   settings.currentChannels.forEach((ch,i)=>{Object.assign(ch,{enabled:true,conductor:'L'+(i+1),pointId:'PCC'});applyCtSelection(ch,'100/5');});
    const acquisitions=[];
    for(const start of [0,450]){
      Object.assign(settings,{start,duration:450,interval:10});
@@ -391,4 +391,34 @@ test('les sessions antigues de TC numèric es conserven i mostren identificació
  const restored=sessionFromJSON(sessionToJSON(recordAcquisition(session)));
  assert.equal(ctSelection(restored.settings.currentChannels[0]),null);
  assert.ok(buildInstrumentReport(restored).includes('Relació anterior 17.3:1'));
+});
+
+test('una sessió nova comença amb totes les entrades inactives i cap TC seleccionat',()=>{
+ const s=generateCase(100005),fresh=newSession(s.code);
+ assert.ok(fresh.settings.voltageChannels.every(ch=>ch.enabled===false));
+ assert.ok(fresh.settings.currentChannels.every(ch=>ch.enabled===false&&ch.ctRatio===null&&ch.ctPrimary===null&&ch.ctSecondary===null));
+ assert.ok(fresh.settings.currentChannels.every(ch=>ctSelection(ch)===null));
+ const snap=instrumentSnapshot(s,fresh.settings,10);
+ assert.equal(snap.status,'incomplete');
+ assert.ok(snap.phases.every(p=>p.voltageRms===null&&p.currentRms===null&&p.p===null));
+});
+test('activar I no substitueix la selecció del TC i no dona lectures de corrent',()=>{
+ const s=generateCase(100005),cfg=defaultInstrument(s);
+ Object.assign(cfg.voltageChannels[0],{enabled:true,positive:'L1',negative:'N',positivePoint:'PCC',negativePoint:'PCC'});
+ Object.assign(cfg.currentChannels[0],{enabled:true,conductor:'L1',pointId:'PCC'});
+ const missing=instrumentSnapshot(s,cfg,10).phases[0];
+ assert.ok(missing.voltageRms>0);
+ assert.equal(missing.currentRms,null);
+ assert.equal(missing.p,null);
+ applyCtSelection(cfg.currentChannels[0],'100/5');
+ assert.ok(instrumentSnapshot(s,cfg,10).phases[0].currentRms>0);
+});
+test('l’adquisició sense configuració manté absència de lectures i es pot exportar',()=>{
+ const s=generateCase(100005),fresh=newSession(s.code);
+ const session=recordAcquisition(fresh);
+ assert.ok(session.acquisitions[0].rows.every(row=>row.status==='incomplete'));
+ const restored=sessionFromJSON(sessionToJSON(session));
+ assert.equal(restored.settings.currentChannels[0].ctRatio,null);
+ const html=buildInstrumentReport(restored);
+ assert.ok(html.includes('Sense configurar'));
 });
