@@ -143,8 +143,18 @@ function analyzer(){
  const screens=[['instant','Mesures'],['wave','Formes d’ona'],['harmonics','Harmònics'],['time','Registre temporal'],['events','Esdeveniments']];
  return '<section class="pq-analyzer" aria-label="Analitzador de qualitat de xarxa virtual"><div class="pq-bezel"><div class="pq-hud"><span>TECLAB · PQ ANALYZER / MODEL V1</span><span><i class="pq-led '+(selectedRecord?'on':'')+'"></i>'+esc(selectedRecord?.id??'SENSE REGISTRE')+'</span></div><div class="pq-screen-nav">'+screens.map(([id,label])=>'<button data-screen="'+id+'" class="'+(id===screen?'active':'')+'" aria-pressed="'+(id===screen)+'">'+label+'</button>').join('')+'</div><div class="pq-screen" id="pq-screen">'+screenContent()+'</div></div><div class="pq-controls"><span class="pq-status">SIMULACIÓ · '+(scenario.phases===3?'3 FASES':'1 FASE')+'</span><div class="pq-action-row"><button id="pq-prev">◀ Pantalla</button><button class="primary" id="pq-measure">ADQUIRIR</button><button id="pq-next">Pantalla ▶</button></div></div><div id="pq-message" class="pq-message" role="status" aria-live="polite">'+esc(message)+'</div></section>';
 }
+function recordPointSummary(record){
+ const points=new Set();
+ for(const v of record.settings?.voltageChannels??[]){
+   if(v.positivePoint)points.add(v.positivePoint);
+   if(v.negativePoint)points.add(v.negativePoint);
+ }
+ for(const i of record.settings?.currentChannels??[])if(i.pointId)points.add(i.pointId);
+ const names={PCC:'P0',DRIVE:'P1',CTRL:'P2',DC24:'24 V CC'};
+ return points.size?[...points].map(p=>names[p]??p).join(' / '):'Sense connexions';
+}
 function historyView(){
- return '<section class="panel pq-data-panel"><h2>Historial de mesures</h2><p class="pq-note">Cada adquisició conserva la configuració, les mostres i els instants simulats.</p><div class="pq-history">'+(session.acquisitions.length?session.acquisitions.map((r,i)=>'<button data-record="'+i+'" class="'+(selectedRecord?.id===r.id?'active':'')+'">'+esc(r.id)+' · '+esc(r.pointId)+' · '+fmt(r.start,1)+'–'+fmt(r.start+r.duration,1)+' s · '+r.rows.length+' mostres</button>').join(''):'<p class="pq-note">No s’han efectuat mesures.</p>')+'</div></section>';
+ return '<section class="panel pq-data-panel"><h2>Historial de mesures</h2><p class="pq-note">Cada adquisició conserva la configuració, les mostres i els instants simulats.</p><div class="pq-history">'+(session.acquisitions.length?session.acquisitions.map((r,i)=>'<button data-record="'+i+'" class="'+(selectedRecord?.id===r.id?'active':'')+'">'+esc(r.id)+' · '+esc(recordPointSummary(r))+' · '+fmt(r.start,1)+'–'+fmt(r.start+r.duration,1)+' s · '+r.rows.length+' mostres</button>').join(''):'<p class="pq-note">No s’han efectuat mesures.</p>')+'</div></section>';
 }
 function foundations(){return foundationsManual();}
 function help(){return helpManual();}
