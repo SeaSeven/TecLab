@@ -6,7 +6,7 @@
     "EEB0"
   ],
   "iconPath": "M6 42h15l11-29 14 40 12-23 10 12h17",
-  "version": "0.4.0-dev",
+  "version": "1.0.0",
   "status": "published",
   "access": "public",
   "entry": "labs/lab-011/",
