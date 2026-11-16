@@ -9,7 +9,7 @@ export function defaultInstrument(scenario,pointId='PCC'){
    pointId,topology:scenario.phases===3?'3P4W':'1P2W',
    voltageChannels:phases.map(i=>({phase:i,enabled:true,positive:null,negative:null,positivePoint:null,negativePoint:null})),
    currentChannels:phases.map(i=>({
-     phase:i,enabled:true,inverted:false,ctRatio:actualCtRatio(pointId),conductor:null,pointId:null
+     phase:i,enabled:true,inverted:false,ctRatio:actualCtRatio(pointId),ctPrimary:actualCtRatio(pointId)===20?100:1,ctSecondary:actualCtRatio(pointId)===20?5:1,conductor:null,pointId:null
    })),
    duration:30,interval:1,start:0
  };
