@@ -250,3 +250,46 @@ test('el manual descriu l’equip sense revelar famílies o respostes dels casos
  assert.ok(!help.includes('EV-SAG'));
  assert.ok(!foundations.includes('família G'));
 });
+
+test('auditoria de la sèrie docent: 30 casos amb escenaris mesurables i reproduïbles',()=>{
+ const entries=classCases(30);
+ assert.equal(entries.length,30);
+ const fingerprints=new Set(),distribution={};
+ for(const entry of entries){
+   const {seed}=parseCaseCode(entry.code);
+   const s=generateCase(seed);
+   assert.equal(entry.code,s.code);
+   assert.deepEqual(s,generateCase(seed));
+   assert.equal(s.phases,3);
+   assert.equal(s.nominalVoltage,230);
+   assert.equal(s.nominalLineVoltage,400);
+   assert.ok(s.frequency>=49.9&&s.frequency<=50.1);
+   distribution[s.family]=(distribution[s.family]??0)+1;
+   const states=[];
+   for(const point of ['PCC','DRIVE','CTRL']){
+     const config=defaultInstrument(s,point);
+     config.voltageChannels.forEach((v,i)=>Object.assign(v,{
+       positive:'L'+(i+1),negative:'N',positivePoint:point,negativePoint:point
+     }));
+     config.currentChannels.forEach((i,n)=>Object.assign(i,{conductor:'L'+(n+1),pointId:point}));
+     const now=instrumentSnapshot(s,config,0);
+     assert.equal(now.status,'measured');
+     assert.equal(now.phases.length,3);
+     assert.ok(now.phases.every(v=>v.voltageRms>100&&v.voltageRms<300));
+     assert.ok(now.phases.every(v=>v.currentRms>0&&Number.isFinite(v.p)));
+     states.push(now.phases.map(v=>[v.voltageRms,v.currentRms,v.voltageTHD,v.currentTHD]));
+     for(const event of s.events){
+       const start=event.start-.2,duration=Math.min(s.horizonSeconds-start,event.duration+1);
+       Object.assign(config,{start,duration,interval:1});
+       const result=acquireInstrument(s,config);
+       assert.ok(result.capturedEvents.length>=1,'Cap variació observable: '+s.code+' '+point);
+       assert.ok(result.capturedEvents.some(e=>e.start===event.start));
+       assert.ok(result.capturedEvents.every(e=>!('id' in e)&&!('kind' in e)));
+     }
+   }
+   fingerprints.add(JSON.stringify({states,events:s.events}));
+ }
+ assert.equal(fingerprints.size,30);
+ assert.deepEqual(Object.keys(distribution).sort(),['A','B','C','D','E','F','G']);
+ assert.ok(Object.values(distribution).every(n=>n>=4&&n<=5));
+});
