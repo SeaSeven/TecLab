@@ -68,8 +68,10 @@ function channelControls(){
  const toggle=(kind,index,enabled)=>'<label class="pq-channel-toggle"><span class="pq-toggle-title">'+kind+(index+1)+'</span><input type="checkbox" role="switch" aria-label="Entrada '+kind+(index+1)+' activa" data-enabled="'+kind+'" data-slot="'+index+'" '+(enabled?'checked':'')+'><span class="pq-toggle-track" aria-hidden="true"></span><span class="pq-toggle-state">'+(enabled?'Activa':'Inactiva')+'</span></label>';
  const voltage='<div class="pq-input-bank"><h3>Sondes de tensió</h3><div class="pq-input-grid">'+s.voltageChannels.map((v,i)=>toggle('V',i,v.enabled)).join('')+'</div><p class="pq-note">El born VN és la referència negativa compartida dels canals de tensió.</p></div>';
  const current='<div class="pq-input-bank"><h3>Pinces de corrent i transformadors de corrent</h3><div class="pq-clamp-grid">'+s.currentChannels.map((i,index)=>{
-   const chosen=ctSelection(i),selectedId=chosen?.id??'legacy';
-   const legacy=chosen?'':'<option value="legacy" selected disabled>Relació anterior '+fmt(i.ctRatio,2)+':1 · selecciona un TC</option>';
+   const chosen=ctSelection(i),unconfigured=i.ctRatio===null;
+   const selectedId=chosen?.id??(unconfigured?'unconfigured':'legacy');
+   const placeholder=unconfigured?'<option value="unconfigured" selected disabled>— TC sense configurar —</option>':
+     chosen?'':'<option value="legacy" selected disabled>Relació anterior '+fmt(i.ctRatio,2)+':1 · selecciona un TC</option>';
    const opts=CT_OPTIONS.map(o=>'<option value="'+o.id+'" '+(selectedId===o.id?'selected':'')+'>'+o.label+'</option>').join('');
    return '<div class="pq-clamp-channel">'+toggle('I',index,i.enabled)+'<label for="pq-ct-'+index+'">TC de I'+(index+1)+'</label><select id="pq-ct-'+index+'" data-ct="'+index+'">'+legacy+opts+'</select></div>';
  }).join('')+'</div><p class="pq-note">El selector mostra la intensitat primària/secundària nominal. La relació que aplica l’analitzador és primària ÷ secundària. «Sense TC» manté una relació 1:1.</p></div>';
