@@ -7,9 +7,9 @@ export function defaultInstrument(scenario,pointId='PCC'){
  const phases=Array.from({length:scenario.phases},(_,i)=>i);
  return {
    pointId,topology:scenario.phases===3?'3P4W':'1P2W',
-   voltageChannels:phases.map(i=>({phase:i,enabled:true,positive:null,negative:null,positivePoint:null,negativePoint:null})),
+   voltageChannels:phases.map(i=>({phase:i,enabled:false,positive:null,negative:null,positivePoint:null,negativePoint:null})),
    currentChannels:phases.map(i=>({
-     phase:i,enabled:true,inverted:false,ctRatio:actualCtRatio(pointId),conductor:null,pointId:null
+     phase:i,enabled:false,inverted:false,ctRatio:null,ctPrimary:null,ctSecondary:null,conductor:null,pointId:null
    })),
    duration:30,interval:1,start:0
  };
@@ -29,7 +29,7 @@ function checkConfiguration(scenario,settings){
  for(const channel of settings.currentChannels){
    if(!Number.isInteger(channel.phase)||channel.phase<0||channel.phase>=scenario.phases)
      throw new RangeError('Canal de corrent no disponible.');
-   if(!Number.isFinite(channel.ctRatio)||channel.ctRatio<=0||channel.ctRatio>10000)
+   if(channel.ctRatio!==null&&(!Number.isFinite(channel.ctRatio)||channel.ctRatio<=0||channel.ctRatio>10000))
      throw new RangeError('Relació de TC no vàlida.');
  }
 }
@@ -65,7 +65,7 @@ function selectedVoltage(scenario,pointId,channel,time){
  return baseComponents(scenario,pointId,channel.phase,time).voltage; // recuperació antiga
 }
 function selectedCurrent(scenario,pointId,channel,time){
- if(!channel?.enabled)return null;
+ if(!channel?.enabled||channel.ctRatio===null)return null;
  let phase=channel.phase,shift=channel.inverted?Math.PI:0;
  const point=channel.pointId??pointId;
  if(point==='DC24'){

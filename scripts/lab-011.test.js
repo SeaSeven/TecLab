@@ -7,12 +7,13 @@ import {newSession,recordAcquisition,sessionToJSON,sessionFromJSON} from '../lab
 import {findFreeSocket} from '../labs/lab-011/wiring.js';
 import {buildInstrumentReport} from '../labs/lab-011/exports.js';
 import {foundationsManual,helpManual} from '../labs/lab-011/manual.js';
+import {CT_OPTIONS,CT_PRIMARY_5A,CT_PRIMARY_1A,applyCtSelection,ctSelection} from '../labs/lab-011/ct-options.js';
 
 const nearly=(a,b,tol=1e-8)=>assert.ok(Math.abs(a-b)<=tol*Math.max(1,Math.abs(a),Math.abs(b)),a+' ≠ '+b);
 function wiredInstrument(s){
  const settings=defaultInstrument(s);
- settings.voltageChannels.forEach((v,i)=>{v.positive='L'+(i+1);v.negative='N';});
- settings.currentChannels.forEach((v,i)=>{v.conductor='L'+(i+1);});
+ settings.voltageChannels.forEach((v,i)=>{v.enabled=true;v.positive='L'+(i+1);v.negative='N';});
+ settings.currentChannels.forEach((v,i)=>{v.enabled=true;v.conductor='L'+(i+1);applyCtSelection(v,'100/5');});
  return settings;
 }
 test('30 codis individuals, diferents i recuperables',()=>{
@@ -269,9 +270,9 @@ test('auditoria de la sèrie docent: 30 casos amb escenaris mesurables i reprodu
    for(const point of ['PCC','DRIVE','CTRL']){
      const config=defaultInstrument(s,point);
      config.voltageChannels.forEach((v,i)=>Object.assign(v,{
-       positive:'L'+(i+1),negative:'N',positivePoint:point,negativePoint:point
+       enabled:true,positive:'L'+(i+1),negative:'N',positivePoint:point,negativePoint:point
      }));
-     config.currentChannels.forEach((i,n)=>Object.assign(i,{conductor:'L'+(n+1),pointId:point}));
+     config.currentChannels.forEach((ch,n)=>{Object.assign(ch,{enabled:true,conductor:'L'+(n+1),pointId:point});applyCtSelection(ch,'100/5');});
      const now=instrumentSnapshot(s,config,0);
      assert.equal(now.status,'measured');
      assert.equal(now.phases.length,3);
@@ -300,9 +301,9 @@ test('30 casos: finestres comunes de 450 s cobreixen el mateix horitzó temporal
    const scenario=generateCase(parseCaseCode(entry.code).seed);
    const settings=defaultInstrument(scenario);
    settings.voltageChannels.forEach((ch,i)=>Object.assign(ch,{
-     positive:'L'+(i+1),negative:'N',positivePoint:'PCC',negativePoint:'PCC'
+     enabled:true,positive:'L'+(i+1),negative:'N',positivePoint:'PCC',negativePoint:'PCC'
    }));
-   settings.currentChannels.forEach((ch,i)=>Object.assign(ch,{conductor:'L'+(i+1),pointId:'PCC'}));
+   settings.currentChannels.forEach((ch,i)=>{Object.assign(ch,{enabled:true,conductor:'L'+(i+1),pointId:'PCC'});applyCtSelection(ch,'100/5');});
    const acquisitions=[];
    for(const start of [0,450]){
      Object.assign(settings,{start,duration:450,interval:10});
@@ -347,4 +348,77 @@ test('els 30 casos produeixen JSON i informes traçables amb dues adquisicions',
    assert.equal(restored.acquisitions.length,2);
    assert.equal(restored.acquisitions.reduce((n,r)=>n+r.capturedEvents.length,0),s.events.length);
  }
+});
+
+test('selecció comercial: sèrie primària de 5 A i 1 A sense relacions lliures',()=>{
+ assert.deepEqual(CT_PRIMARY_5A,[20,25,30,40,50,60,75,100,125,150,200,250,300,400,500,600,800,1000,1250,1500,2000,2500,3000,4000]);
+ assert.deepEqual(CT_PRIMARY_1A,[800,1000,1250,1500,2000,2500,3000,4000]);
+ assert.equal(CT_OPTIONS.length,1+CT_PRIMARY_5A.length+CT_PRIMARY_1A.length);
+ const channel={ctRatio:20};
+ applyCtSelection(channel,'100/5');
+ assert.equal(channel.ctRatio,20);
+ assert.equal(channel.ctPrimary,100);
+ assert.equal(channel.ctSecondary,5);
+ applyCtSelection(channel,'1000/1');
+ assert.equal(channel.ctRatio,1000);
+ assert.equal(channel.ctPrimary,1000);
+ assert.equal(channel.ctSecondary,1);
+ assert.throws(()=>applyCtSelection(channel,'83.7/5'));
+});
+test('el valor d’un TC comercial només modifica I i potències, no la tensió',()=>{
+ const s=generateCase(100005),config=wiredInstrument(s),channel=config.currentChannels[0];
+ const before=instrumentSnapshot(s,config,10).phases[0];
+ applyCtSelection(channel,'200/5');
+ const after=instrumentSnapshot(s,config,10).phases[0];
+ nearly(after.voltageRms,before.voltageRms);
+ nearly(after.currentRms,2*before.currentRms);
+ nearly(after.p,2*before.p);
+ assert.equal(ctSelection(channel).label,'200/5 A');
+});
+test('la selecció de TC es conserva en JSON i l’informe indica primari/secundari',()=>{
+ const s=generateCase(100005),session=newSession(s.code);
+ session.settings=wiredInstrument(s);
+ applyCtSelection(session.settings.currentChannels[0],'1000/1');
+ const result=sessionFromJSON(sessionToJSON(recordAcquisition(session)));
+ assert.equal(result.acquisitions[0].settings.currentChannels[0].ctRatio,1000);
+ assert.equal(result.acquisitions[0].settings.currentChannels[0].ctSecondary,1);
+ assert.ok(buildInstrumentReport(result).includes('1000/1 A'));
+});
+test('les sessions antigues de TC numèric es conserven i mostren identificació llegible',()=>{
+ const s=generateCase(100005),session=newSession(s.code);
+ session.settings=wiredInstrument(s);
+ session.settings.currentChannels[0].ctRatio=17.3;
+ const restored=sessionFromJSON(sessionToJSON(recordAcquisition(session)));
+ assert.equal(ctSelection(restored.settings.currentChannels[0]),null);
+ assert.ok(buildInstrumentReport(restored).includes('Relació anterior 17.3:1'));
+});
+
+test('una sessió nova comença amb totes les entrades inactives i cap TC seleccionat',()=>{
+ const s=generateCase(100005),fresh=newSession(s.code);
+ assert.ok(fresh.settings.voltageChannels.every(ch=>ch.enabled===false));
+ assert.ok(fresh.settings.currentChannels.every(ch=>ch.enabled===false&&ch.ctRatio===null&&ch.ctPrimary===null&&ch.ctSecondary===null));
+ assert.ok(fresh.settings.currentChannels.every(ch=>ctSelection(ch)===null));
+ const snap=instrumentSnapshot(s,fresh.settings,10);
+ assert.equal(snap.status,'incomplete');
+ assert.ok(snap.phases.every(p=>p.voltageRms===null&&p.currentRms===null&&p.p===null));
+});
+test('activar I no substitueix la selecció del TC i no dona lectures de corrent',()=>{
+ const s=generateCase(100005),cfg=defaultInstrument(s);
+ Object.assign(cfg.voltageChannels[0],{enabled:true,positive:'L1',negative:'N',positivePoint:'PCC',negativePoint:'PCC'});
+ Object.assign(cfg.currentChannels[0],{enabled:true,conductor:'L1',pointId:'PCC'});
+ const missing=instrumentSnapshot(s,cfg,10).phases[0];
+ assert.ok(missing.voltageRms>0);
+ assert.equal(missing.currentRms,null);
+ assert.equal(missing.p,null);
+ applyCtSelection(cfg.currentChannels[0],'100/5');
+ assert.ok(instrumentSnapshot(s,cfg,10).phases[0].currentRms>0);
+});
+test('l’adquisició sense configuració manté absència de lectures i es pot exportar',()=>{
+ const s=generateCase(100005),fresh=newSession(s.code);
+ const session=recordAcquisition(fresh);
+ assert.ok(session.acquisitions[0].rows.every(row=>row.status==='incomplete'));
+ const restored=sessionFromJSON(sessionToJSON(session));
+ assert.equal(restored.settings.currentChannels[0].ctRatio,null);
+ const html=buildInstrumentReport(restored);
+ assert.ok(html.includes('Sense configurar'));
 });

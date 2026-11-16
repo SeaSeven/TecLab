@@ -6,6 +6,7 @@ import {foundationsManual,helpManual} from './manual.js';
 import {newSession,recordAcquisition,sessionToJSON,sessionFromJSON} from './session.js';
 import {openPrintableReport} from './exports.js';
 import {mountWiring} from './wiring.js';
+import {CT_OPTIONS,ctSelection,applyCtSelection} from './ct-options.js';
 import {randomSeed} from '../../shared/services/exercises.js';
 
 const root=document.querySelector('#pq-app');
@@ -59,9 +60,22 @@ function casePanel(){
  return '<section class="panel"><h2>Cas i sessió</h2><p class="pq-note">Codi del cas (no inclou l’historial)</p><p class="pq-case-code">'+esc(session.caseCode)+'</p><div class="pq-action-row"><button type="button" id="pq-copy">Copiar codi</button><button type="button" id="pq-new">Nou cas</button></div><div class="pq-form"><label for="pq-code">Recuperar escenari</label><input id="pq-code" autocomplete="off" spellcheck="false" placeholder="TL-PQ1-…"></div><div class="pq-action-row"><button id="pq-open">Obrir codi</button></div><p class="pq-note">Temps de simulació: <span class="pq-time">'+fmt(session.elapsedSeconds,1)+' s</span></p><div class="pq-save"><button id="pq-report">Informe PDF / Imprimir</button><button id="pq-export-json">Exportar sessió JSON</button></div><label class="pq-note" for="pq-import">Importar una sessió JSON</label><input id="pq-import" type="file" accept=".json,application/json" style="font-size:12px;width:100%"></section>';
 }
 function settingsPanel(){
- const s=session.settings,options=Array.from({length:scenario.phases},(_,i)=>'<option value="'+i+'">L'+(i+1)+'</option>').join('');
- const channelRow=(kind,arr)=>'<h3>Entrades '+kind+'</h3>'+arr.map((channel,i)=>'<label class="pq-switch"><input type="checkbox" data-enabled="'+kind+'" data-slot="'+i+'" '+(channel.enabled?'checked':'')+'> Canal '+kind+(i+1)+' actiu</label>').join('');
- return '<section class="panel"><h2>Configuració instrumental</h2><div class="pq-form"><label for="pq-topology">Topologia seleccionada</label><select id="pq-topology"><option value="1P2W" '+(s.topology==='1P2W'?'selected':'')+'>Monofàsica · 1P2W</option><option value="3P4W" '+(s.topology==='3P4W'?'selected':'')+'>Trifàsica · 3P4W</option></select><div class="pq-config-row"><label for="pq-start">Inici (s)<input id="pq-start" type="number" step="0.1" min="0" max="899" value="'+s.start+'"></label><label for="pq-duration">Durada (s)<input id="pq-duration" type="number" min="0.1" max="900" step=".1" value="'+s.duration+'"></label></div><label for="pq-interval">Interval de registre (s)</label><select id="pq-interval">'+[.05,.1,.2,.5,1,2,5,10,30].map(v=>'<option value="'+v+'" '+(s.interval===v?'selected':'')+'>'+fmt(v,2)+' s</option>').join('')+'</select><details class="pq-advanced"><summary>Canals, pinces i transformadors de corrent</summary>'+channelRow('V',s.voltageChannels)+channelRow('I',s.currentChannels)+s.currentChannels.map((c,i)=>'<div class="pq-config-row"><label>TC · I'+(i+1)+'<input data-ct="'+i+'" type="number" min="0.1" max="10000" step="0.1" value="'+c.ctRatio+'"></label></div>').join('')+'</details></div></section>';
+ const s=session.settings;
+ return '<section class="panel"><h2>Configuració instrumental</h2><div class="pq-form"><label for="pq-topology">Topologia seleccionada</label><select id="pq-topology"><option value="1P2W" '+(s.topology==='1P2W'?'selected':'')+'>Monofàsica · 1P2W</option><option value="3P4W" '+(s.topology==='3P4W'?'selected':'')+'>Trifàsica · 3P4W</option></select><div class="pq-config-row"><label for="pq-start">Inici (s)<input id="pq-start" type="number" step="0.1" min="0" max="899" value="'+s.start+'"></label><label for="pq-duration">Durada (s)<input id="pq-duration" type="number" min="0.1" max="900" step=".1" value="'+s.duration+'"></label></div><label for="pq-interval">Interval de registre (s)</label><select id="pq-interval">'+[.05,.1,.2,.5,1,2,5,10,30].map(v=>'<option value="'+v+'" '+(s.interval===v?'selected':'')+'>'+fmt(v,2)+' s</option>').join('')+'</select><p class="pq-note">Les entrades, les pinces i els transformadors de corrent es configuren sota el quadre de connexions.</p></div></section>';
+}
+function channelControls(){
+ const s=session.settings;
+ const toggle=(kind,index,enabled)=>'<label class="pq-channel-toggle"><span class="pq-toggle-title">'+kind+(index+1)+'</span><input type="checkbox" role="switch" aria-label="Entrada '+kind+(index+1)+' activa" data-enabled="'+kind+'" data-slot="'+index+'" '+(enabled?'checked':'')+'><span class="pq-toggle-track" aria-hidden="true"></span><span class="pq-toggle-state">'+(enabled?'Activa':'Inactiva')+'</span></label>';
+ const voltage='<div class="pq-input-bank"><h3>Sondes de tensió</h3><div class="pq-input-grid">'+s.voltageChannels.map((v,i)=>toggle('V',i,v.enabled)).join('')+'</div><p class="pq-note">El born VN és la referència negativa compartida dels canals de tensió.</p></div>';
+ const current='<div class="pq-input-bank"><h3>Pinces de corrent i transformadors de corrent</h3><div class="pq-clamp-grid">'+s.currentChannels.map((i,index)=>{
+   const chosen=ctSelection(i),unconfigured=i.ctRatio===null;
+   const selectedId=chosen?.id??(unconfigured?'unconfigured':'legacy');
+   const placeholder=unconfigured?'<option value="unconfigured" selected disabled>— TC sense configurar —</option>':
+     chosen?'':'<option value="legacy" selected disabled>Relació anterior '+fmt(i.ctRatio,2)+':1 · selecciona un TC</option>';
+   const opts=CT_OPTIONS.map(o=>'<option value="'+o.id+'" '+(selectedId===o.id?'selected':'')+'>'+o.label+'</option>').join('');
+   return '<div class="pq-clamp-channel">'+toggle('I',index,i.enabled)+'<label for="pq-ct-'+index+'">TC de I'+(index+1)+'</label><select id="pq-ct-'+index+'" data-ct="'+index+'">'+placeholder+opts+'</select></div>';
+ }).join('')+'</div><p class="pq-note">El selector mostra la intensitat primària/secundària nominal. La relació que aplica l’analitzador és primària ÷ secundària. «Sense TC» manté una relació 1:1.</p></div>';
+ return '<section class="pq-connection-controls" aria-label="Configuració de les sondes i pinces"><h2>Entrades de mesura</h2><div class="pq-connection-banks">'+voltage+current+'</div></section>';
 }
 function channelSelector(){
  return '<div class="pq-channel-picker" role="group" aria-label="Canal visualitzat">'+
@@ -165,7 +179,7 @@ function paint(){
  });
  if(activeTab==='fonaments'){root.innerHTML=foundations();return;}
  if(activeTab==='ajuda'){root.innerHTML=help();return;}
- root.innerHTML='<section class="pq-stage panel"><h2>Quadre de connexions · P0 / P1 / P2</h2><p class="pq-note">Arrossega cada sonda o pinça fins a un conductor de P0, P1 o P2. Els cables continuen units a l’analitzador. Fes doble clic sobre una pinça per invertir-ne el sentit (o prem R amb el focus a la pinça). El circuit de 24 V CC té borns +24 V i 0 V on també pots col·locar sondes i pinces.</p><div id="pq-wiring-canvas"></div><div id="pq-placement" class="pq-placement" aria-live="polite"></div></section><div class="pq-layout"><aside class="pq-side">'+casePanel()+settingsPanel()+'</aside><div>'+analyzer()+historyView()+'</div></div>';
+ root.innerHTML='<section class="pq-stage panel"><h2>Quadre de connexions · P0 / P1 / P2</h2><p class="pq-note">Arrossega cada sonda o pinça fins a un conductor de P0, P1 o P2. Els cables continuen units a l’analitzador. Fes doble clic sobre una pinça per invertir-ne el sentit (o prem R amb el focus a la pinça). El circuit de 24 V CC té borns +24 V i 0 V on també pots col·locar sondes i pinces.</p><div id="pq-wiring-canvas"></div><div id="pq-placement" class="pq-placement" aria-live="polite"></div>'+channelControls()+'</section><div class="pq-layout"><aside class="pq-side">'+casePanel()+settingsPanel()+'</aside><div>'+analyzer()+historyView()+'</div></div>';
  const wiringRoot=find('pq-wiring-canvas');
  const updatePlacement=()=>{const target=find('pq-placement');if(!target)return;const s=session.settings;target.textContent=[...s.voltageChannels.map((v,i)=>'V'+(i+1)+': '+(v.positivePoint??'—')+' '+(v.positive??'—')+' / '+(v.negativePoint??'—')+' '+(v.negative??'—')),...s.currentChannels.map((v,i)=>'I'+(i+1)+': '+(v.pointId??'—')+' '+(v.conductor??'—')+(v.inverted?' · invertida':''))].join('   ·   ');};
  mountWiring(wiringRoot,scenario,session.settings,updatePlacement);
@@ -187,9 +201,11 @@ function attach(){
  root.querySelectorAll('[data-enabled]').forEach(el=>el.addEventListener('change',()=>{
    const arr=el.dataset.enabled==='V'?settings.voltageChannels:settings.currentChannels;
    arr[Number(el.dataset.slot)].enabled=el.checked;
+   const label=el.closest('.pq-channel-toggle')?.querySelector('.pq-toggle-state');
+   if(label)label.textContent=el.checked?'Activa':'Inactiva';
  }));
  root.querySelectorAll('[data-ct]').forEach(el=>el.addEventListener('change',()=>{
-   settings.currentChannels[Number(el.dataset.ct)].ctRatio=Number(el.value);
+   try{applyCtSelection(settings.currentChannels[Number(el.dataset.ct)],el.value);}catch(error){tell(error.message);}
  }));
  root.querySelectorAll('[data-inverted]').forEach(el=>el.addEventListener('change',()=>{
    settings.currentChannels[Number(el.dataset.inverted)].inverted=el.checked;
