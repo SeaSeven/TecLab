@@ -1,13 +1,13 @@
 {
   "id": "LAB-011",
   "title": "Analitzador virtual de qualitat de xarxa",
-  "description": "Simulació de mesures de qualitat de xarxa: tensió, corrent, potències, THD i registre temporal, amb connexions configurables i casos reproduïbles.",
+  "description": "Pràctica de mesura de qualitat de xarxa amb analitzador virtual, sondes i pinces mòbils, registres, harmònics, esdeveniments i informes reproduïbles.",
   "courses": [
     "EEB0"
   ],
   "iconPath": "M6 42h15l11-29 14 40 12-23 10 12h17",
   "version": "0.4.0-dev",
-  "status": "planned",
+  "status": "published",
   "access": "public",
   "entry": "labs/lab-011/",
   "tabs": [
