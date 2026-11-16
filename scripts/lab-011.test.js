@@ -7,6 +7,7 @@ import {newSession,recordAcquisition,sessionToJSON,sessionFromJSON} from '../lab
 import {findFreeSocket} from '../labs/lab-011/wiring.js';
 import {buildInstrumentReport} from '../labs/lab-011/exports.js';
 import {foundationsManual,helpManual} from '../labs/lab-011/manual.js';
+import {CT_OPTIONS,CT_PRIMARY_5A,CT_PRIMARY_1A,applyCtSelection,ctSelection} from '../labs/lab-011/ct-options.js';
 
 const nearly=(a,b,tol=1e-8)=>assert.ok(Math.abs(a-b)<=tol*Math.max(1,Math.abs(a),Math.abs(b)),a+' ≠ '+b);
 function wiredInstrument(s){
@@ -347,4 +348,47 @@ test('els 30 casos produeixen JSON i informes traçables amb dues adquisicions',
    assert.equal(restored.acquisitions.length,2);
    assert.equal(restored.acquisitions.reduce((n,r)=>n+r.capturedEvents.length,0),s.events.length);
  }
+});
+
+test('selecció comercial: sèrie primària de 5 A i 1 A sense relacions lliures',()=>{
+ assert.deepEqual(CT_PRIMARY_5A,[20,25,30,40,50,60,75,100,125,150,200,250,300,400,500,600,800,1000,1250,1500,2000,2500,3000,4000]);
+ assert.deepEqual(CT_PRIMARY_1A,[800,1000,1250,1500,2000,2500,3000,4000]);
+ assert.equal(CT_OPTIONS.length,1+CT_PRIMARY_5A.length+CT_PRIMARY_1A.length);
+ const channel={ctRatio:20};
+ applyCtSelection(channel,'100/5');
+ assert.equal(channel.ctRatio,20);
+ assert.equal(channel.ctPrimary,100);
+ assert.equal(channel.ctSecondary,5);
+ applyCtSelection(channel,'1000/1');
+ assert.equal(channel.ctRatio,1000);
+ assert.equal(channel.ctPrimary,1000);
+ assert.equal(channel.ctSecondary,1);
+ assert.throws(()=>applyCtSelection(channel,'83.7/5'));
+});
+test('el valor d’un TC comercial només modifica I i potències, no la tensió',()=>{
+ const s=generateCase(100005),config=wiredInstrument(s),channel=config.currentChannels[0];
+ const before=instrumentSnapshot(s,config,10).phases[0];
+ applyCtSelection(channel,'200/5');
+ const after=instrumentSnapshot(s,config,10).phases[0];
+ nearly(after.voltageRms,before.voltageRms);
+ nearly(after.currentRms,2*before.currentRms);
+ nearly(after.p,2*before.p);
+ assert.equal(ctSelection(channel).label,'200/5 A');
+});
+test('la selecció de TC es conserva en JSON i l’informe indica primari/secundari',()=>{
+ const s=generateCase(100005),session=newSession(s.code);
+ session.settings=wiredInstrument(s);
+ applyCtSelection(session.settings.currentChannels[0],'1000/1');
+ const result=sessionFromJSON(sessionToJSON(recordAcquisition(session)));
+ assert.equal(result.acquisitions[0].settings.currentChannels[0].ctRatio,1000);
+ assert.equal(result.acquisitions[0].settings.currentChannels[0].ctSecondary,1);
+ assert.ok(buildInstrumentReport(result).includes('1000/1 A'));
+});
+test('les sessions antigues de TC numèric es conserven i mostren identificació llegible',()=>{
+ const s=generateCase(100005),session=newSession(s.code);
+ session.settings=wiredInstrument(s);
+ session.settings.currentChannels[0].ctRatio=17.3;
+ const restored=sessionFromJSON(sessionToJSON(recordAcquisition(session)));
+ assert.equal(ctSelection(restored.settings.currentChannels[0]),null);
+ assert.ok(buildInstrumentReport(restored).includes('Relació anterior 17.3:1'));
 });
