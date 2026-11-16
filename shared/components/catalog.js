@@ -3,7 +3,8 @@ export function renderCatalog(app, metadata, visuals) {
     {id:'components', number:'01', title:'Components electrònics', short:'Components', desc:'Identificació, codificació i característiques dels components.', labs:['LAB-001','LAB-009','LAB-010'], symbol:'◫'},
     {id:'circuits', number:'02', title:'Anàlisi de circuits', short:'Circuits', desc:'Circuits resistius, components reactius i corrent altern.', labs:['LAB-002','LAB-003','LAB-005'], symbol:'⌁'},
     {id:'instruments', number:'03', title:'Instrumentació i mesures', short:'Instrumentació', desc:'Multímetre, oscil·loscopi i generadors de funcions.', labs:['LAB-006','LAB-007','LAB-008'], symbol:'◉'},
-    {id:'signals', number:'04', title:'Senyals i aplicacions', short:'Senyals', desc:'Generació, modulació i aplicacions de senyals.', labs:['LAB-004'], symbol:'∿'}
+    {id:'signals', number:'04', title:'Senyals i aplicacions', short:'Senyals', desc:'Generació, modulació i aplicacions de senyals.', labs:['LAB-004'], symbol:'∿'},
+    {id:'practices', number:'05', title:'Laboratoris de pràctiques', short:'Pràctiques', desc:'Pràctiques integrades amb equips virtuals, adquisicions i anàlisi de mesures.', labs:['LAB-011'], symbol:'⚙'}
   ];
   const esc = value=>String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const byId=new Map(metadata.map(m=>[m.id,m]));
@@ -22,6 +23,7 @@ export function renderCatalog(app, metadata, visuals) {
     if(l.id==='LAB-005') return visuals.circuitCardFigure();
     if(l.id==='LAB-006') return visuals.scopeFigure();
     if(l.id==='LAB-007') return '<svg viewBox="0 0 90 90" aria-hidden="true"><rect x="20" y="3" width="50" height="84" rx="10" stroke="#eebc70" fill="#253c49" stroke-width="3"/><rect x="28" y="13" width="34" height="19" rx="3" stroke="#9bd0a5" fill="#abcbb3" stroke-width="2"/><circle cx="45" cy="53" r="14" stroke="#f3cd85" fill="#344b57" stroke-width="3"/><path d="M45 43v-8M39 79v-9M51 79v-9" stroke="#f3cd85" stroke-width="3"/></svg>';
+    if(l.id==='LAB-011') return '<svg viewBox="0 0 300 105" role="img" aria-label="Analitzador de qualitat de xarxa amb ones de tensió i corrent"><rect x="47" y="9" width="204" height="88" rx="11" fill="#263e4a" stroke="#eebc70" stroke-width="3"/><rect x="62" y="19" width="137" height="64" rx="5" fill="#092b35" stroke="#7daeba" stroke-width="2"/><path d="M71 47q15-25 30 0t30 0 30 0 30 0" fill="none" stroke="#f0c575" stroke-width="2.5"/><path d="M71 59q15-17 30 0t30 0 30 0 30 0" fill="none" stroke="#79bdd5" stroke-width="2.4"/><g fill="#385563" stroke="#f0c575" stroke-width="2"><circle cx="226" cy="37" r="11"/><circle cx="226" cy="67" r="11"/></g><g fill="#f0c575"><circle cx="225" cy="36" r="3"/><circle cx="225" cy="66" r="3"/></g></svg>';
     if(l.id==='LAB-008') return '<svg viewBox="0 0 100 70" aria-hidden="true"><rect x="5" y="8" width="90" height="54" rx="9" fill="#273b48" stroke="#eebc70" stroke-width="3"/><rect x="13" y="17" width="50" height="36" rx="3" fill="#0a2830" stroke="#7aadb3"/><path d="M17 35Q24 12 31 35T45 35T59 35" fill="none" stroke="#f2d570" stroke-width="2"/><circle cx="78" cy="30" r="9" fill="#3c5260" stroke="#eebc70" stroke-width="3"/><circle cx="78" cy="50" r="5" fill="#3c5260" stroke="#eebc70"/></svg>';
     return `<svg viewBox="0 0 90 48" aria-hidden="true"><path d="${esc(l.iconPath)}"/></svg>`;
   };
