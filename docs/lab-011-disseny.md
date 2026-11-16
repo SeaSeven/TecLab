@@ -145,3 +145,21 @@ La representació del circuit de 24 V CC incorpora ara borns visibles **+24 V** 
 Per al prototip actual, les entrades de tensió i les pinces de corrent es modelen com a **acoblades a CA** (la pinça equival a un transformador de corrent que no mesura CC). Una parella de sondes entre +24 V i 0 V CC dona lectura de component alterna RMS 0 V i THD no definida, i una pinça en el conductor de CC mostra 0 A de component alterna. Això **no significa** que la tensió ni el corrent físics continus siguin zero. El motor conserva els valors del circuit de control com a esquema docent, sense modelar-ne encara el consum DC. Una futura versió pot afegir instrumentació explícita de CC, si el pla de pràctica ho requereix.
 
 L'informe etiquetarà les connexions a aquest punt com a «24 V CC», mostrarà els borns seleccionats i mantindrà el codi de l'exercici. S'han executat comprovacions de sintaxi de nou mòduls i quatre comprovacions funcionals (lectura CA de referència, lectures amb connexions a CC i preservació al JSON/PDF). Pendent la prova manual de l'arrossegament i de la impressió en Safari/Chrome.
+
+## Fase 4B — pantalles instrumentals i manual d'usuari (16-11-2026)
+
+Implementació de les visualitzacions de totes les entrades, segons les connexions guardades a cada adquisició:
+- Pantalla «Mesures»: RMS, P, Q1, S, FP i THD-U/THD-I per canal, amb totals calculables.
+- Pantalla «Formes d'ona»: tensió i corrent de cada canal en gràfics separats i escales pròpies, amb les components de les sondes/pinces reals de l'instrument.
+- Pantalla «Harmònics»: espectre RMS de tensió i de corrent per canal a partir de les components realment mesurades.
+- Pantalla «Registre temporal»: evolució RMS del canal seleccionat segons l'interval d'adquisició.
+- Pantalla «Esdeveniments»: registres de variacions observables per canal, instant d'inici i durada dins la finestra, comparació amb lectura anterior. La detecció interna observa les transicions sense dependre del ritme de presentació/registre; només registra l'esdeveniment si la captura ja havia començat quan es produeix la transició. Les situacions sense canals observables no generen esdeveniments.
+- Informe imprimible: incorpora les taules i els gràfics de tensió/corrent per canal, espectres, registre temporal, esdeveniments, configuració dels canals i codi de l'exercici.
+
+S'ha creat `labs/lab-011/manual.js`, amb dos manuals integrats diferenciats:
+- **Fonaments**: principi de mesura, RMS, potències, harmònics, THD, registre i limitacions físiques del model.
+- **Ajuda**: manual d'operació de les entrades, borns i pinces, navegació, adquisició i exportacions. Inclou esquemes il·lustrats de l'instrument i del panell, sense donar pautes de resolució ni anticipar el contingut dels casos.
+
+El model manté la simulació simplificada d'entrades CA i no etiqueta automàticament les connexions com a correctes o incorrectes. El codi de cas i les col·locacions segueixen vinculats a cada registre.
+
+**Validació tècnica:** sintaxi correcta dels mòduls; cinc proves funcionals directes de gràfics, detectors (cas amb sot, cas estable, sense sondes) i informe; proves noves afegides a `scripts/lab-011.test.js`. **Pendent de validació:** executar `npm test` amb el Node del repositori, revisió visual i funcional en Safari/Chrome, prova d'impressió amb sessions llargues, millorar el tractament de formes d'ona en captures amb esdeveniments molt propers i contrastar els casos amb el docent. Aquesta fase continua a la branca no publicada.
