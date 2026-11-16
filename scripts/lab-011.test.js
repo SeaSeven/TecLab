@@ -293,3 +293,27 @@ test('auditoria de la sèrie docent: 30 casos amb escenaris mesurables i reprodu
  assert.deepEqual(Object.keys(distribution).sort(),['A','B','C','D','E','F','G']);
  assert.ok(Object.values(distribution).every(n=>n>=4&&n<=5));
 });
+
+test('30 casos: finestres comunes de 450 s cobreixen el mateix horitzó temporal',()=>{
+ const entries=classCases(30);
+ for(const entry of entries){
+   const scenario=generateCase(parseCaseCode(entry.code).seed);
+   const settings=defaultInstrument(scenario);
+   settings.voltageChannels.forEach((ch,i)=>Object.assign(ch,{
+     positive:'L'+(i+1),negative:'N',positivePoint:'PCC',negativePoint:'PCC'
+   }));
+   settings.currentChannels.forEach((ch,i)=>Object.assign(ch,{conductor:'L'+(i+1),pointId:'PCC'}));
+   const acquisitions=[];
+   for(const start of [0,450]){
+     Object.assign(settings,{start,duration:450,interval:10});
+     const record=acquireInstrument(scenario,settings);
+     assert.equal(record.rows.length,46,entry.code);
+     assert.ok(record.rows.every(row=>row.status==='measured'),entry.code);
+     assert.ok(record.rows.every(row=>row.phases.every(p=>p.voltageRms>0&&p.currentRms>0)),entry.code);
+     acquisitions.push(record);
+   }
+   const caught=acquisitions.flatMap(a=>a.capturedEvents);
+   assert.equal(caught.length,scenario.events.length,entry.code);
+   assert.ok(caught.every(event=>event.start>=0&&event.start<900),entry.code);
+ }
+});
