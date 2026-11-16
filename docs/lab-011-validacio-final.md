@@ -70,3 +70,14 @@ No passar el LAB-011 a `published` ni a `main` fins que:
 2. El docent validi visualment el panell i els continguts de l'informe en Safari.
 3. Es comprovin les interaccions de ratolí i teclat, i es resolguin les incidències de l'ús tàctil.
 4. Es confirmi que els 30 casos són adequats per a la rúbrica comuna i una prova pilot d'almenys un exemple de cada família.
+
+## Integració provisional al catàleg (revisió de navegació)
+
+- El catàleg ofereix una cinquena àrea **Laboratoris de pràctiques** (identificador `practices`), amb el LAB-011 com a primer membre. Les quatre àrees originals i els seus laboratoris continuen sense canvis.
+- La nova targeta disposa d'una il·lustració pròpia de l'analitzador i admet els filtres existents (àrea, estudis, estat i cerca).
+- S'ha adaptat la graella per a cinc targetes en pantalles amples i s'han conservat les distribucions de tres, dues i una columna segons l'amplada disponible.
+- S'ha incorporat la ruta `#lab-011` des de la portada perquè obri `labs/lab-011/index.html`.
+- El catàleg generat `data/laboratories.json` inclou onze laboratoris, i la fitxa del LAB-011 té l'estat `published` **únicament a la branca de desenvolupament**. La branca principal `main` no s'ha modificat.
+- S'ha afegit `scripts/catalog-areas.test.js` per comprovar les cinc àrees, la ruta i la coherència del catàleg generat; el workflow inclou aquests fitxers en els disparadors de PR.
+
+**Pendent:** validar la navegació, l'aspecte de la portada i l'obertura des de les targetes en un navegador real. No es desplegarà aquesta versió a `main` fins a la revisió visual i el vistiplau del docent.
