@@ -24,7 +24,7 @@ function settingTable(r){
  const lines=[];
  for(let i=0;i<Math.max(s.voltageChannels?.length??0,s.currentChannels?.length??0);i++){
    const v=s.voltageChannels?.[i],c=s.currentChannels?.[i];
-   lines.push('<tr><td>'+esc('Canal '+(i+1))+'</td><td>'+esc(v?.enabled?(Object.hasOwn(v,'positive')?(pointName(v.positivePoint)+' '+(v.positive??'—')+' / '+pointName(v.negativePoint)+' '+(v.negative??'—')):phaseName(v.phase)+' / N'):'Desactivat')+'</td><td>'+esc(c?.enabled?(Object.hasOwn(c,'conductor')?(pointName(c.pointId)+' '+(c.conductor??'—')):phaseName(c.phase)):'Desactivat')+'</td><td>'+esc(c?(ctSelection(c)?.label??('Relació anterior '+c.ctRatio+':1')):'—')+'</td><td>'+esc(c?.inverted?'Invertida':'Normal')+'</td></tr>');
+   lines.push('<tr><td>'+esc('Canal '+(i+1))+'</td><td>'+esc(v?.enabled?(Object.hasOwn(v,'positive')?(pointName(v.positivePoint)+' '+(v.positive??'—')+' / '+pointName(v.negativePoint)+' '+(v.negative??'—')):phaseName(v.phase)+' / N'):'Desactivat')+'</td><td>'+esc(c?.enabled?(Object.hasOwn(c,'conductor')?(pointName(c.pointId)+' '+(c.conductor??'—')):phaseName(c.phase)):'Desactivat')+'</td><td>'+esc(c?(c.ctRatio===null?'Sense configurar':(ctSelection(c)?.label??('Relació anterior '+c.ctRatio+':1'))):'—')+'</td><td>'+esc(c?.inverted?'Invertida':'Normal')+'</td></tr>');
  }
  return '<table><thead><tr><th>Canal</th><th>Sondes V (+ / −)</th><th>Pinça I (conductor)</th><th>TC configurat</th><th>Pinça</th></tr></thead><tbody>'+lines.join('')+'</tbody></table>';
 }
