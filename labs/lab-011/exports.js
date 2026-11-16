@@ -9,6 +9,15 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const num=(v,d=2)=>typeof v==='number'&&Number.isFinite(v)?v.toLocaleString('ca-ES',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
 const phaseName=i=>Number.isInteger(i)?'L'+(i+1):'—';
 const pointName=p=>({PCC:'P0',DRIVE:'P1',CTRL:'P2',DC24:'24 V CC'})[p]??p??'—';
+function physicalPointSummary(settings){
+ const points=new Set();
+ for(const v of settings?.voltageChannels??[]){
+   if(v.positivePoint)points.add(v.positivePoint);
+   if(v.negativePoint)points.add(v.negativePoint);
+ }
+ for(const ch of settings?.currentChannels??[])if(ch.pointId)points.add(ch.pointId);
+ return points.size?[...points].map(pointName).join(' / '):'Sense connexions';
+}
 function settingTable(r){
  const s=r.settings;
  const lines=[];
@@ -71,7 +80,7 @@ function measureSection(record,scenario){
  const status=last?.status==='measured'?'Lectura disponible':last?.status==='incomplete'?'Canals incomplets':last?.status==='topology-incompatible'?'Topologia incompatible':'Sense lectura';
  const phaseRows=(last?.phases??[]).map(p=>'<tr><td>'+esc('Canal '+(p.slot+1))+'</td><td>'+num(p.voltageRms)+' V</td><td>'+num(p.currentRms)+' A</td><td>'+num(p.voltageTHD)+' %</td><td>'+num(p.currentTHD)+' %</td><td>'+num(p.p)+' W</td><td>'+num(p.q1)+' var</td><td>'+num(p.s)+' VA</td></tr>').join('');
  const ev=(record.capturedEvents??[]).length?String(record.capturedEvents.length)+' registre(s)':'Cap esdeveniment capturat amb aquesta configuració';
- return '<section class="record"><h2>'+esc(record.id)+' · '+esc(pointName(record.pointId))+'</h2><p><strong>Codi de l’exercici:</strong> '+esc(record.caseCode)+'</p>'+
+ return '<section class="record"><h2>'+esc(record.id)+' · '+esc(physicalPointSummary(record.settings))+'</h2><p><strong>Codi de l’exercici:</strong> '+esc(record.caseCode)+'</p>'+
  '<p><strong>Temps simulat:</strong> '+num(record.start,2)+'–'+num(record.start+record.duration,2)+' s · <strong>Interval:</strong> '+num(record.interval,2)+' s · <strong>Mostres:</strong> '+record.rows.length+
  ' · <strong>Topologia configurada:</strong> '+esc(record.settings.topology)+'</p>'+
  '<p><strong>Estat instrumental:</strong> '+esc(status)+' · <strong>Esdeveniments capturats:</strong> '+esc(ev)+'</p>'+
