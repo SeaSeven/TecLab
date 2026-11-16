@@ -317,3 +317,34 @@ test('30 casos: finestres comunes de 450 s cobreixen el mateix horitzó temporal
    assert.ok(caught.every(event=>event.start>=0&&event.start<900),entry.code);
  }
 });
+
+test('historial i informe reflecteixen els punts de connexió físics, no el punt predeterminat',()=>{
+ const s=generateCase(100000),session=newSession(s.code),settings=wiredInstrument(s);
+ for(const v of settings.voltageChannels){
+   v.positivePoint='DRIVE';
+   v.negativePoint='DRIVE';
+ }
+ for(const i of settings.currentChannels)i.pointId='DRIVE';
+ session.settings=settings;
+ const recorded=recordAcquisition(session);
+ const report=buildInstrumentReport(recorded);
+ assert.ok(report.includes('M-001 · P1'));
+ assert.ok(!report.includes('M-001 · P0'));
+});
+test('els 30 casos produeixen JSON i informes traçables amb dues adquisicions',()=>{
+ for(const entry of classCases(30)){
+   const s=generateCase(parseCaseCode(entry.code).seed),session=newSession(entry.code);
+   session.settings=wiredInstrument(s);
+   Object.assign(session.settings,{start:0,duration:450,interval:10});
+   const first=recordAcquisition(session);
+   first.settings.start=450;
+   const second=recordAcquisition(first);
+   const restored=sessionFromJSON(sessionToJSON(second));
+   const html=buildInstrumentReport(restored,{generatedAt:new Date('2026-11-16T12:00:00Z')});
+   assert.ok(html.includes(entry.code),entry.code);
+   assert.ok(html.includes('M-002'),entry.code);
+   assert.ok(html.includes('Formes d’ona i espectres mesurats'),entry.code);
+   assert.equal(restored.acquisitions.length,2);
+   assert.equal(restored.acquisitions.reduce((n,r)=>n+r.capturedEvents.length,0),s.events.length);
+ }
+});
