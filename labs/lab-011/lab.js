@@ -76,7 +76,7 @@ function readingView(){
  '</tbody></table>';
  const totals='<div class="pq-readings">'+[
   ['P total',row.totalP,'W'],['Q1 total',row.totalQ1,'var'],
-  ['S total',row.totalS,'VA'],['FP total',row.totalPowerFactor,''],['Freqüència',scenario.frequency,'Hz']
+  ['S total',row.totalS,'VA'],['FP total',row.totalPowerFactor,''],['Freqüència',row.phases.some(p=>Number.isFinite(p.voltageRms)&&p.voltageRms>0)?scenario.frequency:null,'Hz']
  ].map(([label,value,unit])=>'<div class="pq-reading"><span>'+label+'</span><strong>'+fmt(value,label.includes('FP')?3:2)+'</strong><small>'+unit+'</small></div>').join('')+'</div>';
  return '<p class="pq-note">Darrera mostra de '+esc(selectedRecord.id)+' · t = '+fmt(row.time,2)+' s</p><div class="pq-table-wrap">'+table+'</div>'+totals;
 }
