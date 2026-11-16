@@ -12,8 +12,8 @@
 .catalog-section-heading h2{margin:0;font-size:clamp(25px,3vw,32px)}
 .catalog-section-heading h2 small{font-size:16px;color:var(--muted);font-weight:400}
 .catalog-section-heading>p{color:var(--muted);font-size:14px;max-width:360px;margin:0}
-.catalog-areas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.catalog-area{display:flex;flex-direction:column;align-items:stretch;text-align:left;min-height:234px;padding:22px;background:linear-gradient(145deg,#213240,#172530);border:1px solid var(--line);border-radius:16px;color:var(--ink);transition:border-color .15s,background .15s}
+.catalog-areas{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.catalog-area{display:flex;flex-direction:column;align-items:stretch;text-align:left;min-height:234px;padding:18px;background:linear-gradient(145deg,#213240,#172530);border:1px solid var(--line);border-radius:16px;color:var(--ink);transition:border-color .15s,background .15s}
 .catalog-area:hover,.catalog-area[aria-pressed=true]{border-color:var(--amber);background:#263746}
 .catalog-area[aria-pressed=true]{box-shadow:inset 0 0 0 1px var(--amber)}
 .catalog-area-top{display:flex;justify-content:space-between;align-items:start;margin-bottom:23px}
@@ -51,6 +51,7 @@
 .catalog-empty p{margin-bottom:0;color:var(--muted)}
 .catalog-code{margin-top:0}
 #catalog-list{scroll-margin-top:20px}
+@media(max-width:1120px){.catalog-areas{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:980px){.catalog-areas{grid-template-columns:repeat(2,minmax(0,1fr))}.catalog-area{min-height:190px}}
 @media(max-width:700px){.catalog-home{gap:40px}.catalog-stats{gap:16px}.catalog-stats a{margin-left:0;width:100%}.catalog-section-heading{align-items:start;flex-direction:column;gap:6px}.catalog-areas{gap:10px}.catalog-area{padding:16px;min-height:200px}.catalog-area strong{font-size:16px}.catalog-toolbar{grid-template-columns:1fr}.catalog-card-grid{grid-template-columns:1fr}.catalog-group-title h3{font-size:17px}}
 @media(max-width:400px){.catalog-areas{grid-template-columns:1fr}.catalog-area{min-height:0}.catalog-area-top{margin-bottom:10px}.catalog-area-description{min-height:0}}

@@ -1,0 +1,47 @@
+.pq-main{max-width:1460px;padding-top:32px}.pq-main h1{font-size:clamp(32px,4vw,52px)}.pq-main .intro{max-width:900px}.pq-layout{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:18px;align-items:start}.pq-side{display:grid;gap:16px}.pq-side .panel{padding:18px}.pq-side h2{font-size:18px}.pq-form{display:grid;gap:9px}.pq-form label{font-size:12px;color:var(--muted);margin:4px 0 0}.pq-form input,.pq-form select{width:100%;font-size:13px;padding:9px}.pq-action-row{display:flex;flex-wrap:wrap;gap:8px}.pq-action-row button{font-size:12px;padding:9px 11px}.pq-case-code{font:13px var(--mono);color:var(--amber);word-break:break-all}.pq-note{font-size:12px;color:var(--muted)}.pq-point-list{display:grid;gap:6px}.pq-point{padding:10px;border:1px solid var(--line);border-radius:7px;background:var(--panel2);text-align:left}.pq-point[aria-pressed=true]{border-color:var(--amber);color:var(--amber);background:var(--accent-soft)}.pq-point strong{display:block;font-size:13px}.pq-point small{display:block;font-size:11px;font-weight:400;color:var(--muted)}.pq-analyzer{background:#242d36;border:2px solid #587080;border-radius:23px;box-shadow:0 15px 32px #0004;padding:20px;min-width:0}.pq-bezel{background:#0c1822;border:4px solid #09121a;border-radius:11px;padding:16px;min-width:0;box-shadow:inset 0 0 0 1px #537280}.pq-hud{display:flex;justify-content:space-between;align-items:center;gap:12px;font:12px var(--mono);color:#c8dfe3;flex-wrap:wrap}.pq-led{width:9px;height:9px;border-radius:50%;display:inline-block;background:#70818a;margin-right:5px}.pq-led.on{background:#60d6a0;box-shadow:0 0 8px #60d6a055}.pq-screen-nav{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}.pq-screen-nav button{background:#16303b;border-color:#3b626a;color:#d7e9e8;font-size:12px;padding:8px 11px}.pq-screen-nav button.active{background:#315863;color:#fff;border-color:#9de2ec}.pq-screen{min-height:350px;min-width:0}.pq-readings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.pq-reading{background:#122d36;border:1px solid #305866;border-radius:8px;padding:12px;min-width:0}.pq-reading span{font:11px var(--mono);color:#c1d8df;display:block}.pq-reading strong{font:clamp(18px,2.5vw,28px) var(--mono);color:#f3d486;display:block;margin-top:6px;overflow-wrap:anywhere}.pq-reading small{color:#a5c9d1;font:11px var(--mono)}.pq-table{border-collapse:collapse;width:100%;font:12px var(--mono);color:#d2e2e7}.pq-table th,.pq-table td{text-align:right;border-bottom:1px solid #274250;padding:9px 5px}.pq-table th:first-child,.pq-table td:first-child{text-align:left}.pq-chart{width:100%;height:auto;max-height:310px;display:block;background:#0e2630;border:1px solid #345462;border-radius:7px}.pq-plot-key{display:flex;gap:15px;font:12px var(--mono);color:#d9e5e8;margin:8px 0;flex-wrap:wrap}.pq-plot-key span::before{content:'●';margin-right:6px;color:#f5c469}.pq-plot-key .current::before{color:#76c7e3}.pq-controls{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:16px;flex-wrap:wrap}.pq-controls button{min-width:95px;background:#283d49;border:1px solid #80949b;box-shadow:0 3px 0 #101920}.pq-controls button.primary{background:#e4a34a;border-color:#e4a34a;color:#15232b}.pq-status{font:12px var(--mono);color:#a9c4cb}.pq-message{font-size:13px;min-height:22px;color:#f2cc86;margin:10px 0}.pq-data-panel{margin-top:20px;padding:18px}.pq-history{display:grid;gap:7px}.pq-history button{text-align:left;font:12px var(--mono)}.pq-config-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pq-chip{font:11px var(--mono);border:1px solid #527584;border-radius:5px;padding:5px 8px;color:#cae4ec}.pq-guide{display:grid;gap:15px}.pq-guide .panel{padding:22px}.pq-guide p{max-width:850px}.pq-guide h2{font-size:20px}.pq-advanced{border-top:1px solid var(--line);padding-top:15px;margin-top:10px}.pq-switch{display:flex;gap:7px;align-items:center;font-size:12px;color:var(--muted)}.pq-switch input{min-width:auto;width:auto}.pq-save{display:flex;gap:8px;flex-wrap:wrap}.pq-save button{flex:1}.pq-scheme{width:100%;height:auto;display:block}.pq-time{font:12px var(--mono);color:var(--amber)}.pq-help-example{background:#0e2730;padding:12px;border-radius:7px;font:12px var(--mono)}@media(max-width:1040px){.pq-layout{grid-template-columns:1fr}.pq-side{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.pq-side{grid-template-columns:1fr}.pq-readings{grid-template-columns:repeat(2,minmax(0,1fr))}.pq-analyzer{padding:10px}.pq-bezel{padding:10px}.pq-controls button{min-width:auto}.pq-config-row{grid-template-columns:1fr}}@media(max-width:390px){.pq-readings{grid-template-columns:1fr}}
+/* Connexions instrumentals: punts de prova i pinces visibles sense valoració pedagògica. */
+.pq-wiring .pq-terminal-guide{background:#102936;border:1px solid #39566a;border-radius:7px;padding:10px;color:#d9e7ed;font:12px var(--mono);margin:8px 0 13px}
+.pq-wire-channel{min-width:0;border:1px solid #435a6b;border-radius:8px;margin:10px 0;padding:10px}
+.pq-wire-channel legend{font:600 12px var(--mono);color:var(--amber);padding:0 5px}
+.pq-wire-channel select{width:100%;min-width:0}
+.pq-wire-channel label{margin:5px 0;font-size:12px}
+.pq-wire-channel .pq-switch{display:flex;align-items:center;gap:6px}
+.pq-wire-channel .pq-switch input{width:auto}
+
+.pq-conductor-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(52px,1fr));gap:6px;margin:8px 0}
+.pq-conductor{display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 6px;background:#172f3e;border:1px solid #587081;color:#eef4f6;min-width:0}
+.pq-conductor:hover,.pq-conductor:focus-visible{border-color:var(--amber)}
+.pq-bus-line{display:block;height:18px;width:4px;border-radius:2px;background:#9db5c2}
+.pq-wiring [data-arm].active{background:var(--amber);border-color:var(--amber);color:#17212c}
+.pq-wiring [data-arm]{font-size:12px;padding:6px 8px}
+
+/* Panell físic únic de connexions: conductors, set cables i borns de l'equip. */
+.pq-stage{margin:0 0 18px;padding:18px}
+.pq-stage h2{font-size:19px;margin:0 0 8px}
+#pq-wiring-canvas{width:100%;overflow:hidden;border-radius:12px;background:#142633}
+.pq-wiring-svg{display:block;width:100%;height:auto;max-height:65vh;touch-action:none;user-select:none}
+.pq-drag-head{cursor:grab;outline:none}
+.pq-drag-head:active{cursor:grabbing}
+.pq-drag-head:focus-visible circle{stroke:#fff;stroke-width:5}
+.pq-placement{padding:10px 12px;margin-top:8px;background:#152732;border:1px solid #465d69;border-radius:7px;color:#c4d5de;font:11px/1.7 var(--mono);overflow-wrap:anywhere}
+@media(max-width:720px){.pq-stage{padding:10px}.pq-wiring-svg{min-width:680px;max-height:none}#pq-wiring-canvas{overflow-x:auto}}
+
+/* La pinça invertida canvia d'orientació i d'acabat, sense colors de correcció. */
+.pq-drag-head.is-reversed circle{fill:#d2dbeb;stroke:#75a4e1;stroke-width:4}
+
+/* Pantalles de l'analitzador i manual integrat de l'equip. */
+.pq-table-wrap{width:100%;overflow-x:auto}
+.pq-table-wrap .pq-table{min-width:690px}
+.pq-channel-picker{display:flex;gap:7px;flex-wrap:wrap;margin:6px 0 14px}
+.pq-channel-picker button{font-size:12px;padding:6px 12px;background:#16303b;border:1px solid #42606c;color:#d6e6e9}
+.pq-channel-picker button.active{background:#315863;border-color:#9de2ec;color:#fff}
+.pq-screen-heading{font-size:15px;color:#c9dfe2;margin:18px 0 8px}
+.pq-screen .pq-chart{margin-bottom:12px}
+.pq-manual{max-width:1100px}
+.pq-manual .pq-manual-panel{padding:24px}
+.pq-manual .pq-manual-panel p{line-height:1.7;max-width:1020px}
+.pq-manual-figure{margin:16px 0;padding:12px;background:#102632;border:1px solid #395363;border-radius:9px}
+.pq-manual-svg{max-width:850px;width:100%;height:auto;display:block;margin:0 auto}
+.pq-manual-figure figcaption{color:#b5ced5;font-size:12px;line-height:1.5;margin-top:9px}
+.pq-manual sub{font-size:10px}
+@media(max-width:650px){.pq-manual .pq-manual-panel{padding:16px}}
