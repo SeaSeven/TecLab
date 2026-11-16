@@ -43,3 +43,13 @@ La repartició és propera però no equivalent: hi ha 4 casos estables i 5 de fe
 No incloure una llista pública que associï cada codi d'alumne a la seva família, instant de pertorbació o resposta esperada. Qualsevol solucionari docent ha de romandre fora del repositori públic i fora del paquet que es distribueix a l'alumnat.
 
 No s'han regenerat ni alterat els 30 codis existents: es mantenen perquè les sessions i les assignacions ja emeses continuïn essent reproduïbles.
+
+## Criteris comuns d'equitat establerts en aquesta revisió
+
+La distribució de fenòmens és intencionadament diversa i es mantenen els 30 codis originals. Per controlar la diferència en l'esforç obligatori sense revelar els casos ni modificar-ne a posteriori els fenòmens s'ha definit `docs/lab-011-criteris-avaluacio.md`, amb una rúbrica transversal de 100 punts i un paquet idèntic d'evidències. Els alumnes poden documentar estabilitat, distorsió, diferències entre fases o variacions temporals sense que el nombre d'anomalies sigui un criteri d'avaluació.
+
+La prova addicional automatitzada efectua **dues adquisicions de 450 s** per cas, amb interval de registre de 10 s (46 files per adquisició), i verifica la disponibilitat de magnituds de CA i la captura dels esdeveniments dins dels 900 s. El resultat és **30/30 escenaris** sense adquisicions fallides i amb els seus esdeveniments capturables. Aquesta finestra comuna és un patró de verificació docent, no una pista ni un procediment publicat dins de l'analitzador.
+
+La rúbrica iguala l'exigència formal de la pràctica, però **no garanteix temps iguals**: els cinc casos amb variacions molt breus poden requerir exploració diferent dels casos estables o persistents. És necessària una prova pilot humana si la igualtat de temps d'execució és un requisit estricte.
+
+La bateria `scripts/lab-011.test.js` conté ara **29 proves**, superades en l'entorn JavaScript de comprovació (execució no equivalent a `npm test` natiu). La integració en `main` continua pendent.
