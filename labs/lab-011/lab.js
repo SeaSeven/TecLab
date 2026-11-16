@@ -73,7 +73,7 @@ function channelControls(){
    const placeholder=unconfigured?'<option value="unconfigured" selected disabled>— TC sense configurar —</option>':
      chosen?'':'<option value="legacy" selected disabled>Relació anterior '+fmt(i.ctRatio,2)+':1 · selecciona un TC</option>';
    const opts=CT_OPTIONS.map(o=>'<option value="'+o.id+'" '+(selectedId===o.id?'selected':'')+'>'+o.label+'</option>').join('');
-   return '<div class="pq-clamp-channel">'+toggle('I',index,i.enabled)+'<label for="pq-ct-'+index+'">TC de I'+(index+1)+'</label><select id="pq-ct-'+index+'" data-ct="'+index+'">'+legacy+opts+'</select></div>';
+   return '<div class="pq-clamp-channel">'+toggle('I',index,i.enabled)+'<label for="pq-ct-'+index+'">TC de I'+(index+1)+'</label><select id="pq-ct-'+index+'" data-ct="'+index+'">'+placeholder+opts+'</select></div>';
  }).join('')+'</div><p class="pq-note">El selector mostra la intensitat primària/secundària nominal. La relació que aplica l’analitzador és primària ÷ secundària. «Sense TC» manté una relació 1:1.</p></div>';
  return '<section class="pq-connection-controls" aria-label="Configuració de les sondes i pinces"><h2>Entrades de mesura</h2><div class="pq-connection-banks">'+voltage+current+'</div></section>';
 }
