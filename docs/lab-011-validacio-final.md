@@ -61,6 +61,7 @@ Cal executar el protocol en Safari (macOS), Chrome (macOS o Windows) i, com a m�
 - La capçalera dels registres de l'informe imprimible mostrava el mateix punt instrumental genèric; ara identifica els punts físics efectius.
 - S'han afegit proves de generació i serialització de 30 informes, i de la identificació correcta dels punts al PDF.
 - S'ha actualitzat la identificació de versió provisional en la fitxa de laboratori i en la pàgina d'entrada.
+- La pantalla de mesures ja no mostra la freqüència de l'escenari quan no existeix cap entrada de tensió alterna utilitzable (evita presentar una dada interna com si fos una lectura mesurada).
 
 ## Criteri de pas a definitiva
 
