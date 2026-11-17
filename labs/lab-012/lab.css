@@ -2,3 +2,19 @@
 /* LAB-012 v0.2: documentació gràfica adaptable */
 .signals-edu{line-height:1.65}.signals-edu h3{margin:26px 0 10px}.signals-edu h4{margin:0 0 10px}.signals-edu figure{margin:17px 0 23px;padding:12px;border:1px solid #657b8755;border-radius:10px}.signals-edu figure figcaption{font-size:.9rem;color:var(--text-muted,#b8c9d1);margin-top:8px}.signals-edu-chart{display:block;width:100%;height:auto;max-width:680px;margin:auto}.signals-formula{margin:12px 0;padding:13px 16px;border-left:3px solid #5bbdb0;background:#142d395e;border-radius:7px}.signals-formula>strong{display:block;font-size:1.08rem;margin:0 0 9px;overflow-wrap:anywhere}.signals-formula p{margin:7px 0}.signals-example{font-size:.95rem}.signals-edu-table{border-collapse:collapse;width:100%;margin:14px 0 22px}.signals-edu-table th,.signals-edu-table td{text-align:left;border-bottom:1px solid #8294a655;padding:10px 8px}.signals-edu-table th{background:#26465454}.signals-edu .signals-help-grid article{min-width:0}.signals-edu .signals-help-grid .signals-edu-chart{width:100%}.signals-edu .signals-help-grid article p{margin:7px 0}.signals-edu .signals-note{margin:14px 0}
 @media(max-width:600px){.signals-edu figure{padding:5px}.signals-edu-table{font-size:.85rem}.signals-edu-table th,.signals-edu-table td{padding:7px 4px}}
+
+/* LAB-012 v0.3.0 · cursors directes sobre el senyal */
+.signals-plot{touch-action:none;user-select:none}
+.signals-cursor{cursor:ew-resize;outline:none}
+.signals-cursor-hitarea{cursor:ew-resize}
+.signals-cursor:focus-visible .signals-cursor-dot{stroke:#fff;stroke-width:3}
+.signals-cursor:focus-visible .signals-cursor-line{stroke-width:3}
+.signals-cursor-grip{pointer-events:none}
+.signals-probe{pointer-events:none}
+.signals-cursor-hint{padding:9px 11px;margin:13px 0;border-left:3px solid #5be7b4;background:rgba(70,151,151,.12);border-radius:6px;font-size:.94rem}
+.signals-cursor-readouts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 6px}
+.signals-cursor-readouts>div{background:#1b3644;border:1px solid #607f8e;border-radius:9px;padding:10px;min-width:0}
+.signals-cursor-readouts strong{display:block;margin-bottom:5px}
+.signals-cursor-readouts span{font-size:.92rem;overflow-wrap:anywhere}
+.signals-delta{font-size:1.08rem;font-weight:700;margin:10px 0}
+@media(max-width:490px){.signals-cursor-readouts{grid-template-columns:1fr}}

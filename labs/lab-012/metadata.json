@@ -9,7 +9,7 @@
     "Enginyeria"
   ],
   "iconPath": "M4 25h8c6-22 13-22 19 0s13 22 19 0 13-22 19 0h9",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "status": "published",
   "access": "public",
   "entry": "labs/lab-012/",
@@ -41,6 +41,10 @@
     "illustrated-help",
     "two-decimal-answer-check",
     "expanded-illustrated-foundations",
-    "expanded-illustrated-help"
+    "expanded-illustrated-help",
+    "direct-plot-cursors",
+    "live-plot-probe",
+    "two-point-live-measurement",
+    "enhanced-catalog-visual"
   ]
 }
