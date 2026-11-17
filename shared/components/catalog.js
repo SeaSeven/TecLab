@@ -3,7 +3,7 @@ export function renderCatalog(app, metadata, visuals) {
     {id:'components', number:'01', title:'Components electrònics', short:'Components', desc:'Identificació, codificació i característiques dels components.', labs:['LAB-001','LAB-009','LAB-010'], symbol:'◫'},
     {id:'circuits', number:'02', title:'Anàlisi de circuits', short:'Circuits', desc:'Circuits resistius, components reactius i corrent altern.', labs:['LAB-002','LAB-003','LAB-005'], symbol:'⌁'},
     {id:'instruments', number:'03', title:'Instrumentació i mesures', short:'Instrumentació', desc:'Multímetre, oscil·loscopi i generadors de funcions.', labs:['LAB-006','LAB-007','LAB-008'], symbol:'◉'},
-    {id:'signals', number:'04', title:'Senyals i aplicacions', short:'Senyals', desc:'Generació, modulació i aplicacions de senyals.', labs:['LAB-004'], symbol:'∿'},
+    {id:'signals', number:'04', title:'Senyals i aplicacions', short:'Senyals', desc:'Generació, modulació i aplicacions de senyals.', labs:['LAB-004','LAB-012'], symbol:'∿'},
     {id:'practices', number:'05', title:'Laboratoris de pràctiques', short:'Pràctiques', desc:'Pràctiques integrades amb equips virtuals, adquisicions i anàlisi de mesures.', labs:['LAB-011'], symbol:'⚙'}
   ];
   const esc = value=>String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
