@@ -10,7 +10,7 @@
   ],
   "iconPath": "M4 25h8c6-22 13-22 19 0s13 22 19 0 13-22 19 0h9",
   "version": "0.1.0",
-  "status": "planned",
+  "status": "published",
   "access": "public",
   "entry": "labs/lab-012/",
   "tabs": [
