@@ -24,6 +24,20 @@ export function renderCatalog(app, metadata, visuals) {
     if(l.id==='LAB-006') return visuals.scopeFigure();
     if(l.id==='LAB-007') return '<svg viewBox="0 0 90 90" aria-hidden="true"><rect x="20" y="3" width="50" height="84" rx="10" stroke="#eebc70" fill="#253c49" stroke-width="3"/><rect x="28" y="13" width="34" height="19" rx="3" stroke="#9bd0a5" fill="#abcbb3" stroke-width="2"/><circle cx="45" cy="53" r="14" stroke="#f3cd85" fill="#344b57" stroke-width="3"/><path d="M45 43v-8M39 79v-9M51 79v-9" stroke="#f3cd85" stroke-width="3"/></svg>';
     if(l.id==='LAB-011') return '<svg viewBox="0 0 300 105" role="img" aria-label="Analitzador de qualitat de xarxa amb ones de tensió i corrent"><rect x="47" y="9" width="204" height="88" rx="11" fill="#263e4a" stroke="#eebc70" stroke-width="3"/><rect x="62" y="19" width="137" height="64" rx="5" fill="#092b35" stroke="#7daeba" stroke-width="2"/><path d="M71 47q15-25 30 0t30 0 30 0 30 0" fill="none" stroke="#f0c575" stroke-width="2.5"/><path d="M71 59q15-17 30 0t30 0 30 0 30 0" fill="none" stroke="#79bdd5" stroke-width="2.4"/><g fill="#385563" stroke="#f0c575" stroke-width="2"><circle cx="226" cy="37" r="11"/><circle cx="226" cy="67" r="11"/></g><g fill="#f0c575"><circle cx="225" cy="36" r="3"/><circle cx="225" cy="66" r="3"/></g></svg>';
+    if(l.id==='LAB-012') return '<svg viewBox="0 0 300 105" role="img" aria-label="Anàlisi de senyals alterns: sinusoide i ones quadrada i triangular, cursors de mesura sobre quadrícula">'
++'<defs><linearGradient id="lab012-primary" x1="0%" y1="0%" x2="100%" y2="0%"><stop stop-color="#55e5b5"/><stop offset="100%" stop-color="#74c9ec"/></linearGradient></defs>'
++'<rect x="5" y="5" width="290" height="95" rx="11" fill="#0b202a" stroke="#587986" stroke-width="1.6"/>'
++'<g stroke="#7fa3aa" stroke-width=".6" opacity=".28">'
++Array.from({length:17},(_,i)=>'<path d="M'+(13+i*17)+' 13V93"/>').join('')
++Array.from({length:7},(_,i)=>'<path d="M13 '+(17+i*12)+'H287"/>').join('')
++'</g>'
++'<path d="M13 57H287" stroke="#a7c5c8" opacity=".65"/>'
++'<path d="M14 57 C25 26 37 26 48 57 S71 88 82 57 105 26 116 57 139 88 150 57 173 26 184 57 207 88 218 57" stroke="url(#lab012-primary)" stroke-width="2.8" fill="none"/>'
++'<path d="M162 34H180V78H198V34H216V78H232" stroke="#ecc17c" stroke-width="1.8" fill="none" opacity=".82"/>'
++'<path d="M237 78L247 34L257 78L267 34L277 78" fill="none" stroke="#9baaf9" stroke-width="1.8" opacity=".9"/>'
++'<path d="M54 14V90" stroke="#ffcf70" stroke-width="1.7" stroke-dasharray="4 3"/><path d="M124 14V90" stroke="#78d1fc" stroke-width="1.7" stroke-dasharray="4 3"/>'
++'<circle cx="54" cy="41" r="3.3" fill="#ffcf70"/><circle cx="124" cy="77" r="3.3" fill="#78d1fc"/>'
++'<text x="66" y="20" font-size="9" fill="#ffcf70">Δt</text><text x="134" y="88" font-size="9" fill="#78d1fc">ΔV</text><text x="17" y="24" font-size="9" fill="#e6f2f4">V</text><text x="276" y="92" font-size="9" fill="#e6f2f4">t</text></svg>';
     if(l.id==='LAB-008') return '<svg viewBox="0 0 100 70" aria-hidden="true"><rect x="5" y="8" width="90" height="54" rx="9" fill="#273b48" stroke="#eebc70" stroke-width="3"/><rect x="13" y="17" width="50" height="36" rx="3" fill="#0a2830" stroke="#7aadb3"/><path d="M17 35Q24 12 31 35T45 35T59 35" fill="none" stroke="#f2d570" stroke-width="2"/><circle cx="78" cy="30" r="9" fill="#3c5260" stroke="#eebc70" stroke-width="3"/><circle cx="78" cy="50" r="5" fill="#3c5260" stroke="#eebc70"/></svg>';
     return `<svg viewBox="0 0 90 48" aria-hidden="true"><path d="${esc(l.iconPath)}"/></svg>`;
   };
