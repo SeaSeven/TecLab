@@ -1,0 +1,43 @@
+{
+  "id": "LAB-012",
+  "title": "Anàlisi de senyals alterns",
+  "description": "Exploració i interpretació de senyals periòdics: amplitud, període, freqüència, valors de pic, valor instantani i eficaç, amb exercicis recuperables.",
+  "courses": [
+    "EE10",
+    "EE30",
+    "EEB0",
+    "Enginyeria"
+  ],
+  "iconPath": "M4 25h8c6-22 13-22 19 0s13 22 19 0 13-22 19 0h9",
+  "version": "0.1.0",
+  "status": "published",
+  "access": "public",
+  "entry": "labs/lab-012/",
+  "tabs": [
+    "laboratori",
+    "fonaments",
+    "ajuda"
+  ],
+  "tags": [
+    "senyals alterns",
+    "sinusoidal",
+    "triangular",
+    "quadrada",
+    "dent de serra",
+    "valor eficaç",
+    "freqüència",
+    "amplitud",
+    "DC"
+  ],
+  "features": [
+    "free-exploration",
+    "inverse-practice",
+    "four-levels",
+    "exercise-codes",
+    "signal-grid",
+    "rms-ac-dc",
+    "two-cursors",
+    "illustrated-foundations",
+    "illustrated-help"
+  ]
+}
