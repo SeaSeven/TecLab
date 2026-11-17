@@ -452,7 +452,7 @@
       "Enginyeria"
     ],
     "iconPath": "M4 25h8c6-22 13-22 19 0s13 22 19 0 13-22 19 0h9",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "status": "published",
     "access": "public",
     "entry": "labs/lab-012/",
@@ -481,7 +481,10 @@
       "rms-ac-dc",
       "two-cursors",
       "illustrated-foundations",
-      "illustrated-help"
+      "illustrated-help",
+      "two-decimal-answer-check",
+      "expanded-illustrated-foundations",
+      "expanded-illustrated-help"
     ]
   }
 ]
