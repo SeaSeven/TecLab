@@ -1,0 +1,34 @@
+{
+  "id": "LAB-013",
+  "title": "Laboratori de sistemes KNX",
+  "description": "Prototip KNX TP: cablejat, proteccions, bus, adreçament, programació, commutació i diagnosi.",
+  "courses": [
+    "EEB0",
+    "EE30",
+    "Enginyeria"
+  ],
+  "iconPath": "M5 34h19V13h20v21h19V13h17M24 34v23m20-23v23m19-23v23M5 57h75",
+  "version": "0.1.0",
+  "status": "draft",
+  "access": "public",
+  "entry": "labs/lab-013/",
+  "tabs": [
+    "laboratori",
+    "fonaments",
+    "ajuda"
+  ],
+  "tags": [
+    "KNX",
+    "domòtica",
+    "bus TP",
+    "adreces de grup",
+    "simulació"
+  ],
+  "features": [
+    "interactive-wiring",
+    "tp-bus",
+    "address-download",
+    "group-telegram-monitor",
+    "lamp-switching"
+  ]
+}
