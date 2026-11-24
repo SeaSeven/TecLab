@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Laboratori interactiu TecLab: cablejat, alimentació, adreçament, parametrització i verificació d'una instal·lació KNX TP.">
+<title>LAB-013 · Sistemes KNX | TecLab</title>
+<style>
+
+:root{color-scheme:light;--ink:#142d3b;--muted:#58717e;--line:#d9e5e9;--pale:#f3f8f9;--white:#fff;--teal:#096a6b;--teal-dark:#064b50;--amber:#ad7008;--red:#b62d3c;--green:#167648;--shadow:0 12px 32px #163b4812}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f8fbfb;color:var(--ink);font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}a{color:var(--teal-dark)}.skip-link{position:absolute;top:-100px;left:10px;padding:10px;background:#fff;z-index:99}.skip-link:focus{top:10px}.topbar{height:78px;background:#102e3c;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 max(28px,calc((100vw - 1320px)/2));gap:14px}.brand{display:flex;align-items:center;color:#fff;text-decoration:none;gap:12px;font-size:22px;font-weight:750;letter-spacing:-.6px}.brand svg{width:46px;height:46px;fill:none;stroke:#7dd3cf;stroke-width:5}.brand small{display:block;font-size:10px;font-weight:500;letter-spacing:.5px;color:#a8c8d0}.version{font-size:12px;color:#b9d6de;display:flex;gap:12px}.version em{font-style:normal;color:#f1b96b}main{max-width:1320px;margin:auto;padding:16px 28px 60px}.back{display:inline-block;text-decoration:none;font-size:13px;color:#496879;margin:3px 0 15px}.hero{display:grid;grid-template-columns:1fr 295px;align-items:center;background:linear-gradient(120deg,#e8f5f4,#f6fafa);border:1px solid #d9eeec;border-radius:16px;padding:24px 28px 24px 30px;overflow:hidden}.eyebrow{text-transform:uppercase;letter-spacing:1.8px;color:#137778;font-size:10px;font-weight:800;margin:0 0 8px}h1{font-size:clamp(25px,2.7vw,36px);letter-spacing:-1px;line-height:1.15;margin:0 0 10px}h2{font-size:20px;line-height:1.3;letter-spacing:-.3px;margin:0 0 10px}h3{font-size:16px;margin:14px 0 5px}.intro{color:#4a6672;max-width:720px;line-height:1.65;margin:0}.hero-notes{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.hero-notes span{border:1px solid #d0e6e2;background:#ffffffa3;border-radius:20px;padding:4px 9px;font-size:11px;color:#366f70;font-weight:650}.hero-visual svg{width:100%;height:auto;filter:drop-shadow(0 9px 14px #143a4720)}.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:21px 0 16px}.tabs button{background:transparent;border:0;border-bottom:3px solid transparent;padding:11px 19px;color:#66818b;font-weight:700}.tabs button.active{border-bottom-color:#0b8481;color:#09676b}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:15px}.workspace-main{min-width:0}.subtabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:13px}.subtabs button{border:1px solid #d8e6e7;border-radius:8px;background:white;color:#536d78;padding:8px 13px;font-size:12px;font-weight:700}.subtabs button.active{background:#0b6668;color:white;border-color:#0b6668}.panel{background:white;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:18px}.panel + .panel{margin-top:14px}.panel p{color:#4b6571}.panel h2{margin-bottom:6px}.muted,.hint{color:var(--muted);font-size:12px}.tiny{font-size:11px}.statusline{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}.pill{font-size:11px;border-radius:30px;padding:4px 10px;background:#eef3f4;color:#60737e;border:1px solid #e0e8eb;font-weight:650}.pill.ok{background:#e4f7eb;color:#186d45;border-color:#b6e7cb}.pill.warn{background:#fcf1dd;color:#975e0b;border-color:#f4d6a4}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}.section-heading h2{margin:0}.button-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.btn{background:#fff;color:#194958;border:1px solid #bfced3;border-radius:8px;padding:9px 13px;font-weight:650;font-size:12px}.btn:hover{border-color:#0e8384;background:#f0f8f7}.btn.primary{background:#0b696c;border-color:#0b696c;color:#fff}.btn.primary:hover{background:#064f52}.btn.danger{color:#9e3142;border-color:#e7c5cd}.btn.active{background:#e1f3f1;color:#0b696c;border-color:#0b8383}.control-label{display:block;font-size:11px;font-weight:760;letter-spacing:.25px;color:#4d6873;margin:7px 0 5px}.field{width:100%;border:1px solid #cbdce2;border-radius:7px;padding:9px 10px;background:#fff;color:#183641;font-size:13px}.field:focus,.btn:focus-visible,.tabs button:focus-visible,.subtabs button:focus-visible{outline:3px solid #7ad4ce;outline-offset:2px}.canvas-wrap{overflow-x:auto;border-radius:9px;border:1px solid #d5e2e5;background:#edf3f4}.canvas-wrap svg{display:block;width:100%;min-width:860px;height:auto;touch-action:pan-y;user-select:none}.unit{cursor:default}.move-mode .unit{cursor:grab}.move-mode .unit:active{cursor:grabbing}.port-hit{cursor:crosshair}.port-hit:hover+.port-dot{stroke:#0a8985;stroke-width:5}.wire-hit{cursor:pointer;stroke:transparent;stroke-width:14;fill:none}.wire-hit:hover+.wire-visible{stroke-width:6}.selected-port .port-dot{stroke:#ffb02e;stroke-width:6}.board-tag{font-size:14px;font-weight:800;fill:#1a3f4c}.board-sub{font-size:11px;fill:#52717b}.help-note{background:#f1f8fa;border-left:3px solid #4eaba7;border-radius:4px;padding:10px 13px;color:#3d5f6b;font-size:12px;margin:11px 0}.notice{font-size:12px;line-height:1.55;padding:10px 12px;background:#eff6f7;border-radius:8px;color:#325969;border:1px solid #cfe3e6}.notice.error{background:#fff1f1;border-color:#f5cbcd;color:#962c40}.notice.success{background:#edf9ef;border-color:#c1e9cc;color:#186c41}.checklist{display:grid;gap:10px;margin-top:12px}.check{display:flex;align-items:flex-start;gap:9px;font-size:12px;padding:9px 10px;background:#f6f9fa;border-radius:8px}.dot{flex:0 0 auto;border-radius:50%;width:11px;height:11px;margin-top:3px;background:#aebfc6}.dot.ok{background:#29a46d}.dot.bad{background:#d69c3b}.wires-list{max-height:240px;overflow:auto;display:grid;gap:6px}.wire-item{display:flex;align-items:center;gap:8px;justify-content:space-between;font-size:11px;background:#f5f9f9;border-radius:7px;padding:6px 8px}.wire-item button{border:none;background:transparent;color:#b12f43;font-weight:700;font-size:15px}.krow{display:grid;grid-template-columns:1fr 1fr;gap:9px}.device-config{padding:16px;border:1px solid #dbe6ea;border-radius:10px;background:#fbfdfd;margin-top:14px}.device-config h3{margin:0}.config-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.readout{display:flex;gap:7px;flex-wrap:wrap;font-size:11px;color:#617784;margin:8px 0 0}.readout code{color:#075c5b;background:#e4f3f1;padding:2px 5px;border-radius:4px}.switch-line{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f4f8f8;padding:11px;border-radius:8px;margin:10px 0}.switch-line strong{font-size:12px}.switch-line button{min-width:90px}.scene{position:relative;min-height:235px;display:grid;grid-template-columns:1fr 1fr;gap:18px;background:linear-gradient(180deg,#e2f1f6,#f8f6ed 70%,#e4ded0 70%);border:1px solid #d0e3e7;border-radius:11px;padding:22px;overflow:hidden}.scene .bulb{width:80px;height:80px;border-radius:50%;background:#c3d3d7;box-shadow:inset 0 0 0 7px #ffffff50;margin:20px auto 0;display:grid;place-items:center;font-size:44px;filter:grayscale(1);transition:background .2s}.scene .bulb.lit{background:#ffdf68;box-shadow:0 0 27px 15px #ffe28275,inset 0 0 0 7px #fff7bc;filter:none}.scene .wall-switch{margin:auto;padding:17px;background:#fff;border-radius:9px;box-shadow:0 4px 14px #15334520;border:2px solid #c0d2d6;font-size:13px;font-weight:700;color:#355f6a;max-width:140px}.scene-box{text-align:center}.scene-box p{font-size:12px;color:#46616b}.monitor{width:100%;border-collapse:collapse;font-size:11px}.monitor th{text-align:left;color:#647e8a;background:#f1f6f7;font-size:10px;letter-spacing:.3px}.monitor td,.monitor th{padding:9px 8px;border-bottom:1px solid #e5eded;white-space:nowrap}.monitor-wrap{overflow:auto}.monitor .good{color:var(--green)}.monitor .bad{color:var(--red)}.issues{display:grid;gap:7px}.issue{border-radius:8px;padding:9px 11px;background:#f4f7f8;color:#546b74;font-size:12px;border-left:3px solid #9fb3b9}.issue.danger{border-color:#bb3045;background:#fff1f1;color:#8c2940}.issue.error{border-color:#d09a30;background:#fff5e2;color:#81601f}.issue.success{border-color:#279468;background:#eaf7ef;color:#176d48}.learning{max-width:1000px;display:grid;grid-template-columns:minmax(0,1fr);gap:13px}.learning p,.learning li{font-size:14px;line-height:1.7;color:#4b6671}.learning ul,.learning ol{padding-left:22px}.learning table{width:100%;border-collapse:collapse;font-size:13px}.learning td,.learning th{padding:9px;border-bottom:1px solid #dce7e8;text-align:left}.illustration{background:#eef5f6;border-radius:10px;padding:15px;margin:14px 0}.illustration svg{max-width:100%;height:auto;display:block;margin:auto}.learning details{border:1px solid #d9e6e7;padding:12px 15px;border-radius:9px;margin:9px 0}.learning summary{cursor:pointer;font-weight:750;color:#225865}.alert-intro{background:#fffaef;border:1px solid #f2dfad;border-radius:9px;padding:13px;margin:10px 0;font-size:13px;color:#7b6328}footer{background:#102e3c;color:#acc5ce;padding:25px max(28px,calc((100vw - 1320px)/2));display:flex;justify-content:space-between;gap:20px;font-size:11px}footer a{color:#a9dad6}@media(max-width:940px){.workspace{grid-template-columns:minmax(0,1fr)}.hero{grid-template-columns:1fr 210px}.config-grid{grid-template-columns:1fr 1fr}}@media(max-width:620px){main{padding:12px 14px 35px}.topbar{padding:8px 15px;height:auto;min-height:72px}.version{flex-direction:column;gap:0;text-align:right}.version em{font-size:10px}.hero{display:block;padding:21px}.hero-visual{display:none}.tabs button{padding:9px 12px}.config-grid{grid-template-columns:1fr}.scene{grid-template-columns:1fr}footer{padding:22px 16px;display:grid}.section-heading h2{font-size:17px}}
+
+
+/* LAB-013 v0.1.1 · carril DIN, borns, cablejat assistit */
+.canvas-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:8px 0}
+.zoom-controls{display:flex;align-items:center;gap:5px}.zoom-controls .btn{padding:4px 10px;font-size:12px}.zoom-controls strong{font-size:12px;min-width:44px;text-align:center}
+.canvas-wrap{max-height:690px;overflow:auto;background:#e6eef0;overscroll-behavior:contain}
+.canvas-wrap svg{max-width:none;min-width:0;touch-action:pan-y;user-select:none}
+.port-hit{cursor:crosshair;touch-action:none}.port-hit:focus-visible{outline:none;filter:drop-shadow(0 0 5px #edb635)}
+.selected-port{filter:drop-shadow(0 0 6px #f5ac24)}.selected-port rect,.selected-port circle{stroke:#ffb72e;stroke-width:3}
+.port-hit:hover{filter:drop-shadow(0 0 5px #2bbca8)}
+.wire-preview{stroke-width:3.4;stroke-dasharray:7 5;fill:none;pointer-events:none;stroke-linecap:round}
+.wire-group.wire-selected .wire-visible{filter:drop-shadow(0 0 3px #146d73)}
+.wire-group:hover .wire-visible{stroke-width:6}.wire-group .wire-hit{stroke-width:15}
+.wire-group{cursor:pointer}
+.wire-item.is-selected{background:#e0f4f1;border:1px solid #7ebdb2}
+.wire-item .wire-identify{background:none;border:0;text-align:left;font:inherit;color:#28545c;cursor:pointer;min-width:0;flex:1;padding:3px}
+.wire-tools{display:flex;gap:3px;align-items:center;flex-shrink:0}
+.wire-tools button{border:1px solid #c2d4d8;border-radius:4px;background:white;color:#23646b;cursor:pointer;font-size:16px;min-width:27px}
+.wire-tools button:last-child{color:#bb3845}
+.drag-grip{cursor:grab}.move-mode .unit{cursor:grab}.move-mode .unit:active{cursor:grabbing}
+.move-mode [data-protect]{cursor:pointer}.unit-wall{filter:drop-shadow(0 5px 7px #31485315)}
+@media(max-width:620px){.canvas-wrap{max-height:560px}.zoom-controls strong{font-size:11px}.canvas-toolbar{align-items:flex-start}}
+
+/* v0.1.3 · material, rutes seleccionables, etiquetes visibles */
+.material-box{background:#edf5f6;border:1.5px solid #aacbd0;border-radius:12px;padding:15px;margin:14px 0 16px}
+.material-box .section-heading h3{margin:0;font-size:17px}.material-box .section-heading p{margin:4px 0 0;font-size:13px}
+.material-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px;margin-top:12px}
+.material-item{background:#fff;border:1px solid #bfd2d7;display:flex;align-items:center;gap:8px;border-radius:9px;padding:9px;min-width:0}
+.material-item:not(.is-installed){cursor:grab;touch-action:none}.material-item:not(.is-installed):active{cursor:grabbing}
+.material-item.is-installed{background:#f4f7f7;border-color:#d4e2e5}
+.material-icon{border-radius:7px;background:#dcebee;min-width:29px;height:33px;display:grid;place-items:center;font-size:19px;color:#145762}
+.material-info{min-width:0;flex:1;display:flex;flex-direction:column}.material-info strong{font-size:12px;line-height:1.3}.material-info small{color:#597681;font-size:11px;line-height:1.35}
+.material-item .btn{padding:6px 8px;font-size:11px;white-space:nowrap}
+.wire-halo{stroke:#fff;stroke-width:7.5;fill:none;pointer-events:none;stroke-linecap:round;stroke-linejoin:round}
+#wire-layer.with-selection .wire-other{opacity:.18}#wire-layer.with-selection .wire-selected{opacity:1;filter:drop-shadow(0 0 2px #fff)}
+.route-handle{cursor:ns-resize;touch-action:none;filter:drop-shadow(0 1px 3px #2a586d70)}
+.wire-selected .wire-halo{stroke:#fff;stroke-width:10}
+.wires-list{max-height:410px;overflow:auto}
+.wire-tools button{min-width:31px;min-height:30px}
+.material-ghost{position:fixed;z-index:9999;top:0;left:0;background:#0c5961;color:white;border:1px solid #9bdbd6;border-radius:8px;padding:9px 13px;box-shadow:0 10px 24px #1a3d5360;white-space:nowrap;font-size:13px;font-weight:750;pointer-events:none;}
+@media(max-width:750px){.material-grid{grid-template-columns:repeat(auto-fit,minmax(158px,1fr))}.material-box{padding:10px}.material-item{padding:7px}}
+
+/* v0.1.3 · corbes Bézier i eines de muntatge a tocar del quadre */
+.board-dock{position:sticky;top:6px;z-index:12;margin:10px 0 7px;padding:9px;display:flex;gap:9px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#e8f4f3f5;border:1px solid #a9d0cb;border-radius:10px;box-shadow:0 6px 12px #183c4617;backdrop-filter:blur(8px)}
+.dock-mode,.dock-placement{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.board-dock .btn{padding:8px 10px;white-space:nowrap}
+.dock-placement label{font-size:12px;font-weight:700;color:#305460}
+.dock-placement select{max-width:150px;min-width:110px;padding:7px 6px;border:1px solid #b5cdd0;border-radius:7px;background:white;color:#164354;font-size:12px}
+#material-drawer{margin-bottom:8px;max-height:280px;overflow:auto;border-radius:12px}
+#material-drawer .material-box{margin:0 0 4px}
+.wire-floating-action{cursor:pointer;filter:drop-shadow(0 3px 6px #24414e44)}
+.wire-floating-action:hover rect,.wire-floating-action:focus rect{fill:#fdf0f1;stroke-width:3}
+.wire-floating-action:focus-visible{outline:none;filter:drop-shadow(0 0 5px #d84a62)}
+.wire-overlay{pointer-events:none}.wire-overlay [data-wire-remove],.wire-overlay [data-route-handle]{pointer-events:all}
+.wires-details{margin:0}.wires-details summary{cursor:pointer;color:#244955;padding:3px 0}.wires-details .wires-list{margin-top:12px}
+.wire-group .wire-halo{stroke-width:8}.wire-group .wire-visible{filter:drop-shadow(0 1px 1px #34526130)}
+@media(max-width:660px){.board-dock{top:0;padding:7px}.dock-mode,.dock-placement{width:100%}.dock-placement select{flex:1}.board-dock .btn{font-size:11px}}
+
+/* LAB-013 v0.2.0 - catàleg dinàmic */
+.sim-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:18px}
+.sim-device{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border:1px solid #c7d8dd;border-radius:8px;background:#f8fbfb;margin:9px 0;padding:12px}
+.sim-device strong{font-size:13px}.sim-device small{color:#54737e}
+.sim-device .btn{margin-left:auto}
+.unit-focused{filter:drop-shadow(0 0 5px #218d8c70)}
+.material-item:not(.is-installed){cursor:grab}
+.material-box{background:#f5fafa;border:1px solid #bfd8dd;border-radius:10px;padding:13px}
+@media(max-width:820px){.sim-grid{grid-template-columns:1fr}}
+/* Els borns han de quedar visibles quan la vista els desplaça sota la barra d'eines. */
+#knx-board [data-port]{scroll-margin-top:120px;scroll-margin-bottom:45px}
+
+/* Selecció de conductor: remarcar els dos terminals, sense alterar-ne les connexions. */
+.port-hit.wire-endpoint{filter:drop-shadow(0 0 5px #0b7a85a6)}
+.port-hit.wire-endpoint .wire-end-mark{pointer-events:none}
+.port-hit.wire-endpoint .wire-end-ring{stroke-linejoin:round}
+.port-hit.wire-endpoint:focus-visible{filter:drop-shadow(0 0 7px #0c8087)}
+
+/* LAB-013 v0.2.1 · Dispositius KNX multicanal */
+.channel-configs{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:14px 0}
+.channel-config{padding:12px;border:1px solid #bed5d9;background:#f4fafb;border-radius:9px}
+.channel-config .section-heading{margin-bottom:7px;gap:8px;flex-wrap:wrap}
+.channel-config .section-heading strong{font-size:13px}
+.channel-config .pill{font-size:11px}
+.channel-config .config-grid{grid-template-columns:1fr 1fr;gap:8px}
+.channel-config .control-label{font-size:11px}
+.sim-device.sim-multi{display:block}
+.sim-device.sim-multi>strong{display:block;margin-bottom:4px}
+.sim-channels{display:grid;gap:7px;margin-top:10px}
+.sim-channel{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid #d7e5e9;background:white;padding:8px;border-radius:7px}
+.sim-channel span:first-child{font-size:12px;font-weight:700}.sim-channel small{display:block;font-weight:400}
+#knx-board [data-press]{cursor:pointer}
+#knx-board [data-press]:focus-visible{filter:drop-shadow(0 0 5px #0f9c8c)}
+@media(max-width:620px){.channel-config .config-grid{grid-template-columns:1fr}}
+
+/* Catàleg v0.2.1 completament visible; nous models identificables */
+#material-drawer{max-height:none;overflow:visible}
+.material-item.material-new{border-color:#8ac7bd;background:#f5fffc}
+.new-model-mark{display:inline-block;font-style:normal;font-weight:800;font-size:9px;background:#096a6b;color:white;padding:1px 5px;border-radius:4px;margin-right:4px;vertical-align:baseline}
+
+/* Catàleg estable per funció: els models nous van dins de la família corresponent. */
+.material-sections{display:grid;gap:13px;margin-top:13px}
+.material-section{padding:12px;border:1px solid #c6dade;border-radius:9px;background:#fff}
+.material-group-heading{display:flex;gap:6px 14px;align-items:baseline;flex-wrap:wrap;margin-bottom:9px}
+.material-group-heading h4{margin:0;font-size:14px;color:#194453}
+.material-group-heading span{font-size:12px;color:#597681}
+.material-section .material-grid{margin-top:0}
+@media(max-width:650px){.material-section{padding:9px}.material-group-heading{display:block}.material-group-heading span{display:block;margin-top:2px}}
+
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Salta al contingut</a>
+<header class="topbar"><a class="brand" href="https://seaseven.github.io/TecLab/"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 6 87 27V73L50 94 13 73V27Z M7 52H29L40 26 52 76 63 43 71 52H93"/></svg><span>TecLab<small>Laboratoris tècnics interactius</small></span></a><span class="version">LAB-013 <em>v0.2.1-r1 · Catàleg per funció</em></span></header>
+<main id="main-content"><a class="back" href="https://seaseven.github.io/TecLab/">← Catàleg de laboratoris</a>
+<section class="hero"><div><p class="eyebrow">LAB-013 · INSTAL·LACIONS I AUTOMATITZACIÓ</p><h1>Laboratori de sistemes KNX</h1><p class="intro">Munta una instal·lació KNX TP des de zero, afegeix diversos dispositius genèrics, programa cada unitat i comprova el funcionament dels receptors.</p><div class="hero-notes"><span>KNX TP · 30 V CC</span><span>230 V CA</span><span>1 línia · Catàleg per funció</span></div></div><div class="hero-visual" aria-hidden="true"><svg viewBox="0 0 270 145"><defs><linearGradient id="u" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#263f51"/><stop offset="1" stop-color="#0c2534"/></linearGradient></defs><path d="M16 25H254M16 122H254" stroke="#527486" stroke-width="4"/><rect x="22" y="34" width="60" height="80" rx="6" fill="url(#u)" stroke="#7ba5b3"/><rect x="94" y="34" width="74" height="80" rx="6" fill="url(#u)" stroke="#7ba5b3"/><rect x="181" y="34" width="62" height="80" rx="6" fill="url(#u)" stroke="#7ba5b3"/><path d="M54 112v18h77v-18M131 130h81v-18" stroke="#e84848" stroke-width="3" fill="none"/><path d="M60 112v10h80v-10M140 122h65v-10" stroke="#657986" stroke-width="3" fill="none"/><circle cx="52" cy="65" r="13" fill="#f0b957"/><rect x="109" y="50" width="44" height="18" rx="3" fill="#f0b957"/><path d="M127 82h15M134 75v14" stroke="#a2d4da" stroke-width="2"/><circle cx="211" cy="63" r="10" fill="#73d59f"/><path d="M199 92h25" stroke="#94b8c1" stroke-width="3"/></svg></div></section>
+<nav class="tabs" aria-label="Apartats del laboratori"><button class="active" data-major="laboratori" type="button">Laboratori</button><button data-major="fonaments" type="button">Fonaments</button><button data-major="ajuda" type="button">Ajuda</button></nav>
+<div id="knx-app"></div></main>
+<footer><span>TecLab · Creat per Albert Marcet i Valdés</span><span>Prototip v0.2.1-r1 · <a href="https://seaseven.github.io/TecLab/#credits">Autoria i condicions de reutilització</a> · Llicència pendent</span></footer>
+
+<script>
+/** LAB-013 - Models genèrics, preparats per a referències comercials futures. */
+const screw=(id,name,kind,x,y)=>({id,name,kind,x,y,connector:'screw'});
+const bus=(id,name,kind,x,y)=>({id,name,kind,x,y,connector:'knx-tp'});
+const BOARD=Object.freeze({width:1580,height:1040,wallTop:707,dinRows:[180,402],sourceX:40,sourceY:280});
+const CATALOG=Object.freeze({
+ mains:{id:'mains',title:'Xarxa 230 V',subtitle:'Escomesa · L / N',kind:'source',mount:'panel',single:true,w:150,h:145,ports:[screw('l','L','ac-l',49,0),screw('n','N','ac-n',103,0)]},
+ mcb:{id:'mcb',title:'Magnetotèrmic',subtitle:'1P+N · 10 A',kind:'protection',mount:'din',single:true,w:142,h:145,ports:[screw('li','L','ac-l',48,0),screw('ni','N','ac-n',94,0),screw('lo','L','ac-l',48,145),screw('no','N','ac-n',94,145)]},
+ rcd:{id:'rcd',title:'Diferencial',subtitle:'2P · 30 mA',kind:'protection',mount:'din',single:true,w:142,h:145,ports:[screw('li','L','ac-l',48,0),screw('ni','N','ac-n',94,0),screw('lo','L','ac-l',48,145),screw('no','N','ac-n',94,145)]},
+ psu:{id:'psu',title:'Font KNX',subtitle:'230 V CA → KNX TP',kind:'psu',mount:'din',single:true,w:155,h:145,ports:[screw('l','L','ac-l',43,0),screw('n','N','ac-n',112,0),bus('p','+','bus-p',68,145),bus('m','−','bus-m',100,145)]},
+ button:{id:'button',title:'Pulsador KNX',subtitle:'Commutació · 1 tecla',kind:'button',mount:'wall',single:false,w:155,h:150,ports:[bus('p','+','bus-p',65,-24),bus('m','−','bus-m',97,-24)],channels:1,objects:[{id:'A',label:'Tecla 1',dpt:'1.001',direction:'send'}]},
+ button2:{id:'button2',title:'Pulsador KNX · 2 tecles',subtitle:'2 objectes independents',kind:'button',mount:'wall',single:false,w:170,h:152,ports:[bus('p','+','bus-p',73,-24),bus('m','−','bus-m',105,-24)],channels:2,objects:[{id:'A',label:'Tecla A',dpt:'1.001',direction:'send'},{id:'B',label:'Tecla B',dpt:'1.001',direction:'send'}]},
+ button4:{id:'button4',title:'Pulsador KNX · 4 tecles',subtitle:'4 objectes independents',kind:'button',mount:'wall',single:false,w:196,h:170,ports:[bus('p','+','bus-p',88,-24),bus('m','−','bus-m',120,-24)],channels:4,objects:['A','B','C','D'].map((c,i)=>({id:c,label:`Tecla ${c}`,dpt:'1.001',direction:'send'}))},
+ act:{id:'act',title:'Actuador KNX',subtitle:'Relé · 1 canal',kind:'act',mount:'din',single:false,w:166,h:145,ports:[bus('p','+','bus-p',75,-24),bus('m','−','bus-m',106,-24),screw('l','L','ac-l',50,145),screw('out','OUT','ac-l',115,145)],channels:1,objects:[{id:'A',label:'Canal A',dpt:'1.001',direction:'receive'}]},
+ act4:{id:'act4',title:'Actuador KNX · 4 canals',subtitle:'4 relés · sortides independents',kind:'act',mount:'din',single:false,w:306,h:160,ports:[bus('p','+','bus-p',146,-24),bus('m','−','bus-m',178,-24),...[0,1,2,3].map((i)=>screw(`l${i+1}`,`L${i+1}`,'ac-l',42+i*74,0)),...[0,1,2,3].map((i)=>screw(`out${i+1}`,`OUT${i+1}`,'ac-l',42+i*74,160))],channels:4,objects:['A','B','C','D'].map(c=>({id:c,label:`Canal ${c}`,dpt:'1.001',direction:'receive'}))},
+ lamp:{id:'lamp',title:'Bombeta',subtitle:'230 V · 60 W',kind:'lamp',mount:'wall',single:false,w:154,h:139,ports:[screw('l','L','ac-l',50,0),screw('n','N','ac-n',106,0)]}
+});
+/** Classificació pedagògica estable. Afegir nous models no canvia la posició de les famílies. */
+const MODEL_GROUPS=Object.freeze([
+ {id:'supply',label:'Alimentació i proteccions',description:'Origen de tensió, proteccions i font del bus KNX',models:['mains','mcb','rcd','psu']},
+ {id:'control',label:'Comandament',description:'Pulsadors ordenats per nombre de tecles',models:['button','button2','button4']},
+ {id:'actuation',label:'Actuadors',description:'Sortides de relé ordenades per nombre de canals',models:['act','act4']},
+ {id:'loads',label:'Receptors',description:'Càrregues de la instal·lació',models:['lamp']}
+]);
+const MODEL_ORDER=MODEL_GROUPS.flatMap(group=>group.models);
+
+const PROGRAMMABLE=new Set(['button','button2','button4','act','act4']);
+const INPUT_MODELS=new Set(['button','button2','button4']);
+const OUTPUT_MODELS=new Set(['act','act4']);
+const channelCount=model=>CATALOG[model]?.channels||1;
+function modelFor(project,id){return CATALOG[project.devices[id]?.model];}
+function terminal(project,ref){if(typeof ref!=='string')return null;const sep=ref.lastIndexOf(':');if(sep<1)return null;const id=ref.slice(0,sep),key=ref.slice(sep+1),device=project.devices[id],model=CATALOG[device?.model],port=model?.ports.find(p=>p.id===key);return port?{id,key,device,model,port}:null;}
+function terminalRef(id,key){return `${id}:${key}`;}
+
+
+const SCHEMA='teclab-knx-v0.2';
+const addressRE=/^(\d{1,2})\.(\d{1,2})\.(\d{1,3})$/;
+const groupRE=/^(\d{1,2})\/(\d{1,2})\/(\d{1,3})$/;
+const isAddress=s=>{const m=addressRE.exec(String(s??'').trim());return !!m&&+m[1]>=1&&+m[1]<=15&&+m[2]<=15&&+m[3]>=1&&+m[3]<=255;};
+const isGroup=s=>{const m=groupRE.exec(String(s??'').trim());return !!m&&+m[1]<=31&&+m[2]<=7&&+m[3]<=255&&(+m[1]+ +m[2]+ +m[3])>0;};
+const blankConfig=(channels=1)=>({draft:{address:'',ga:'',dpt:'1.001'},loaded:{address:'',ga:'',dpt:'1.001'},programLed:false,channels:channels>1?Array.from({length:channels},()=>({draft:{ga:'',dpt:'1.001'},loaded:{ga:'',dpt:'1.001'}})):[]});
+function objectConfig(device,channel=0){if(!device?.config)return null;const count=channelCount(device.model);if(!Number.isInteger(channel)||channel<0||channel>=count)return null;return count===1?device.config:device.config.channels?.[channel]||null;}
+function relayState(device,channel=0){return device?.model==='act4'?device.relays?.[channel]===true:device?.model==='act'?device.relay===true:false;}
+function setRelay(device,channel,value){if(!device||!OUTPUT_MODELS.has(device.model))return false;if(device.model==='act4'){if(channel<0||channel>=4)return false;device.relays[channel]=!!value;}else if(channel===0)device.relay=!!value;else return false;return true;}
+function modelChannels(device){return CATALOG[device?.model]?.objects||[];}
+function channelLabel(device,index){return modelChannels(device)[index]?.label||`Canal ${index+1}`;}
+function createProject(){return {schema:SCHEMA,devices:{},order:[],nextId:1,wires:[],groupValues:{},logs:[]};}
+function installed(p,model){return p.order.map(id=>p.devices[id]).filter(d=>d?.model===model);}
+function deviceByModel(p,model){return installed(p,model)[0]||null;}
+function preferredPosition(p,model,point){
+ const m=CATALOG[model];if(!m)return null;
+ if(m.mount==='panel')return {x:BOARD.sourceX,y:Math.max(225,Math.min(BOARD.wallTop-m.h-20,point?.y??BOARD.sourceY))};
+ if(m.mount==='din'){
+  const rows=point?.y!=null?[...BOARD.dinRows].sort((a,b)=>Math.abs(a-point.y)-Math.abs(b-point.y)):BOARD.dinRows;
+  const candidates=[];for(const row of rows)for(let x=242;x<=BOARD.width-m.w-23;x+=10){
+   const collides=p.order.some(id=>{const d=p.devices[id],o=CATALOG[d.model];return o.mount==='din'&&d.position.y===row&&x<d.position.x+o.w+12&&x+m.w+12>d.position.x;});
+   if(!collides)candidates.push({x,y:row});
+  }
+  if(!candidates.length)return null;
+  const destX=point?.x==null?255:point.x-m.w/2;
+  return candidates.sort((a,b)=>(Math.abs(a.y-(point?.y??BOARD.dinRows[0]))*1.2+Math.abs(a.x-destX))-(Math.abs(b.y-(point?.y??BOARD.dinRows[0]))*1.2+Math.abs(b.x-destX)))[0];
+ }
+ let x=point?.x==null?75+(p.order.length%6)*225:point.x-m.w/2;
+ let y=point?.y==null?BOARD.wallTop+88:point.y-m.h/2;
+ x=Math.max(26,Math.min(BOARD.width-m.w-22,x));y=Math.max(BOARD.wallTop+62,Math.min(BOARD.height-m.h-20,y));
+ for(let k=0;k<15;k++){const occupied=p.order.some(id=>{const d=p.devices[id],o=CATALOG[d.model];return o.mount==='wall'&&Math.abs(x-d.position.x)<Math.max(o.w,m.w)-5&&Math.abs(y-d.position.y)<Math.max(o.h,m.h)-10;});if(!occupied)break;x=Math.max(26,Math.min(BOARD.width-m.w-22,x+165));}
+ return {x,y};
+}
+function addDevice(p,model,point){const m=CATALOG[model];if(!m)return {ok:false,msg:'Model no disponible.'};if(m.single&&installed(p,model).length)return {ok:false,msg:`Només es permet un exemplar de ${m.title} en aquesta versió.`};const pos=preferredPosition(p,model,point);if(!pos)return {ok:false,msg:'No queda espai lliure al carril DIN. Reorganitza els equips.'};const id=`u${p.nextId++}`,d={id,model,position:pos,protection:false,relay:false,relays:model==='act4'?[false,false,false,false]:null,config:PROGRAMMABLE.has(model)?blankConfig(channelCount(model)):null};p.devices[id]=d;p.order.push(id);return {ok:true,id,msg:`${m.title} col·locat (${id}).`};}
+function moveDevice(p,id,point){const d=p.devices[id],m=CATALOG[d?.model];if(!d||!m||!point)return false;const x=Math.max(m.mount==='din'?242:m.mount==='panel'?BOARD.sourceX:25,Math.min(m.mount==='panel'?BOARD.sourceX:BOARD.width-m.w-22,point.x-m.w/2));const y=m.mount==='din'?[...BOARD.dinRows].sort((a,b)=>Math.abs(a-point.y)-Math.abs(b-point.y))[0]:m.mount==='panel'?Math.max(225,Math.min(BOARD.wallTop-m.h-20,point.y-m.h/2)):Math.max(BOARD.wallTop+62,Math.min(BOARD.height-m.h-20,point.y-m.h/2));d.position={x:m.mount==='din'?Math.round(x/10)*10:x,y};return true;}
+function removeDevice(p,id){if(!p.devices[id])return false;delete p.devices[id];p.order=p.order.filter(k=>k!==id);p.wires=p.wires.filter(w=>terminal(p,w.a)&&terminal(p,w.b));return true;}
+function wireKind(p,a,b){const k=terminal(p,a)?.port.kind,l=terminal(p,b)?.port.kind;if(!k||!l)return 'invalid';if(k.startsWith('ac')&&l.startsWith('ac'))return k===l?k:'ac-mixed';if(k.startsWith('bus')&&l.startsWith('bus'))return k===l?k:'bus-mixed';return 'hazard';}
+function connect(p,a,b){if(!terminal(p,a)||!terminal(p,b)||a===b)return {ok:false,msg:'Selecciona dos terminals diferents i instal·lats.'};if(p.wires.some(w=>w.a===a&&w.b===b||w.a===b&&w.b===a))return {ok:false,msg:'Ja existeix aquest conductor.'};p.wires.push({a,b,route:0,offset:0});return {ok:true,msg:wireKind(p,a,b)==='hazard'?'Connexió perillosa entre circuits de diferent tensió.':'Conductor connectat.'};}
+function disconnect(p,i){if(i<0||i>=p.wires.length)return false;p.wires.splice(i,1);return true;}
+function graph(p,domain,options={}){
+ const refs=p.order.flatMap(id=>CATALOG[p.devices[id].model].ports.filter(t=>t.kind.startsWith(domain)).map(t=>terminalRef(id,t.id)));
+ const parent=new Map(refs.map(r=>[r,r]));const root=a=>{if(!parent.has(a))return null;let b=a;while(parent.get(b)!==b){parent.set(b,parent.get(parent.get(b)));b=parent.get(b);}return b;};
+ const join=(a,b)=>{const x=root(a),y=root(b);if(x!==null&&y!==null&&x!==y)parent.set(x,y);};
+ for(const w of p.wires)if(wireKind(p,w.a,w.b)!=='invalid'&&wireKind(p,w.a,w.b)!=='hazard')join(w.a,w.b);
+ if(domain==='ac')for(const id of p.order){const d=p.devices[id];if(['mcb','rcd'].includes(d.model)&&(options.protections?.[id]??d.protection)){join(terminalRef(id,'li'),terminalRef(id,'lo'));join(terminalRef(id,'ni'),terminalRef(id,'no'));}if(OUTPUT_MODELS.has(d.model))for(let c=0;c<channelCount(d.model);c++){
+  const override=options.relays?.[id],isClosed=typeof override==='boolean'?override:Array.isArray(override)?override[c]===true:relayState(d,c);
+  if(isClosed)join(terminalRef(id,d.model==='act4'?`l${c+1}`:'l'),terminalRef(id,d.model==='act4'?`out${c+1}`:'out'));
+ }}
+ return {connected:(a,b)=>root(a)!==null&&root(a)===root(b)};
+}
+function evaluate(p){
+ const source=deviceByModel(p,'mains'),psu=deviceByModel(p,'psu'),mcb=deviceByModel(p,'mcb'),rcd=deviceByModel(p,'rcd');
+ const sourceL=source&&terminalRef(source.id,'l'),sourceN=source&&terminalRef(source.id,'n');
+ const ac=graph(p,'ac'),bus=graph(p,'bus');const live=ref=>!!sourceL&&ac.connected(sourceL,ref),neutral=ref=>!!sourceN&&ac.connected(sourceN,ref);
+ const hazards=p.wires.filter(w=>wireKind(p,w.a,w.b)==='hazard');
+ const acShort=!!sourceL&&ac.connected(sourceL,sourceN);
+ const busShort=!!psu&&bus.connected(terminalRef(psu.id,'p'),terminalRef(psu.id,'m'));
+ const safeAC=!acShort&&!hazards.length;const psuPowered=!!psu&&safeAC&&live(terminalRef(psu.id,'l'))&&neutral(terminalRef(psu.id,'n'));
+ const noMCB=mcb?graph(p,'ac',{protections:{[mcb.id]:false}}):null;
+ const noRCD=rcd?graph(p,'ac',{protections:{[rcd.id]:false}}):null;
+ const sinks=p.order.flatMap(id=>{const d=p.devices[id];if(d.model==='psu')return [terminalRef(id,'l'),terminalRef(id,'n')];if(OUTPUT_MODELS.has(d.model))return Array.from({length:channelCount(d.model)},(_,c)=>terminalRef(id,d.model==='act4'?`l${c+1}`:'l'));if(d.model==='lamp')return [terminalRef(id,'n')];return [];});
+ const bypassIn=g=>!g||sinks.some(s=>{const t=terminal(p,s);return t?.port.kind==='ac-n'?g.connected(sourceN,s):g.connected(sourceL,s);});
+ const bypassMcb=!!source&&!mcb||!!mcb&&bypassIn(noMCB);
+ const bypassRcd=!!source&&!rcd||!!rcd&&bypassIn(noRCD);
+ const poweredBus=psuPowered&&!busShort;
+ const status={};
+ for(const id of p.order){const d=p.devices[id],m=CATALOG[d.model];
+  if(INPUT_MODELS.has(d.model)||OUTPUT_MODELS.has(d.model)){
+   const plus=psu&&bus.connected(terminalRef(psu.id,'p'),terminalRef(id,'p'));
+   const minus=psu&&bus.connected(terminalRef(psu.id,'m'),terminalRef(id,'m'));
+   const reversed=!!psu&&(bus.connected(terminalRef(psu.id,'p'),terminalRef(id,'m'))||bus.connected(terminalRef(psu.id,'m'),terminalRef(id,'p')));
+   status[id]={powered:!!(poweredBus&&plus&&minus),reversed};
+  }
+  if(m.kind==='protection')status[id]={closed:!!d.protection};
+  if(m.kind==='lamp')status[id]={on:!!(safeAC&&live(terminalRef(id,'l'))&&neutral(terminalRef(id,'n')))};
+ }
+ const allProgrammed=p.order.filter(id=>PROGRAMMABLE.has(p.devices[id].model));const duplicates=new Set();
+ for(let i=0;i<allProgrammed.length;i++)for(let j=i+1;j<allProgrammed.length;j++){const a=p.devices[allProgrammed[i]].config.loaded.address,b=p.devices[allProgrammed[j]].config.loaded.address;if(a&&a===b)duplicates.add(a);}
+ const controlledLamps=new Set();
+ for(const lamp of installed(p,'lamp')){const open=graph(p,'ac',{relays:Object.fromEntries(p.order.filter(id=>OUTPUT_MODELS.has(p.devices[id].model)).map(id=>[id,false]))}),on=graph(p,'ac',{relays:Object.fromEntries(p.order.filter(id=>OUTPUT_MODELS.has(p.devices[id].model)).map(id=>[id,true]))});if(sourceL&&on.connected(sourceL,terminalRef(lamp.id,'l'))&&!open.connected(sourceL,terminalRef(lamp.id,'l'))&&neutral(terminalRef(lamp.id,'n')))controlledLamps.add(lamp.id);}
+ const addressesValid=allProgrammed.length>0&&allProgrammed.every(id=>{const addr=p.devices[id].config.loaded.address;return isAddress(addr)&&addr.startsWith('1.1.')&&!duplicates.has(addr);});
+ const senders=p.order.map(id=>p.devices[id]).filter(d=>INPUT_MODELS.has(d.model));const receivers=p.order.map(id=>p.devices[id]).filter(d=>OUTPUT_MODELS.has(d.model));
+ const linked=senders.some(b=>Array.from({length:channelCount(b.model)},(_,i)=>objectConfig(b,i)?.loaded).some(bc=>bc&&isGroup(bc.ga)&&bc.dpt==='1.001'&&receivers.some(a=>Array.from({length:channelCount(a.model)},(_,i)=>objectConfig(a,i)?.loaded).some(ac=>ac?.ga===bc.ga&&ac.dpt==='1.001'))));
+ const ready=senders.length>0&&receivers.length>0&&controlledLamps.size>0&&psuPowered&&!bypassMcb&&!bypassRcd&&addressesValid&&linked&&p.order.filter(id=>PROGRAMMABLE.has(p.devices[id].model)).every(id=>status[id].powered)&&!hazards.length&&!acShort&&!busShort;
+ return {status,source,psu,mcb,rcd,psuPowered,acShort,busShort,hazards,bypassMcb,bypassRcd,controlledLamps,duplicates,addressesValid,linked,ready};
+}
+function issues(p,e=evaluate(p)){
+ const list=[];const push=(severity,text)=>list.push({severity,text});
+ if(!p.order.length)push('info','El plànol és buit. Selecciona els equips de la caixa de material.');
+ if(e.hazards.length)push('danger','Un conductor uneix la instal·lació de 230 V amb el bus KNX.');
+ if(e.acShort)push('danger','Curtcircuit entre fase i neutre: alimentació bloquejada.');
+ if(e.busShort)push('danger','Curtcircuit entre + i − del bus KNX.');
+ if(e.bypassMcb||e.bypassRcd)push('error','Una alimentació no passa per totes les proteccions requerides.');
+ if(!e.psuPowered)push('info','La font KNX encara no rep una alimentació correcta.');
+ if(p.order.some(id=>PROGRAMMABLE.has(p.devices[id].model)&&e.status[id]?.reversed))push('error','S’ha invertit la polaritat del bus en algun dispositiu.');
+ if(e.duplicates.size)push('error',`Adreça física duplicada: ${[...e.duplicates].join(', ')}.`);
+ if(!e.addressesValid&&p.order.some(id=>PROGRAMMABLE.has(p.devices[id].model)))push('info','Cal descarregar adreces físiques diferents als dispositius KNX.');
+ if(!e.linked&&p.order.some(id=>INPUT_MODELS.has(p.devices[id].model))&&p.order.some(id=>OUTPUT_MODELS.has(p.devices[id].model)))push('info','Els objectes de commutació no comparteixen cap adreça de grup carregada.');
+ if(installed(p,'lamp').length&&!e.controlledLamps.size)push('info','Cap bombeta té un circuit de fase controlat exclusivament per un relé.');
+ if(e.ready)push('success','Instal·lació preparada: comprova la commutació amb els pulsadors.');
+ return list;
+}
+function toggleProtection(p,id){const d=p.devices[id];if(!d||!['mcb','rcd'].includes(d.model))return false;d.protection=!d.protection;return true;}
+function toggleProgram(p,id){const d=p.devices[id],e=evaluate(p);if(!d||!PROGRAMMABLE.has(d.model)||!e.status[id]?.powered)return {ok:false,msg:'Aquest dispositiu ha de rebre alimentació KNX abans de programar-se.'};d.config.programLed=!d.config.programLed;return {ok:true,msg:`LED PROG ${d.config.programLed?'activat':'desactivat'} (${id}).`};}
+function downloadAddress(p,id){const d=p.devices[id],e=evaluate(p);if(!d||!PROGRAMMABLE.has(d.model))return {ok:false,msg:'Dispositiu no programable.'};if(!e.status[id]?.powered)return {ok:false,msg:'Dispositiu sense alimentació de bus.'};if(!d.config.programLed)return {ok:false,msg:'Prem primer PROG.'};const addr=d.config.draft.address.trim();if(!isAddress(addr)||!addr.startsWith('1.1.'))return {ok:false,msg:'Adreça invàlida: utilitza 1.1.1 a 1.1.255.'};if(p.order.some(other=>other!==id&&p.devices[other].config?.loaded.address===addr))return {ok:false,msg:'L’adreça física ja està assignada.'};d.config.loaded.address=addr;d.config.programLed=false;return {ok:true,msg:`Adreça física ${addr} descarregada a ${id}.`};}
+function downloadApplication(p,id){
+ const d=p.devices[id],e=evaluate(p);if(!d||!PROGRAMMABLE.has(d.model))return {ok:false,msg:'Dispositiu no programable.'};
+ if(!e.status[id]?.powered)return {ok:false,msg:'Dispositiu sense alimentació de bus.'};
+ if(!isAddress(d.config.loaded.address))return {ok:false,msg:'Descarrega primer l’adreça física.'};
+ const groups=Array.from({length:channelCount(d.model)},(_,i)=>objectConfig(d,i)?.draft);
+ if(!groups.some(o=>o?.ga.trim()))return {ok:false,msg:'Defineix almenys una adreça de grup.'};
+ if(groups.some(o=>o?.ga.trim()&&!isGroup(o.ga)))return {ok:false,msg:'Hi ha una adreça de grup invàlida.'};
+ if(groups.some(o=>o?.ga.trim()&&o.dpt!=='1.001'))return {ok:false,msg:'El prototip només admet DPT 1.001 per a commutació.'};
+ for(let i=0;i<groups.length;i++){const cfg=objectConfig(d,i);cfg.loaded.ga=cfg.draft.ga.trim();cfg.loaded.dpt='1.001';}
+ return {ok:true,msg:`Aplicació carregada a ${id}, ${groups.filter(o=>o.ga.trim()).length} objecte(s) amb adreça de grup.`};
+}
+function pressButton(p,id,channel=0){
+ const b=p.devices[id],e=evaluate(p);if(!b||!INPUT_MODELS.has(b.model))return {ok:false,msg:'Selecciona un pulsador.'};
+ if(!e.status[id]?.powered)return {ok:false,msg:'Pulsador sense alimentació KNX.'};
+ const cfg=objectConfig(b,channel)?.loaded;if(!cfg)return {ok:false,msg:'Tecla no disponible.'};
+ const {ga,dpt}=cfg,address=b.config.loaded.address;
+ if(!isAddress(address)||!isGroup(ga)||dpt!=='1.001')return {ok:false,msg:'La tecla no té una adreça de grup carregada vàlida.'};
+ const value=!p.groupValues[ga];p.groupValues[ga]=value;
+ const received=[];
+ for(const id2 of p.order){const a=p.devices[id2];if(!OUTPUT_MODELS.has(a.model)||!e.status[id2]?.powered||!isAddress(a.config.loaded.address)||a.config.loaded.address===address||e.duplicates.has(a.config.loaded.address))continue;
+  for(let k=0;k<channelCount(a.model);k++){const ac=objectConfig(a,k)?.loaded;if(ac?.ga===ga&&ac?.dpt===dpt){setRelay(a,k,value);received.push(`${a.id}${channelCount(a.model)>1?` · ${channelLabel(a,k)}`:''}`);}}
+ }
+ p.logs.unshift({time:new Date().toLocaleTimeString('ca-ES',{hour12:false}),source:address,sourceId:`${id}${channelCount(b.model)>1?` · ${channelLabel(b,channel)}`:''}`,ga,value:value?'1 · ON':'0 · OFF',service:'GroupValueWrite',dest:received.join(', ')||'Sense receptor'});p.logs=p.logs.slice(0,80);
+ return {ok:received.length>0,msg:received.length?`Telegram ${value?'ON':'OFF'} rebut per ${received.length} canal(s).`:'Telegram emès, sense canals receptors compatibles.'};
+}
+function saveProject(p){return JSON.parse(JSON.stringify({...p,logs:[]}));}
+function loadProject(raw){
+ if(!raw||!Array.isArray(raw.wires)||raw.wires.length>1200)throw Error('Projecte invàlid: connexions incorrectes.');
+ if(raw.schema==='teclab-knx-v0.1')return migrateLegacy(raw);
+ if(raw.schema!==SCHEMA||!Array.isArray(raw.order)||raw.order.length>200)throw Error('Versió de projecte incompatible.');
+ const p=createProject();const seen=new Set();
+ for(const id of raw.order){if(typeof id!=='string'||!/^u\d{1,6}$/.test(id)||seen.has(id))throw Error('Identificador de dispositiu invàlid.');const d=raw.devices?.[id];if(!CATALOG[d?.model])throw Error('Model de dispositiu desconegut.');if(CATALOG[d.model].single&&installed(p,d.model).length)throw Error('Equip únic repetit.');seen.add(id);const m=CATALOG[d.model];const x=Number(d.position?.x),y=Number(d.position?.y);p.devices[id]={id,model:d.model,position:{x:Number.isFinite(x)?Math.max(12,Math.min(BOARD.width-m.w-10,x)):300,y:m.mount==='din'?(BOARD.dinRows.includes(y)?y:BOARD.dinRows[0]):Number.isFinite(y)?Math.max(80,Math.min(BOARD.height-m.h-10,y)):BOARD.wallTop+80},protection:d.protection===true,relay:d.relay===true,relays:d.model==='act4'?Array.from({length:4},(_,i)=>d.relays?.[i]===true):null,config:PROGRAMMABLE.has(d.model)?blankConfig(channelCount(d.model)):null};
+  if(PROGRAMMABLE.has(d.model))for(const part of ['draft','loaded'])for(const key of ['address','ga','dpt'])if(typeof d.config?.[part]?.[key]==='string')p.devices[id].config[part][key]=d.config[part][key].slice(0,32);
+  if(PROGRAMMABLE.has(d.model)&&channelCount(d.model)>1)for(let i=0;i<channelCount(d.model);i++)for(const part of ['draft','loaded'])for(const key of ['ga','dpt']){
+   const val=d.config?.channels?.[i]?.[part]?.[key];if(typeof val==='string')p.devices[id].config.channels[i][part][key]=val.slice(0,32);
+  }
+  p.order.push(id);
+ }
+ p.nextId=Math.max(1,...p.order.map(id=>Number(id.slice(1))+1));
+ p.wires=raw.wires.filter(w=>terminal(p,w?.a)&&terminal(p,w?.b)&&w.a!==w.b).map(w=>({a:w.a,b:w.b,route:Number.isFinite(w.route)?Math.max(-12,Math.min(12,w.route)):0,offset:Number.isFinite(w.offset)?Math.max(-240,Math.min(240,w.offset)):0}));
+ p.groupValues=raw.groupValues&&typeof raw.groupValues==='object'?Object.fromEntries(Object.entries(raw.groupValues).filter(([k,v])=>isGroup(k)&&typeof v==='boolean')):{};return p;
+}
+function migrateLegacy(x){const p=createProject(),map={};for(const model of MODEL_ORDER){if(x.placed&&x.placed[model]!==true)continue;const oldPos=x.positions?.[model],r=addDevice(p,model,oldPos&&{x:oldPos.x+CATALOG[model].w/2,y:oldPos.y+CATALOG[model].h/2});if(!r.ok)continue;map[model]=r.id;const d=p.devices[r.id];if(oldPos&&Number.isFinite(oldPos.x)&&Number.isFinite(oldPos.y))d.position={x:oldPos.x,y:CATALOG[model].mount==='din'?BOARD.dinRows[0]:oldPos.y};if(model==='mcb'||model==='rcd')d.protection=x.protection?.[model]===true;if(model==='act')d.relay=x.relay===true;if(PROGRAMMABLE.has(model))for(const part of ['draft','loaded'])for(const key of ['address','ga','dpt'])if(typeof x.config?.[model]?.[part]?.[key]==='string')d.config[part][key]=x.config[model][part][key];}
+ for(const w of x.wires){const convert=ref=>{const split=String(ref||'').split('.');return map[split[0]]?terminalRef(map[split[0]],split[1]):null;};const a=convert(w.a),b=convert(w.b);if(terminal(p,a)&&terminal(p,b)){connect(p,a,b);const last=p.wires[p.wires.length-1];last.offset=Number.isFinite(w.offset)?w.offset:0;last.route=Number.isFinite(w.route)?w.route:0;}}
+ return p;}
+
+
+
+const root=document.querySelector('#knx-app');
+let state=createProject(),section='laboratori',tab='muntatge',mode='wire',selectedWire=-1,selectedDevice='',firstPort='',notice='',noticeType='',materialOpen=true,zoom=1,wireDrag=null,dragging=null,routing=null,trayDrag=null,ghost=null,skipPortClick=false;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const devices=()=>state.order.map(id=>state.devices[id]).filter(Boolean);
+const label=id=>state.devices[id]?`${CATALOG[state.devices[id].model].title} · ${id}`:'Equip retirat';
+const ptLabel=ref=>{const t=terminal(state,ref);return t?`${label(t.id)} · ${t.port.name}`:'Terminal absent';};
+const portPoint=ref=>{const t=terminal(state,ref);return t?{x:t.device.position.x+t.port.x,y:t.device.position.y+t.port.y}:null;};
+const wireColor=w=>({'ac-l':'#b46829','ac-n':'#267cc1','bus-p':'#dd4444','bus-m':'#3e5159','ac-mixed':'#e5a133','bus-mixed':'#b88a23',hazard:'#bc3049'}[wireKind(state,w.a,w.b)]||'#5c6c73');
+function show(message,type=''){notice=message;noticeType=type;render();}
+function routeInfo(w,i){
+ const a=portPoint(w.a),b=portPoint(w.b);if(!a||!b)return {d:'',handle:{x:0,y:0},axis:'x'};
+ const ta=terminal(state,w.a),tb=terminal(state,w.b),dx=b.x-a.x,dy=b.y-a.y;
+ const sa=ta.port.y<=0?-1:1,sb=tb.port.y<=0?-1:1;
+ const spread=((i*11)%23-11)*7+(w.route||0)*26+(w.offset||0);
+ let mid,axis;
+ if(sa===sb){const edge=sa>0?Math.max(a.y,b.y):Math.min(a.y,b.y);mid={x:(a.x+b.x)/2,y:Math.max(30,Math.min(BOARD.height-28,edge+sa*(72+spread)))};axis='y';}
+ else{mid={x:Math.max(30,Math.min(BOARD.width-28,(a.x+b.x)/2+spread)),y:(a.y+b.y)/2};axis='x';}
+ const pull=Math.min(157,Math.max(44,Math.abs(dy)*.23)),bendX=Math.min(145,Math.max(36,Math.abs(dx)*.17)),dir=dx>=0?1:-1;
+ const d=`M ${a.x} ${a.y} C ${a.x} ${a.y+sa*pull}, ${mid.x-dir*bendX} ${mid.y}, ${mid.x} ${mid.y} C ${mid.x+dir*bendX} ${mid.y}, ${b.x} ${b.y+sb*pull}, ${b.x} ${b.y}`;
+ return {d,handle:mid,axis};
+}
+function wireMarkup(){return state.wires.map((w,i)=>({w,i})).sort((a,b)=>(a.i===selectedWire?1:0)-(b.i===selectedWire?1:0)).map(({w,i})=>{const info=routeInfo(w,i),sel=i===selectedWire,col=wireColor(w),a=portPoint(w.a),b=portPoint(w.b);if(!a||!b)return '';return `<g class="wire-group ${sel?'wire-selected':'wire-other'}" data-wire-index="${i}" role="button" tabindex="0" aria-label="Conductor ${esc(ptLabel(w.a))} fins a ${esc(ptLabel(w.b))}"><path class="wire-halo" d="${info.d}"/><path class="wire-hit" d="${info.d}"/><path class="wire-visible" d="${info.d}" stroke="${col}" fill="none" stroke-width="${sel?5:3.6}" stroke-linecap="round" ${wireKind(state,w.a,w.b)==='hazard'?'stroke-dasharray="8 5"':''}/><circle cx="${a.x}" cy="${a.y}" r="${sel?8:4.3}" fill="${col}" stroke="white" stroke-width="2"/><circle cx="${b.x}" cy="${b.y}" r="${sel?8:4.3}" fill="${col}" stroke="white" stroke-width="2"/><title>${esc(ptLabel(w.a))} → ${esc(ptLabel(w.b))}</title></g>`;}).join('');}
+function wireActionMarkup(){if(selectedWire<0||!state.wires[selectedWire])return '';const h=routeInfo(state.wires[selectedWire],selectedWire).handle,x=Math.max(12,Math.min(BOARD.width-162,h.x-72)),y=Math.max(36,Math.min(BOARD.height-62,h.y-77));return `<g class="wire-overlay"><circle class="route-handle" data-route-handle="${selectedWire}" cx="${h.x}" cy="${h.y}" r="13" fill="white" stroke="#12757b" stroke-width="3"/><circle cx="${h.x}" cy="${h.y}" r="3" fill="#12757b" pointer-events="none"/><g class="wire-floating-action" data-wire-remove="${selectedWire}" role="button" tabindex="0" aria-label="Desconnecta el cable"><rect x="${x}" y="${y}" width="144" height="40" rx="9" fill="white" stroke="#b93b48" stroke-width="2"/><text x="${x+72}" y="${y+25}" fill="#ad3441" font-size="13" text-anchor="middle" font-weight="750" pointer-events="none">✕ Desconnecta</text></g></g>`;}
+function previewWire(){if(!wireDrag?.start||!wireDrag?.point)return '';const a=portPoint(wireDrag.start),b=wireDrag.point;if(!a)return '';const dx=b.x-a.x,dy=b.y-a.y;return `<path class="wire-preview" d="M ${a.x} ${a.y} C ${a.x} ${a.y+dy*.53}, ${b.x-dx*.23} ${b.y}, ${b.x} ${b.y}" stroke="#0f8386"/>`;}
+function led(cx,cy,color){return `<circle cx="${cx}" cy="${cy}" r="6" fill="${color}" stroke="#294e58" stroke-width="1.5"/>`;}
+function unitMarkup(id,e){const d=state.devices[id],m=CATALOG[d.model],pos=d.position,s=e.status[id]||{},on=d.protection,prog=d.config?.programLed,selectedConductor=state.wires[selectedWire],selectedConductorColor=selectedConductor?wireColor(selectedConductor):'';
+ let specific='';if(m.kind==='source')specific='<path d="M39 87q12-33 26 0t26 0" stroke="#ce9442" stroke-width="3" fill="none"/><text x="76" y="119" text-anchor="middle" font-size="13" fill="#446474">230 V~</text>';
+ if(m.kind==='protection')specific=`<g data-protect="${id}" role="button" tabindex="0" aria-label="${m.title} ${on?'connectat':'desconnectat'}"><rect x="40" y="54" width="63" height="81" rx="8" fill="#e8edef" stroke="#a5b8c0"/><rect x="54" y="${on?69:96}" width="36" height="26" rx="4" fill="${on?'#188963':'#6d7e88'}" stroke="white" stroke-width="2"/><text x="71" y="137" text-anchor="middle" font-size="9.1" font-weight="700" fill="${on?'#16835b':'#a23b49'}">${on?'CONNECTAT':'DESCONNECTAT'}</text></g>`;
+ if(m.kind==='psu')specific=`${led(77,74,e.psuPowered?'#23b687':'#92a6b0')}<text x="77" y="96" text-anchor="middle" font-size="11" fill="#405d67">${e.psuPowered?'BUS OK':'BUS OFF'}</text><text x="77" y="124" text-anchor="middle" font-size="11" fill="#506b75">30 V CC</text>`;
+ if(m.kind==='button'){
+  const n=channelCount(d.model),cols=n===4?2:n,baseWidth=n===4?49:n===2?53:67,gap=6,total=cols*baseWidth+(cols-1)*gap,x0=(m.w-total)/2, y0=n===4?86:91, h=n===4?29:36;
+  const keys=Array.from({length:n},(_,i)=>{const row=Math.floor(i/cols),col=i%cols,x=x0+col*(baseWidth+gap),y=y0+row*(h+5);
+   return `<g data-press="${id}:${i}" role="button" tabindex="0" aria-label="Acciona ${esc(channelLabel(d,i))} de ${esc(label(id))}"><rect x="${x}" y="${y}" width="${baseWidth}" height="${h}" rx="5" fill="#d5e8eb" stroke="#99b9c3" stroke-width="1.5"/><rect x="${x+5}" y="${y+5}" width="${baseWidth-10}" height="${h-10}" rx="4" fill="#b2cfd8"/><text x="${x+baseWidth/2}" y="${y+h/2+4}" font-size="11" font-weight="750" text-anchor="middle" fill="#245364" pointer-events="none">${esc('ABCD'[i])}</text></g>`;}).join('');
+  specific=`<g data-program="${id}" role="button" tabindex="0" aria-label="PROG de ${esc(label(id))}">${led(43,68,prog?'#eb403e':'#8aa0a8')}<text x="62" y="72" fill="#4e6871" font-size="10">PROG</text></g>${keys}`;
+ }
+ if(m.kind==='act'){
+  const n=channelCount(d.model);
+  const status=n===1?`<text x="83" y="131" text-anchor="middle" font-weight="800" font-size="11" fill="${d.relay?'#18855e':'#6c7f85'}">Relé ${d.relay?'ON':'OFF'}</text>`:Array.from({length:n},(_,i)=>{
+   const x=42+i*74,y=99,on=relayState(d,i);return `<g><rect x="${x-25}" y="${y-19}" width="50" height="49" rx="6" fill="#e8f1f3" stroke="#a8c4cb"/><circle cx="${x}" cy="${y-5}" r="7" fill="${on?'#24ac77':'#9aabb1'}" stroke="white" stroke-width="1.3"/><text x="${x}" y="${y+15}" font-size="10" font-weight="800" text-anchor="middle" fill="#425f6d">${'ABCD'[i]}</text><title>Canal ${'ABCD'[i]}: ${on?'tancat':'obert'}</title></g>`;}).join('');
+  specific=`<g data-program="${id}" role="button" tabindex="0" aria-label="PROG de ${esc(label(id))}">${led(n===1?43:28,68,prog?'#eb403e':'#8aa0a8')}<text x="${n===1?61:45}" y="72" fill="#4e6871" font-size="10">PROG</text></g>${led(n===1?95:242,68,s.powered?'#2eb28a':'#91a5ae')}<text x="${n===1?117:262}" y="72" fill="#4e6871" font-size="10">BUS</text>${status}`;
+ }
+ if(m.kind==='lamp')specific=`<circle cx="76" cy="76" r="30" fill="${s.on?'#ffdf7b':'#e2eaec'}" stroke="${s.on?'#e0b32c':'#9bb8bf'}" stroke-width="3"/><path d="M63 74c0-17 26-17 26 0l-8 14H71Z" stroke="${s.on?'#bc8b27':'#719099'}" fill="none" stroke-width="3"/><path d="M72 91h12m-10 6h8" stroke="#64828b" stroke-width="3"/><text x="77" y="122" font-size="10" text-anchor="middle" font-weight="800" fill="${s.on?'#99681d':'#617982'}">${s.on?'ENCESA':'APAGADA'}</text>`;
+ const bports=m.ports.filter(p=>p.connector==='knx-tp');const busBody=bports.length===2?(()=>{const x=Math.min(...bports.map(p=>p.x))-14,y=bports[0].y<=0?-40:m.h-10;return `<g class="bus-terminal"><rect x="${x-5}" y="${y-4}" width="72" height="32" rx="5" fill="#d0d7da" stroke="#82999f"/><rect x="${x}" y="${y}" width="30" height="24" rx="3" fill="#c62c34"/><rect x="${x+30}" y="${y}" width="30" height="24" rx="3" fill="#3d4248"/>${[0,1,2,3,4,5,6,7].map(k=>`<circle cx="${x+8+(k%2)*12+(k>=4?30:0)}" cy="${y+7+(Math.floor(k/2)%2)*10}" r="2.3" fill="#171c21"/>`).join('')}</g>`;})():'',
+ ports=m.ports.map(p=>{const isBus=p.connector==='knx-tp',y=p.y,top=y<=0,ref=terminalRef(id,p.id),isSelectedEnd=!!selectedConductor&&(selectedConductor.a===ref||selectedConductor.b===ref);const terminalView=isBus?`<circle cx="${p.x}" cy="${y}" r="5.6" fill="#181e21" stroke="${p.kind==='bus-p'?'#f46e67':'#b3bec5'}" stroke-width="1.6"/>`:`<rect x="${p.x-13}" y="${y-11}" width="26" height="22" rx="4" fill="#b5c3ca" stroke="#6d818b" stroke-width="1.5"/><circle cx="${p.x}" cy="${y}" r="8" fill="#e6eef0" stroke="#8099a3"/><path d="M${p.x-4.4} ${y-4.4}l8.8 8.8m0-8.8l-8.8 8.8" stroke="#5b7582" stroke-width="1.5"/>`;return `<g data-port="${ref}" role="button" tabindex="0" class="port-hit ${firstPort===ref?'selected-port':''} ${isSelectedEnd?'wire-endpoint':''}" aria-label="Born ${esc(ptLabel(ref))}${isSelectedEnd?' · extrem del conductor seleccionat':''}"><circle cx="${p.x}" cy="${y}" r="24" fill="transparent"/>${isSelectedEnd?`<g class="wire-end-mark" aria-hidden="true" pointer-events="none"><circle cx="${p.x}" cy="${y}" r="23" fill="none" stroke="white" stroke-width="8"/><circle class="wire-end-ring" cx="${p.x}" cy="${y}" r="23" fill="none" stroke="${selectedConductorColor}" stroke-width="4"/><circle cx="${p.x}" cy="${y}" r="12" fill="${selectedConductorColor}" fill-opacity=".18"/></g>`:''}${terminalView}${isBus?'':`<text x="${p.x}" y="${top?(d.model==='act4'?y+60:y+28):y-18}" text-anchor="middle" fill="#315465" font-size="9.6" font-weight="800" pointer-events="none">${esc(p.name)}</text>`}<title>${esc(ptLabel(terminalRef(id,p.id)))}</title></g>`;}).join('');
+ return `<g class="unit unit-${m.mount} ${selectedDevice===id?'unit-focused':''}" data-device="${id}" transform="translate(${pos.x} ${pos.y})"><rect x="0" y="0" width="${m.w}" height="${m.h}" rx="10" fill="${m.kind==='lamp'?'#fffefa':'#fcfefe'}" stroke="${selectedDevice===id?'#0d8d85':'#9ebcc3'}" stroke-width="${selectedDevice===id?3.8:2}"/><path d="M0 11Q0 0 11 0H${m.w-11}Q${m.w} 0 ${m.w} 11V42H0Z" fill="#1b4555"/><rect x="6" y="4" width="${m.w-12}" height="37" class="drag-grip" fill="transparent"/><text x="${m.w/2}" y="21" text-anchor="middle" font-size="12" font-weight="750" fill="white" pointer-events="none">${esc(m.title)}</text><text x="${m.w/2}" y="35" text-anchor="middle" font-size="9.1" fill="#c9e1e7" pointer-events="none">${esc(m.subtitle)}</text><text x="${m.w-10}" y="54" text-anchor="end" font-size="9" fill="#64818b" pointer-events="none">${esc(id)}</text>${specific}${busBody}${ports}</g>`;
+}
+function canvas(e){const count=state.order.length;return `<div class="canvas-toolbar"><span class="muted">Quadre i estança · ${count} equip${count===1?'':'s'} instal·lat${count===1?'':'s'}</span><div class="zoom-controls"><button class="btn" data-zoom="out" aria-label="Redueix el zoom">−</button><strong>${Math.round(zoom*100)} %</strong><button class="btn" data-zoom="in" aria-label="Amplia el zoom">+</button><button class="btn" data-zoom="fit">Ajusta</button></div></div><div class="canvas-wrap" id="board-scroll"><svg id="knx-board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BOARD.width} ${BOARD.height}" style="width:${Math.round(zoom*100)}%;min-width:${Math.round(1000*zoom)}px" role="group" aria-label="Plànol: col·loca equips i connecta els borns"><defs><pattern id="board-grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#d5e3e7" stroke-width=".7"/></pattern><pattern id="room-brick" width="64" height="32" patternUnits="userSpaceOnUse"><rect width="64" height="32" fill="#faf6f0"/><path d="M0 0h64M0 32h64M32 0v16M0 16h64M0 16v16" fill="none" stroke="#e8e3db" stroke-width=".8"/></pattern></defs><rect width="${BOARD.width}" height="${BOARD.height}" fill="url(#board-grid)"/><rect x="15" y="18" width="${BOARD.width-30}" height="${BOARD.wallTop-32}" rx="16" fill="#eaf2f4" stroke="#b4cbd2" stroke-width="2"/><text x="34" y="52" class="board-tag">QUADRE ELÈCTRIC</text><text x="34" y="75" class="board-sub">Punt d'alimentació · proteccions · font · actuadors KNX</text><rect x="27" y="104" width="192" height="563" rx="13" fill="#e2e7e8" stroke="#9bafb7" stroke-dasharray="6 5" stroke-width="2"/><text x="46" y="129" class="board-sub">ENTRADA 230 V</text><text x="46" y="148" font-size="11" fill="#4d6571">Separada del carril DIN</text>${BOARD.dinRows.map((y,i)=>`<g><rect x="237" y="${y+54}" width="${BOARD.width-268}" height="58" rx="5" fill="#aabac1" stroke="#607782" stroke-width="2"/><rect x="246" y="${y+67}" width="${BOARD.width-284}" height="30" rx="3" fill="#7e929c"/><path d="M246 ${y+61}H${BOARD.width-38}M246 ${y+104}H${BOARD.width-38}" stroke="#eff3f4" stroke-width="4"/><text x="251" y="${y-35}" class="board-tag">CARRIL DIN ${i+1} · 35 mm</text></g>`).join('')}<rect x="15" y="${BOARD.wallTop}" width="${BOARD.width-30}" height="${BOARD.height-BOARD.wallTop-18}" rx="15" fill="url(#room-brick)" stroke="#dccdc0" stroke-width="2"/><text x="35" y="${BOARD.wallTop+30}" class="board-tag">ESTANÇA · MUNTATGE LLIURE</text><text x="35" y="${BOARD.wallTop+52}" class="board-sub">Pulsadors i punts de llum de la instal·lació</text><g id="wire-layer" class="${selectedWire>=0?'with-selection':''}">${wireMarkup()}</g><g id="drag-wire-layer">${previewWire()}</g>${state.order.map(id=>unitMarkup(id,e)).join('')}${wireActionMarkup()}</svg></div>`;}
+function tray(){
+ const symbols={mains:'⚡',mcb:'▣',rcd:'▣',psu:'▤',button:'◉',button2:'◧',button4:'▦',act:'▥',act4:'▤',lamp:'☼'};
+ const item=key=>{
+  const m=CATALOG[key],count=installed(state,key).length,disabled=m.single&&count>0;
+  return `<div class="material-item ${disabled?'is-installed':''}" data-tray="${key}" aria-label="Model ${esc(m.title)}"><span class="material-icon">${symbols[key]||'◻'}</span><span class="material-info"><strong>${esc(m.title)}</strong><small>${esc(m.subtitle)} · ${m.mount==='din'?'DIN':m.mount==='wall'?'Paret':'Quadre'} · instal·lats: ${count}</small></span><button type="button" class="btn" data-add="${key}" ${disabled?'disabled':''}>${disabled?'Instal·lat':'Afegeix'}</button></div>`;
+ };
+ return `<div class="material-box"><div class="section-heading"><div><h3>Caixa de material</h3><p class="muted">Dispositius agrupats per funció. Dins de cada família, els models s'ordenen per nombre de tecles o canals. Arrossega un equip al plànol o prem «Afegeix».</p></div><span class="pill">${state.order.length} equips</span></div><div class="material-sections">${MODEL_GROUPS.map(group=>`<section class="material-section" aria-label="${esc(group.label)}"><div class="material-group-heading"><h4>${esc(group.label)}</h4><span>${esc(group.description)}</span></div><div class="material-grid">${group.models.map(item).join('')}</div></section>`).join('')}</div></div>`;
+}
+function statusline(e){return `<div class="statusline"><span class="pill ${e.psuPowered?'ok':'warn'}">Font: ${e.psuPowered?'230 V OK':'Sense tensió'}</span><span class="pill ${e.addressesValid?'ok':'warn'}">Adreces: ${e.addressesValid?'OK':'Pendents'}</span><span class="pill ${e.linked?'ok':'warn'}">Grups: ${e.linked?'OK':'Pendents'}</span><span class="pill ${e.ready?'ok':'warn'}">Circuit: ${e.ready?'Preparat':'Incomplet'}</span></div>`;}
+function note(){return notice?`<div class="notice ${noticeType==='error'?'error':noticeType==='success'?'success':''}" role="status">${esc(notice)}</div>`:'';}
+function wiring(e){return `<section class="panel"><div class="section-heading"><div><h2>Muntatge i cablejat</h2><p class="muted">Comença amb el plànol buit. Afegeix els equips i connecta els terminals. Clica un conductor per veure'n el botó flotant de desconnexió.</p></div></div>${statusline(e)}<div class="board-dock" role="toolbar" aria-label="Eines de muntatge"><div class="dock-mode"><button class="btn ${mode==='wire'?'active':''}" data-mode="wire">◉ Connectar cables</button><button class="btn ${mode==='move'?'active':''}" data-mode="move">✥ Moure equips</button></div><div class="dock-placement"><label for="quick-model">Equip:</label><select id="quick-model">${MODEL_GROUPS.map(group=>`<optgroup label="${esc(group.label)}">${group.models.map(key=>`<option value="${key}">${esc(CATALOG[key].title)}</option>`).join('')}</optgroup>`).join('')}</select><button class="btn primary" data-cmd="quick-add">+ Col·loca</button><button class="btn" data-cmd="toggle-tray">${materialOpen?'Amaga':'Mostra'} la caixa</button></div></div>${materialOpen?`<div id="material-drawer">${tray()}</div>`:''}${canvas(e)}<div class="help-note">${mode==='wire'?(firstPort?`Terminal inicial: <strong>${esc(ptLabel(firstPort))}</strong>. Selecciona el terminal final.`:'Arrossega d’un born a un altre o fes dos clics. Els cables són corbats i pots moure el punt de desviació de cada conductor.'):'Arrossega els equips. Els muntats en DIN s’encaixen al carril; els receptors i pulsadors queden a l’estança.'} ${selectedWire>=0&&state.wires[selectedWire]?`<strong>Conductor seleccionat:</strong> ${esc(ptLabel(state.wires[selectedWire].a))} → ${esc(ptLabel(state.wires[selectedWire].b))}. <strong>Els dos borns estan ressaltats al plànol.</strong>`:''} ${selectedDevice?`<strong>Equip seleccionat: ${esc(label(selectedDevice))}.</strong>`:''}</div>${note()}<div class="button-row"><button class="btn" data-cmd="cancel">Cancel·la selecció</button><button class="btn" data-cmd="remove-device" ${!selectedDevice?'disabled':''}>Retira equip seleccionat</button><button class="btn" data-cmd="export">Exporta JSON</button><button class="btn" data-cmd="import">Importa projecte</button><button class="btn danger" data-cmd="reset">Reinicia</button><input id="project-file" type="file" accept="application/json,.json" hidden/></div></section><section class="panel"><details class="wires-details"><summary><strong>Conductors (${state.wires.length})</strong> · Obre la llista d'identificació</summary>${state.wires.length?`<div class="wires-list">${state.wires.map((w,i)=>`<div class="wire-item ${selectedWire===i?'is-selected':''}"><button class="wire-identify" data-wire-list="${i}"><b style="color:${wireColor(w)}">●</b> ${esc(ptLabel(w.a))} → ${esc(ptLabel(w.b))}</button><button class="btn" data-wire-remove="${i}" aria-label="Desconnecta conductor">✕</button></div>`).join('')}</div>`:'<p class="muted">No hi ha conductors.</p>'}</details></section>`;}
+function configCard(d,e){
+ const c=d.config,m=CATALOG[d.model],st=e.status[d.id]||{},n=channelCount(d.model);
+ const groupFields=Array.from({length:n},(_,i)=>{const obj=objectConfig(d,i),name=channelLabel(d,i),dataField=n===1?`${d.id}.ga`:`${d.id}.ch${i}.ga`,dptField=n===1?`${d.id}.dpt`:`${d.id}.ch${i}.dpt`;
+  return `<div class="channel-config"><div class="section-heading"><strong>${esc(name)}</strong><span class="pill ${obj.loaded.ga?'ok':'warn'}">${obj.loaded.ga?`Carregat: ${esc(obj.loaded.ga)}`:'Sense grup carregat'}</span></div><div class="config-grid"><label><span class="control-label">Adreça de grup de ${esc(name)}</span><input class="field" data-field="${dataField}" aria-label="Adreça de grup ${esc(name)} ${d.id}" value="${esc(obj.draft.ga)}" placeholder="1/0/${i+1}" spellcheck="false"></label><label><span class="control-label">DPT</span><select class="field" data-field="${dptField}"><option value="1.001" ${obj.draft.dpt==='1.001'?'selected':''}>1.001 · Commutació</option><option value="5.001" ${obj.draft.dpt==='5.001'?'selected':''}>5.001 · No compatible</option></select></label></div></div>`;}).join('');
+ return `<div class="device-config"><div class="section-heading"><h3>${esc(m.title)} <code>${esc(d.id)}</code></h3><span class="pill ${st.powered?'ok':'warn'}">${st.powered?'Bus alimentat':'Sense bus'}</span></div><p class="muted">Una adreça física per equip, ${n} objecte${n>1?'s':''} independent${n>1?'s':''} de comunicació · DPT 1.001 (1 bit).</p><div class="config-grid"><label><span class="control-label">Adreça física del dispositiu</span><input class="field" data-field="${d.id}.address" aria-label="Adreça física ${d.id}" value="${esc(c.draft.address)}" placeholder="1.1.10" spellcheck="false"></label><div class="readout"><span>Carregada: <code>${esc(c.loaded.address||'—')}</code></span><span>PROG: <code>${c.programLed?'Actiu':'Apagat'}</code></span></div></div><div class="channel-configs">${groupFields}</div><p class="tiny muted">Els grups buits queden sense vincular; per descarregar l'aplicació cal almenys un grup vàlid. Els canvis del projecte no s'apliquen fins a descarregar-los.</p><div class="button-row"><button class="btn ${c.programLed?'active':''}" data-program="${d.id}">PROG ${c.programLed?'●':'○'}</button><button class="btn" data-address="${d.id}">Descarrega adreça</button><button class="btn primary" data-app="${d.id}">Descarrega aplicació</button></div></div>`;
+}
+function programming(e){const list=devices().filter(d=>PROGRAMMABLE.has(d.model));return `<section class="panel"><h2>Topologia i programació</h2><p class="muted">Línia 1.1 · ${list.length} dispositiu(s) programable(s). Cada equip té la seva adreça i la seva pròpia configuració carregada.</p><div class="help-note">Alimenta el bus, prem PROG al dispositiu, descarrega l'adreça física, defineix el grup i descarrega l'aplicació. Els canvis del projecte no funcionen fins que els descarregues.</div>${statusline(e)}${list.length?list.map(d=>configCard(d,e)).join(''):'<div class="help-note">Encara no has col·locat cap pulsador ni actuador. Torna a «Muntatge».</div>'}${note()}</section>`;}
+function simulation(e){
+ const buttons=devices().filter(d=>INPUT_MODELS.has(d.model)),lamps=installed(state,'lamp'),acts=devices().filter(d=>OUTPUT_MODELS.has(d.model));
+ return `<section class="panel"><h2>Simulació d'una instal·lació KNX</h2><p class="muted">Cada tecla envia un telegrama al seu grup. Els canals dels actuadors que comparteixen aquest grup commuten de manera independent; el circuit de potència ha d'estar cablejat.</p>${statusline(e)}<div class="sim-grid"><div><h3>Pulsadors (${buttons.length})</h3>${buttons.map(d=>`<div class="sim-device sim-multi"><strong>${esc(label(d.id))}</strong><small>Adreça física ${esc(d.config.loaded.address||'—')}</small><div class="sim-channels">${Array.from({length:channelCount(d.model)},(_,i)=>`<div class="sim-channel"><span>${esc(channelLabel(d,i))} <small>Grup ${esc(objectConfig(d,i)?.loaded.ga||'—')}</small></span><button class="btn primary" data-press="${d.id}:${i}">Prémer</button></div>`).join('')}</div></div>`).join('')||'<p class="muted">Afegeix un pulsador.</p>'}</div><div><h3>Actuadors (${acts.length})</h3>${acts.map(d=>`<div class="sim-device sim-multi"><strong>${esc(label(d.id))}</strong><div class="sim-channels">${Array.from({length:channelCount(d.model)},(_,i)=>`<div class="sim-channel"><span>${esc(channelLabel(d,i))} <small>Grup ${esc(objectConfig(d,i)?.loaded.ga||'—')}</small></span><span class="pill ${relayState(d,i)?'ok':'warn'}">${relayState(d,i)?'TANCAT':'OBERT'}</span></div>`).join('')}</div></div>`).join('')||'<p class="muted">Afegeix un actuador.</p>'}<h3>Bombetes (${lamps.length})</h3><div class="scene">${lamps.map(d=>`<div class="scene-box"><div class="bulb ${e.status[d.id]?.on?'lit':''}">${e.status[d.id]?.on?'✺':'☼'}</div><strong>${esc(label(d.id))}</strong><span>${e.status[d.id]?.on?'Encesa':'Apagada'}</span></div>`).join('')||'<p class="muted">Afegeix un receptor.</p>'}</div></div></div>${note()}<div class="button-row"><button class="btn" data-tab="diagnosi">Monitor KNX →</button><button class="btn" data-tab="muntatge">Torna al muntatge</button></div></section>`;
+}
+function diagnostics(e){return `<section class="panel"><div class="section-heading"><h2>Diagnosi i monitor del bus</h2><button class="btn" data-cmd="clear-logs">Neteja telegrames</button></div><p class="muted">Registre didàctic de GroupValueWrite: no són captures físiques del bus TP.</p><div class="monitor-wrap"><table class="monitor"><thead><tr><th>Hora</th><th>Origen</th><th>Grup</th><th>Ordre</th><th>Servei</th><th>Actuadors receptors</th></tr></thead><tbody>${state.logs.map(l=>`<tr><td>${esc(l.time)}</td><td>${esc(l.source)} (${esc(l.sourceId)})</td><td>${esc(l.ga)}</td><td>${esc(l.value)}</td><td>${esc(l.service)}</td><td>${esc(l.dest)}</td></tr>`).join('')||'<tr><td colspan="6">Encara no hi ha telegrams.</td></tr>'}</tbody></table></div></section><section class="panel"><h2>Comprovació del projecte</h2><div class="issues">${issues(state,e).map(item=>`<div class="issue ${esc(item.severity)}">${esc(item.text)}</div>`).join('')||'<p>Sense incidències.</p>'}</div>${note()}<button class="btn primary" data-cmd="verify">Comprova el projecte</button></section>`;}
+function aside(e){const program=devices().filter(d=>PROGRAMMABLE.has(d.model)),powers=devices().filter(d=>d.model==='mcb'||d.model==='rcd'),lamps=installed(state,'lamp');return `<aside><section class="panel"><h2>Proteccions</h2>${powers.length?powers.map(d=>`<div class="switch-line"><strong>${esc(label(d.id))}</strong><span class="pill ${d.protection?'ok':'warn'}">${d.protection?'Connectat':'Desconnectat'}</span></div>`).join(''):'<p class="muted">Encara no hi ha proteccions instal·lades.</p>'}<p class="tiny muted">Acciona les palanques directament sobre el quadre.</p></section><section class="panel"><h2>Estat del projecte</h2><div class="checklist">${[['Font KNX alimentada',e.psuPowered],['Adreces físiques correctes',e.addressesValid],['Objectes KNX associats',e.linked],['Càrrega controlada',e.controlledLamps.size>0],['Proteccions no derivades',!e.bypassMcb&&!e.bypassRcd],['Projecte preparat',e.ready]].map(([t,ok])=>`<div class="check"><i class="dot ${ok?'ok':'bad'}"></i><span>${t}</span></div>`).join('')}</div><button class="btn primary" data-cmd="verify">Comprova</button></section><section class="panel"><h2>Instal·lació</h2><p class="muted">${state.order.length} equips · ${state.wires.length} conductors · ${program.length} dispositius KNX · ${lamps.length} bombetes.</p><div class="issues">${issues(state,e).slice(0,4).map(i=>`<div class="issue ${esc(i.severity)}">${esc(i.text)}</div>`).join('')}</div><button class="btn" data-tab="diagnosi">Diagnosi completa →</button></section></aside>`;}
+function foundations(){return `<div class="learning"><section class="panel"><h2>1. Arquitectura d'una instal·lació KNX TP</h2><p>Els conductors de 230 V CA alimenten la font KNX i el circuit dels receptors. El bus KNX TP utilitza un parell propi, habitualment alimentat a uns 30 V CC, que també transporta la comunicació entre dispositius.</p><div class="help-note"><strong>Camins separats:</strong> la font alimenta el bus, els polsadors envien telegrams i els actuadors commuten els contactes del circuit de potència. La presència de bus no implica que el receptor tingui tensió.</div><h2>2. Adreces físiques</h2><p>Identifiquen una instància a la topologia: 1.1.10 i 1.1.20 són equips diferents de l'àrea 1, línia 1. El prototip treballa amb la línia 1.1 i rebutja adreces duplicades.</p><h2>3. Adreces de grup</h2><p>La direcció 1/0/1 identifica una funció compartida. Pots assignar-la a diferents pulsadors i actuadors, independentment de la seva adreça física. Cada equip ha de rebre la programació perquè la connexió lògica sigui operativa.</p><h2>4. Objectes i DPT</h2><p>Un pulsador de quatre tecles és un únic participant del bus, però disposa de quatre objectes de comunicació. Cada objecte pot tenir una adreça de grup diferent. Un actuador de quatre canals té quatre contactes independents: connecta L1 amb OUT1, L2 amb OUT2, L3 amb OUT3 i L4 amb OUT4 només quan el relé corresponent és tancat.</p><table><thead><tr><th>Element</th><th>DPT</th><th>Funció</th></tr></thead><tbody><tr><td>Polsador</td><td>1.001</td><td>Emetre 0/1 a GroupValueWrite</td></tr><tr><td>Actuador de relé</td><td>1.001</td><td>Rebre ordre i canviar el contacte</td></tr><tr><td>Bombeta</td><td>—</td><td>Receptor de 230 V, sense objectes KNX</td></tr></tbody></table><p class="muted">Aquesta versió representa el comportament didàctic del bus, no trames de baix nivell, fallades de curtcircuit reals o un sistema ETS.</p></section></div>`;}
+function help(){return `<div class="learning"><section class="panel"><h2>Ajuda · LAB-013 v0.2.1</h2><details open><summary>Afegir i col·locar equips</summary><p>La caixa de material està ordenada per funció: alimentació i proteccions, comandament, actuadors i receptors. Pots afegir més d'un pulsador, actuador o lluminària amb «Afegeix» o arrossegant-los al plànol. L'origen 230 V, les dues proteccions i la font KNX són únics en aquest prototip.</p></details><details><summary>Moure, seleccionar i retirar dispositius</summary><p>Prem «Moure equips» i arrossega el cos de cada dispositiu. Els equips de carril DIN queden a una de les dues guies, els elements murals a l'estança. Un equip seleccionat es pot retirar amb el botó inferior; els seus conductors també s'eliminaran.</p></details><details><summary>Connectar, identificar i eliminar cables</summary><p>Prem «Connectar cables». Arrossega d'un born fins a un altre, o selecciona dos borns consecutivament. Clica una corba per ressaltar el conductor i els dos borns on està connectat i veure el botó flotant «Desconnecta». Amb el punt circular de la corba en pots canviar el recorregut.</p></details><details><summary>Parametritzar cada pulsador i actuador</summary><p>Alimenta el bus, escriu una adreça física única, prem PROG i descarrega l'adreça. Després escriu l'adreça de grup i prem «Descarrega aplicació». La configuració del projecte i la carregada són independents.</p></details><details><summary>Provar més d'un dispositiu</summary><p>Prova el pulsador de dues o quatre tecles i l'actuador de quatre canals. Una única adreça física identifica tot l'equip, però cada tecla i cada canal poden utilitzar grups diferents. Assigna un grup compartit a dos pulsadors i a dos actuadors, amb les seves adreces físiques diferents. Els telegrames d'un pulsador arribaran als actuadors compatibles i alimentats. Pots connectar diversos receptors als contactes dels actuadors.</p></details><details><summary>Programar diversos canals</summary><p>Descarrega una única adreça física a l'equip i després assigna les adreces de grup a les tecles o canals que vulguis utilitzar. Deixa els altres grups en blanc. Prem «Descarrega aplicació» per activar els canvis. Els borns L1 i OUT1 corresponen al canal A, L2/OUT2 al B, L3/OUT3 al C i L4/OUT4 al D.</p></details><details><summary>Guardar i recuperar</summary><p>«Exporta JSON» conserva models, instàncies, connexions, posicions, adreces i estat dels equips. «Importa projecte» admet projectes v0.2 i intenta migrar els arxius de la sèrie v0.1.</p></details><p class="muted">Limitacions: una línia TP, relés de commutació d'un i quatre canals, bus i tensions simplificats, sense persianes ni acobladors; aquestes funcions estan previstes per a les versions següents.</p></section></div>`;}
+function render(){const e=evaluate(state);document.querySelectorAll('[data-major]').forEach(b=>b.classList.toggle('active',b.dataset.major===section));if(section!=='laboratori'){root.innerHTML=section==='fonaments'?foundations():help();return;}const content=tab==='muntatge'?wiring(e):tab==='programacio'?programming(e):tab==='simulacio'?simulation(e):diagnostics(e);root.innerHTML=`<nav class="subtabs" aria-label="Espais de treball"><button data-tab="muntatge" class="${tab==='muntatge'?'active':''}">01 · Muntatge</button><button data-tab="programacio" class="${tab==='programacio'?'active':''}">02 · Programació</button><button data-tab="simulacio" class="${tab==='simulacio'?'active':''}">03 · Simulació</button><button data-tab="diagnosi" class="${tab==='diagnosi'?'active':''}">04 · Diagnosi</button></nav><div class="workspace"><div class="workspace-main">${content}</div>${aside(e)}</div>`;root.querySelector('#knx-board')?.classList.toggle('move-mode',mode==='move');}
+function coord(svg,event){const pt=svg.createSVGPoint();pt.x=event.clientX;pt.y=event.clientY;return pt.matrixTransform(svg.getScreenCTM().inverse());}
+function boardAt(clientX,clientY){const board=document.querySelector('#knx-board');if(!board)return null;const r=board.getBoundingClientRect();if(clientX<r.left||clientX>r.right||clientY<r.top||clientY>r.bottom)return null;return coord(board,{clientX,clientY});}
+function placeModel(model,point=null){const r=addDevice(state,model,point);if(r.ok){selectedDevice=r.id;mode='move';}show(r.msg,r.ok?'success':'error');}
+function applyDeviceMove(ev){if(!dragging)return;const pt=coord(root.querySelector('#knx-board'),ev);const d=state.devices[dragging.id],m=CATALOG[d.model];moveDevice(state,d.id,{x:pt.x-dragging.dx+m.w/2,y:pt.y-dragging.dy+m.h/2});const g=root.querySelector(`[data-device="${d.id}"]`);if(g)g.setAttribute('transform',`translate(${d.position.x} ${d.position.y})`);const layer=root.querySelector('#wire-layer');if(layer)layer.innerHTML=wireMarkup();}
+root.addEventListener('pointerdown',ev=>{
+ if(section!=='laboratori'||tab!=='muntatge')return;
+ const h=ev.target.closest('[data-route-handle]');if(h){const i=Number(h.dataset.routeHandle),svg=root.querySelector('#knx-board');if(!state.wires[i])return;const g=routeInfo(state.wires[i],i);routing={pointer:ev.pointerId,index:i,origin:coord(svg,ev),axis:g.axis,offset:state.wires[i].offset||0};svg.setPointerCapture(ev.pointerId);ev.preventDefault();ev.stopPropagation();return;}
+ const port=ev.target.closest('[data-port]');if(port&&mode==='wire'){const svg=root.querySelector('#knx-board');wireDrag={start:port.dataset.port,pointer:ev.pointerId,point:coord(svg,ev),moved:false};svg.setPointerCapture(ev.pointerId);ev.preventDefault();return;}
+ if(mode==='move'){const g=ev.target.closest('.unit');if(g&&!ev.target.closest('[data-protect],[data-program],[data-press],[data-port]')){const svg=root.querySelector('#knx-board'),pt=coord(svg,ev),d=state.devices[g.dataset.device];dragging={pointer:ev.pointerId,id:d.id,dx:pt.x-d.position.x,dy:pt.y-d.position.y};selectedDevice=d.id;svg.setPointerCapture(ev.pointerId);ev.preventDefault();return;}}
+ const tray=ev.target.closest('[data-tray]');if(tray&&!ev.target.closest('button')){const model=tray.dataset.tray;if(CATALOG[model]?.single&&installed(state,model).length)return;trayDrag={pointer:ev.pointerId,model,x:ev.clientX,y:ev.clientY};ghost=document.createElement('div');ghost.className='material-ghost';ghost.textContent=CATALOG[model].title;document.body.append(ghost);ghost.style.transform=`translate(${ev.clientX+10}px,${ev.clientY+10}px)`;ev.preventDefault();return;}
+});
+root.addEventListener('pointermove',ev=>{
+ if(routing&&ev.pointerId===routing.pointer){const svg=root.querySelector('#knx-board'),pt=coord(svg,ev);state.wires[routing.index].offset=Math.round(Math.max(-240,Math.min(240,routing.offset+pt[routing.axis]-routing.origin[routing.axis])));const layer=svg.querySelector('#wire-layer');if(layer)layer.innerHTML=wireMarkup();return;}
+ if(wireDrag&&ev.pointerId===wireDrag.pointer){const svg=root.querySelector('#knx-board');wireDrag.point=coord(svg,ev);const a=portPoint(wireDrag.start);if(a&&Math.hypot(wireDrag.point.x-a.x,wireDrag.point.y-a.y)>12)wireDrag.moved=true;const layer=svg.querySelector('#drag-wire-layer');if(layer)layer.innerHTML=previewWire();return;}
+ if(dragging&&ev.pointerId===dragging.pointer){applyDeviceMove(ev);return;}
+});
+root.addEventListener('pointerup',ev=>{
+ if(routing&&ev.pointerId===routing.pointer){routing=null;show('Recorregut ajustat.','success');return;}
+ if(wireDrag&&ev.pointerId===wireDrag.pointer){const w=wireDrag;wireDrag=null;const end=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('[data-port]')?.dataset.port;if(w.moved){skipPortClick=true;requestAnimationFrame(()=>{skipPortClick=false;});if(end&&end!==w.start){const r=connect(state,w.start,end);selectedWire=-1;firstPort='';show(r.msg,r.ok?'success':'error');}else{firstPort='';show('El cable no s’ha connectat: selecciona un born de destí.','error');}}else if(firstPort&&firstPort!==w.start){const r=connect(state,firstPort,w.start);firstPort='';selectedWire=-1;show(r.msg,r.ok?'success':'error');}else{firstPort=firstPort===w.start?'':w.start;render();}return;}
+ if(dragging&&ev.pointerId===dragging.pointer){dragging=null;show('Equip posicionat.','success');}
+});
+root.addEventListener('pointercancel',()=>{routing=null;wireDrag=null;dragging=null;});
+document.addEventListener('pointermove',ev=>{if(trayDrag&&trayDrag.pointer===ev.pointerId&&ghost)ghost.style.transform=`translate(${ev.clientX+10}px,${ev.clientY+10}px)`;});
+document.addEventListener('pointerup',ev=>{if(!trayDrag||trayDrag.pointer!==ev.pointerId)return;const {model}=trayDrag;trayDrag=null;ghost?.remove();ghost=null;const pt=boardAt(ev.clientX,ev.clientY);if(pt)placeModel(model,pt);});
+root.addEventListener('click',ev=>{
+ const t=ev.target.closest('[data-tab],[data-mode],[data-add],[data-protect],[data-program],[data-port],[data-wire-index],[data-wire-remove],[data-wire-list],[data-address],[data-app],[data-press],[data-cmd],[data-zoom]');if(!t)return;
+ if(t.dataset.tab){tab=t.dataset.tab;selectedWire=-1;notice='';render();return;}
+ if(t.dataset.mode){mode=t.dataset.mode;selectedWire=-1;firstPort='';render();return;}
+ if(t.dataset.add){placeModel(t.dataset.add);return;}
+ if(t.dataset.protect){toggleProtection(state,t.dataset.protect);show('Protecció accionada.');return;}
+ if(t.dataset.program){const r=toggleProgram(state,t.dataset.program);show(r.msg,r.ok?'success':'error');return;}
+ if(t.dataset.port){if(skipPortClick){skipPortClick=false;return;}if(mode!=='wire')return;const ref=t.dataset.port;if(firstPort&&firstPort!==ref){const r=connect(state,firstPort,ref);firstPort='';selectedWire=-1;show(r.msg,r.ok?'success':'error');}else {firstPort=firstPort===ref?'':ref;render();}return;}
+ if(t.dataset.wireIndex!==undefined||t.dataset.wireList!==undefined){selectedWire=Number(t.dataset.wireIndex??t.dataset.wireList);render();return;}
+ if(t.dataset.wireRemove!==undefined){disconnect(state,Number(t.dataset.wireRemove));selectedWire=-1;show('Conductor desconnectat.','success');return;}
+ if(t.dataset.address){const r=downloadAddress(state,t.dataset.address);show(r.msg,r.ok?'success':'error');return;}
+ if(t.dataset.app){const r=downloadApplication(state,t.dataset.app);show(r.msg,r.ok?'success':'error');return;}
+ if(t.dataset.press){const [id,ch]=t.dataset.press.split(':');const r=pressButton(state,id,Number(ch||0));show(r.msg,r.ok?'success':'error');return;}
+ if(t.dataset.zoom){zoom=t.dataset.zoom==='fit'?1:t.dataset.zoom==='in'?Math.min(2,zoom+.15):Math.max(.65,zoom-.15);render();return;}
+ const cmd=t.dataset.cmd;if(!cmd)return;
+ if(cmd==='toggle-tray'){materialOpen=!materialOpen;render();}
+ else if(cmd==='quick-add'){placeModel(root.querySelector('#quick-model')?.value||'button');}
+ else if(cmd==='cancel'){firstPort='';selectedWire=-1;selectedDevice='';render();}
+ else if(cmd==='remove-device'){if(selectedDevice&&confirm(`Vols retirar ${label(selectedDevice)}? També es desconnectaran els conductors.`)){removeDevice(state,selectedDevice);selectedDevice='';selectedWire=-1;show('Equip retirat.');}}
+ else if(cmd==='verify'){const e=evaluate(state),i=issues(state,e);show(e.ready?'Instal·lació preparada per a la prova funcional.':i[0]?.text||'Revisa el projecte.',e.ready?'success':'error');}
+ else if(cmd==='clear-logs'){state.logs=[];show('Monitor netejat.');}
+ else if(cmd==='reset'){if(confirm('Reiniciar tot el projecte, retirant dispositius, cablejat i programació?')){state=createProject();selectedWire=-1;selectedDevice='';firstPort='';materialOpen=true;mode='wire';show('Projecte nou i buit.');}}
+ else if(cmd==='export'){const data=JSON.stringify(saveProject(state),null,2),url=URL.createObjectURL(new Blob([data],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='TecLab-KNX-LAB-013-projecte-v0.2.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);show('Projecte exportat a JSON.','success');}
+ else if(cmd==='import'){root.querySelector('#project-file')?.click();}
+});
+root.addEventListener('input',ev=>{const f=ev.target.dataset?.field;if(!f)return;const [id,key,property]=f.split('.'),d=state.devices[id];if(!d?.config)return;if(key?.startsWith('ch')&&['ga','dpt'].includes(property)){const cfg=objectConfig(d,Number(key.slice(2)));if(cfg)cfg.draft[property]=ev.target.value;}else if(['address','ga','dpt'].includes(key))d.config.draft[key]=ev.target.value;});
+root.addEventListener('change',async ev=>{if(ev.target.id!=='project-file')return;const file=ev.target.files?.[0];if(!file)return;try{state=loadProject(JSON.parse(await file.text()));selectedDevice='';selectedWire=-1;firstPort='';mode='wire';show('Projecte importat. Comprova les connexions i les adreces.','success');}catch(error){show('No es pot importar el projecte: '+error.message,'error');}});
+root.addEventListener('keydown',ev=>{if((ev.key==='Delete'||ev.key==='Backspace')&&selectedWire>=0&&!ev.target.closest('input,textarea,select')){ev.preventDefault();disconnect(state,selectedWire);selectedWire=-1;show('Conductor desconnectat.');}if((ev.key==='Enter'||ev.key===' ')&&ev.target.matches('[data-protect],[data-program],[data-press],[data-wire-remove],[data-port]')){ev.preventDefault();ev.target.click();}});
+document.querySelectorAll('[data-major]').forEach(b=>b.addEventListener('click',()=>{section=b.dataset.major;selectedWire=-1;notice='';render();}));
+render();
+
+</script></body></html>
