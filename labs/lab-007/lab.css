@@ -236,3 +236,15 @@ button,select,input{font-size:13px;padding:8px 12px}
 /* Diagnosi contextual al costat de la lectura del multímetre. */
 .reading-detail{margin:9px 0 16px;min-height:42px;padding:10px 12px;border-radius:9px;border:1px solid #63899a;background:#18313d;color:#e5f3f8;font-size:13px;line-height:1.5;font-weight:550}
 .reading-detail.reading-alert{background:#4c2a2a;border-color:#ef9b8a;color:#fff0e8}
+
+
+/* v0.8 — estats de repòs independents de font i multímetre */
+.power-switch,.meter-switch{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:9px 16px!important;border:2px solid #8497a4!important;border-radius:10px;background:#273640!important;color:#edf5f9!important;font-size:13px;font-weight:800;letter-spacing:.025em}
+.switch-light{display:inline-block;width:16px;height:16px;flex:none;border:2px solid #9eafb9;border-radius:50%;background:#55646a;box-shadow:inset 0 0 0 3px #26343b}
+.power-switch.switch-on,.meter-switch.switch-on{border-color:#93d7ae!important;background:#174539!important;color:#e7fff0!important}
+.switch-on .switch-light{background:#5ce99d;border-color:#b8f5cf;box-shadow:0 0 8px #61ec9f}
+.meter-power-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px}
+.meter-power-note{font-size:11px;color:#d8e4e9;line-height:1.4}
+.lcd.lcd-off{background:#789b8d!important;color:#446057!important;box-shadow:inset 0 0 15px #101f1d60}
+.lcd.lcd-off #reading,.lcd.lcd-off #unit{visibility:hidden}
+.wiring-controls .power-switch{min-width:158px}
