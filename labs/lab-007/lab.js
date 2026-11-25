@@ -74,11 +74,12 @@ function renderJacks(){
  document.querySelectorAll('[data-jack]').forEach(b=>{
   const j=b.dataset.jack,red=s.redJack===j,black=s.blackJack===j;
   b.classList.toggle('plug-red',red);b.classList.toggle('plug-black',black);
+  b.dataset.occupant=red?'red':black?'black':'none';
   b.setAttribute('aria-pressed',String((s.probe==='red'?red:black)));
   b.setAttribute('aria-label','Born '+j+(red?', connector vermell connectat':black?', connector negre connectat':', lliure'));
   b.title=(red?'Connector vermell':black?'Connector negre':'Born lliure')+' · '+j;
   const occupant=b.querySelector('.socket-occupant');
-  if(occupant)occupant.textContent=red?'VERMELLA':black?'NEGRE':'LLIURE';
+  if(occupant)occupant.textContent=red?'VERMELL':black?'NEGRE':'LLIURE';
  });
  for(const p of ['red','black']){
   const lead=$(p+'Lead'),jack=s[p+'Jack'];
@@ -92,18 +93,18 @@ function renderJacks(){
 function connectJack(jack,probe=s.probe){
  const other=probe==='red'?'black':'red';
  if(s[other+'Jack']===jack){
-  feedback('El born '+jack+' ja està ocupat per el connector '+(other==='red'?'vermell':'negre')+'. Mou primer l’altra clavilla.','error');
+  feedback('El born '+jack+' ja està ocupat pel connector '+(other==='red'?'vermell':'negre')+'. Mou primer l’altra clavilla.','error');
   return;
  }
  s.probe=probe;
  s[probe+'Jack']=jack;
  renderJacks();
- feedback('Connector '+(probe==='red'?'vermell':'negre')+' connectada a '+jack+'. '+reading().status);
+ feedback('Connector '+(probe==='red'?'vermell':'negre')+' connectat a '+jack+'. '+reading().status);
 }
 function unplugJack(probe=s.probe){
  s[probe+'Jack']=null;
  renderJacks();
- feedback('Connector '+(probe==='red'?'vermell':'negre')+' desendollada. Selecciona un born lliure.');
+ feedback('Connector '+(probe==='red'?'vermell':'negre')+' desendollat. Selecciona un born lliure.');
 }
 
 function feedback(message,type=''){const el=$('feedback');el.textContent=message;el.className='feedback '+(type?'feedback-'+type:'');}
