@@ -22,29 +22,33 @@ export const ranges=[
  {id:'OHM2M',label:'2M',mode:'OHM',group:'Ω',limit:2000000}
 ];
 export const nodeVoltages=Object.freeze({A:12,B:8,C:0});
-// Escenari de curtcircuit didàctic: terminal d'intensitat en paral·lel
-// directament als borns de la font ideal A-C, amb alimentació connectada.
-// Un OL o una connexió simplement incompleta NO fonen el fusible.
+// Model didàctic, no corba real temps-corrent: cada fusible protegeix
+// el seu propi born i només es fon quan el corrent que el travessa
+// supera el llindar, mai per una simple lectura fora d'escala (OL).
+export const fuseLimits=Object.freeze({mA:0.2,'10A':10});
+export const sourceShortCircuitAmps=20; // font limitada del model ideal (A)
 export function currentFuseFault(s){
+ if(s.meterOn===false||!s.powered||s.isolated||s.blackJack!=='COM')return null;
  const range=ranges.find(r=>r.id===s.range);
- if(!s.powered||s.seriesOpen||s.isolated||s.blackJack!=='COM')return null;
- const sourceShunt=(s.redNode==='A'&&s.blackNode==='C')||(s.redNode==='C'&&s.blackNode==='A');
- if(!sourceShunt)return null;
- if(s.redJack==='10A')return '10A';
- if(s.redJack==='VΩmA'&&range?.mode==='ADC')return 'mA';
- return null;
+ const jack=s.redJack==='10A'?'10A':s.redJack==='VΩmA'&&range?.mode==='ADC'?'mA':null;
+ if(!jack)return null;
+ const shunt=!s.seriesOpen&&((s.redNode==='A'&&s.blackNode==='C')||(s.redNode==='C'&&s.blackNode==='A'));
+ const series=s.seriesOpen&&((s.redNode==='D'&&s.blackNode==='E')||(s.redNode==='E'&&s.blackNode==='D'));
+ const amps=shunt?(s.shortCircuitAmps??sourceShortCircuitAmps):series?Math.abs((s.voltage??12)/((s.r1??1000)+(s.r2??2000))):0;
+ return amps>fuseLimits[jack]?jack:null;
 }
 export function measure(s){
  const range=ranges.find(r=>r.id===s.range)||ranges[3];
  const {mode,limit}=range,voltage=s.voltage??12,r1=s.r1??1000,r2=s.r2??2000;
  // Amb la interrupció D–E oberta o una resistència desmuntada, no hi circula corrent.
  const node={A:s.powered===false?0:voltage,B:(s.seriesOpen||s.isolated||s.powered===false)?0:voltage*r2/(r1+r2),C:0};
- if(mode==='OFF')return {display:'OFF',unit:'',status:'Instrument apagat.'};
+ if(s.meterOn===false)return {display:'',unit:'',status:'Multímetre apagat. Activa l’interruptor per començar.'};
+ if(mode==='OFF')return {display:'',unit:'',status:'Selector en OFF. Tria una funció de mesura.'};
  const fuseId=s.redJack==='10A'?'10A':'mA';
  if((s.fuses?.[fuseId]===false)&&((mode==='ADC')||(s.redJack==='10A')))
   return {display:'FUS',unit:'',status:'Fusible '+fuseId+' fos. Desconnecta la font i revisa el muntatge abans de substituir-lo.'};
  const fault=currentFuseFault(s);
- if(fault)return {display:'FUS',unit:'',faultFuse:fault,status:'Curtcircuit simulat entre els borns de la font. Fusible '+fault+' fos: el multímetre queda sense lectura en aquest circuit.'};
+ if(fault)return {display:'FUS',unit:'',faultFuse:fault,status:'Sobrecorrent simulada al born '+fault+' (llindar de fusible superat). S’ha fos la protecció.'};
 
  const blackJack=s.blackJack===undefined?'COM':s.blackJack,redJack=s.redJack===undefined?'VΩmA':s.redJack;
  if(!blackJack||!redJack)return {display:'----',unit:'',status:'Connecta les dues clavilles als borns del multímetre.'};
@@ -91,7 +95,7 @@ export function measure(s){
 }
 export function isCorrect(s,exercise){
  const m=measure(s),mode=exercise?.mode||'VDC';
- if(!Number.isFinite(m.value)||s.blackJack!=='COM')return false;
+ if(!Number.isFinite(m.value)||s.blackJack!=='COM'||s.meterOn===false)return false;
  if(ranges.find(r=>r.id===s.range)?.mode!==mode)return false;
  const same=s.redNode===(exercise?.red||'B')&&s.blackNode===(exercise?.black||'C');
  const reverse=s.redNode===exercise?.black&&s.blackNode===exercise?.red;
