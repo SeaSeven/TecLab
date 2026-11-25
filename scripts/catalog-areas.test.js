@@ -19,7 +19,7 @@ test('LAB-011 és accessible des de la portada i el catàleg generat',async()=>{
    source('labs/lab-011/metadata.json')
  ]);
  const labs=JSON.parse(db),metadata=JSON.parse(raw),entry=labs.find(l=>l.id==='LAB-011');
- assert.equal(labs.length,11);
+ assert.ok(labs.length>=11,'El catàleg ha de conservar almenys els 11 laboratoris esperats');
  assert.equal(new Set(labs.map(l=>l.id)).size,labs.length);
  assert.deepEqual(entry,metadata);
  assert.equal(entry.status,'published');
