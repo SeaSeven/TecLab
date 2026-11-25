@@ -28,13 +28,13 @@ export const nodeVoltages=Object.freeze({A:12,B:8,C:0});
 export const fuseLimits=Object.freeze({mA:0.2,'10A':10});
 export const sourceShortCircuitAmps=20; // font limitada del model ideal (A)
 export function currentFuseFault(s){
- if(!s.powered||s.isolated||s.blackJack!=='COM')return null;
+ if(!s.powered||s.blackJack!=='COM')return null;
  const range=ranges.find(r=>r.id===s.range);
  const jack=s.redJack==='10A'?'10A':s.redJack==='VΩmA'&&range?.mode==='ADC'?'mA':null;
  if(!jack)return null;
- const shunt=!s.seriesOpen&&((s.redNode==='A'&&s.blackNode==='C')||(s.redNode==='C'&&s.blackNode==='A'));
+ const shunt=(s.redNode==='A'&&s.blackNode==='C')||(s.redNode==='C'&&s.blackNode==='A');
  const series=s.seriesOpen&&((s.redNode==='D'&&s.blackNode==='E')||(s.redNode==='E'&&s.blackNode==='D'));
- const amps=shunt?(s.shortCircuitAmps??sourceShortCircuitAmps):series?Math.abs((s.voltage??12)/((s.r1??1000)+(s.r2??2000))):0;
+ const amps=shunt?(s.shortCircuitAmps??sourceShortCircuitAmps):series&&!s.isolated?Math.abs((s.voltage??12)/((s.r1??1000)+(s.r2??2000))):0;
  return amps>fuseLimits[jack]?jack:null;
 }
 export function measure(s){
