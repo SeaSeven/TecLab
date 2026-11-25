@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {measure,isCorrect,ranges,currentFuseFault} from '../labs/lab-007/meter.js';
+import {measure,isCorrect,ranges,currentFuseFault,fuseLimits,sourceShortCircuitAmps} from '../labs/lab-007/meter.js';
 import {dialLayout,dialPositions,validateDialLayout} from '../labs/lab-007/dial-layout.js';
 import {generate,fromCode,codeOf,levelKinds} from '../labs/lab-007/exercises.js';
 const base={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:'B',blackNode:'C',voltage:12,r1:1000,r2:2000};
@@ -183,4 +183,34 @@ test('R1 es pot mesurar en Ω amb la font apagada i aïllada',()=>{
  assert.equal(measure({...s,powered:true}).display,'RISC');
  assert.equal(measure({...s,isolated:''}).display,'----');
  assert.equal(measure({...s,redNode:null}).display,'----');
+});
+
+test('repos inicial: instrument apagat, selector OFF i font desconnectada',()=>{
+ const rest={...base,range:'OFF',meterOn:false,powered:false};
+ assert.equal(measure(rest).display,'');
+ assert.equal(measure({...rest,range:'VDC20'}).display,'');
+ assert.equal(measure({...rest,meterOn:true}).display,'');
+ assert.equal(measure({...rest,meterOn:true,range:'VDC20'}).value,0);
+ assert.equal(isCorrect({...rest,redNode:'B',blackNode:'C'},{red:'B',black:'C',mode:'VDC'}),false);
+});
+test('fusibles segons intensitat que realment circula pel born, no segons OL',()=>{
+ assert.equal(fuseLimits.mA,0.2);
+ assert.equal(fuseLimits['10A'],10);
+ assert.equal(sourceShortCircuitAmps,20);
+ const cfg={...base,meterOn:true,powered:true,seriesOpen:true,redNode:'D',blackNode:'E',range:'ADC2m',redJack:'VΩmA'};
+ assert.equal(measure(cfg).display,'OL');
+ assert.equal(currentFuseFault(cfg),null);
+ assert.equal(currentFuseFault({...cfg,r1:10,r2:10}), 'mA');
+ assert.equal(currentFuseFault({...cfg,r1:10,r2:10,range:'ADC10',redJack:'10A'}),null);
+ assert.equal(currentFuseFault({...cfg,r1:0.1,r2:0.1,range:'ADC10',redJack:'10A'}),'10A');
+});
+test('curtcircuit a la font: influència de la limitació de corrent i dels dos borns',()=>{
+ const state={...base,redNode:'A',blackNode:'C',powered:true,meterOn:false,range:'ADC20m'};
+ assert.equal(currentFuseFault(state),'mA');
+ assert.equal(currentFuseFault({...state,range:'VDC20'}),null);
+ assert.equal(currentFuseFault({...state,range:'VDC20',redJack:'10A'}),'10A');
+ assert.equal(currentFuseFault({...state,redJack:'10A',seriesOpen:true,isolated:'R1'}),'10A');
+ assert.equal(currentFuseFault({...state,shortCircuitAmps:0.1}),null);
+ assert.equal(currentFuseFault({...state,shortCircuitAmps:0.4}), 'mA');
+ assert.equal(currentFuseFault({...state,powered:false}),null);
 });
