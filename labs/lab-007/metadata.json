@@ -9,7 +9,7 @@
     "Enginyeria"
   ],
   "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "status": "in-review",
   "access": "public",
   "entry": "labs/lab-007/",
@@ -49,6 +49,8 @@
     "fuse-current-threshold-model",
     "meter-rotary-off-switch",
     "fuse-replacement-after-overcurrent",
-    "automatic-safe-fuse-replacement"
+    "automatic-safe-fuse-replacement",
+    "angled-banana-jack-plugs",
+    "jack-occupancy-indicators"
   ]
 }
