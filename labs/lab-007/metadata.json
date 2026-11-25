@@ -9,7 +9,7 @@
     "Enginyeria"
   ],
   "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "status": "in-review",
   "access": "public",
   "entry": "labs/lab-007/",
@@ -48,6 +48,7 @@
     "source-default-off",
     "fuse-current-threshold-model",
     "meter-rotary-off-switch",
-    "fuse-replacement-after-overcurrent"
+    "fuse-replacement-after-overcurrent",
+    "automatic-safe-fuse-replacement"
   ]
 }
