@@ -236,3 +236,80 @@ button,select,input{font-size:13px;padding:8px 12px}
 /* Diagnosi contextual al costat de la lectura del multímetre. */
 .reading-detail{margin:9px 0 16px;min-height:42px;padding:10px 12px;border-radius:9px;border:1px solid #63899a;background:#18313d;color:#e5f3f8;font-size:13px;line-height:1.5;font-weight:550}
 .reading-detail.reading-alert{background:#4c2a2a;border-color:#ef9b8a;color:#fff0e8}
+
+
+/* v0.8 — estats de repòs independents de font i multímetre */
+.power-switch,.meter-switch{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:9px 16px!important;border:2px solid #8497a4!important;border-radius:10px;background:#273640!important;color:#edf5f9!important;font-size:13px;font-weight:800;letter-spacing:.025em}
+.switch-light{display:inline-block;width:16px;height:16px;flex:none;border:2px solid #9eafb9;border-radius:50%;background:#55646a;box-shadow:inset 0 0 0 3px #26343b}
+.power-switch.switch-on,.meter-switch.switch-on{border-color:#93d7ae!important;background:#174539!important;color:#e7fff0!important}
+.switch-on .switch-light{background:#5ce99d;border-color:#b8f5cf;box-shadow:0 0 8px #61ec9f}
+.meter-power-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px}
+.meter-power-note{font-size:11px;color:#d8e4e9;line-height:1.4}
+.lcd.lcd-off{background:#789b8d!important;color:#446057!important;box-shadow:inset 0 0 15px #101f1d60}
+.lcd.lcd-off #reading,.lcd.lcd-off #unit{visibility:hidden}
+.wiring-controls .power-switch{min-width:158px}
+
+
+/* LAB-007 v0.8.3: clavilles banana colzades a 45°.
+   Els tres borns mantenen el clic, el drop i les etiquetes existents. */
+.jack-board{gap:14px;margin-top:18px}
+.jack-socket{
+ position:relative;overflow:visible;isolation:isolate;
+ min-height:146px!important;padding:14px 5px 10px!important;
+ justify-content:flex-start;gap:9px
+}
+.jack-socket .socket-hole{flex:none;z-index:1}
+.jack-socket .socket-name,.jack-socket .socket-occupant{position:relative;z-index:4}
+.jack-socket .socket-name{margin-top:7px}
+.jack-socket .socket-occupant{min-height:16px}
+/* A l'estat ocupat, el cap metàl·lic queda endollat al centre del born.
+   El cos surt en diagonal i es doblega al punt d'unió amb el cable. */
+.jack-socket .socket-plug{
+ display:block;position:absolute;pointer-events:none;z-index:3;
+ width:66px;height:24px;left:50%;top:34px;
+ transform-origin:9px 12px;
+ transform:rotate(-45deg);
+ opacity:0;transition:opacity .16s ease;
+ filter:drop-shadow(0 2px 3px #050d13b0)
+}
+.jack-socket .socket-plug::before{
+ content:"";position:absolute;left:0;top:8px;width:19px;height:8px;
+ border-radius:4px;background:linear-gradient(#f8fbff,#93acbc);
+ border:1px solid #617581;box-sizing:border-box
+}
+.jack-socket .socket-plug::after{
+ content:"";position:absolute;left:15px;top:2px;
+ width:39px;height:20px;border-radius:5px 11px 11px 5px;
+ background:linear-gradient(#f78e89,#b83435);
+ border:2px solid #782a2b;box-sizing:border-box;
+ box-shadow:inset 0 3px 2px #ffffff42,inset 0 -3px 3px #17191d33
+}
+.jack-socket.plug-black .socket-plug::after{
+ background:linear-gradient(#4b5b66,#101b25);
+ border-color:#b9c7ce
+}
+.jack-socket.plug-red .socket-plug,.jack-socket.plug-black .socket-plug{opacity:1}
+/* Tram flexible que surt de l'extrem de la clavilla, formant el colze. */
+.jack-socket[data-occupant="red"]::after,
+.jack-socket[data-occupant="black"]::after{
+ content:"";position:absolute;z-index:2;pointer-events:none;
+ width:39px;height:9px;left:calc(50% + 44px);top:2px;
+ border-radius:8px;transform-origin:0 50%;transform:rotate(45deg);
+ box-shadow:0 2px 3px #050b10aa
+}
+.jack-socket[data-occupant="red"]::after{background:linear-gradient(#ff9790,#d54c4a);border:1px solid #812e30}
+.jack-socket[data-occupant="black"]::after{background:linear-gradient(#72828c,#1c2932);border:1px solid #bcc9d0}
+.jack-socket[data-occupant="none"] .socket-plug{opacity:0}
+.jack-socket.plug-red .socket-hole::after,
+.jack-socket.plug-black .socket-hole::after{background:#152631;box-shadow:inset 0 1px 5px #000}
+/* Contrastos d'ocupació visibles sense dependre exclusivament del color. */
+.jack-socket[data-occupant="red"]{box-shadow:0 0 0 2px #fe8d84aa}
+.jack-socket[data-occupant="black"]{box-shadow:0 0 0 2px #d8e9f5bb}
+.jack-socket:focus-visible{outline:3px solid #ffe6a9;outline-offset:4px}
+@media(max-width:520px){
+ .jack-board{gap:9px}
+ .jack-socket{min-height:132px!important}
+ .jack-socket .socket-plug{transform:rotate(-45deg) scale(.8)}
+ .jack-socket[data-occupant="red"]::after,
+ .jack-socket[data-occupant="black"]::after{width:27px;left:calc(50% + 35px)}
+}

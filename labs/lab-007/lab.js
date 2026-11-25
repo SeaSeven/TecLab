@@ -1,4 +1,4 @@
-import {measure,ranges,isCorrect} from './meter.js';
+import {measure,ranges,isCorrect,currentFuseFault} from './meter.js';
 import {generate,fromCode,levelKinds} from './exercises.js';
 import {dialLayout,polar,sectorPath,dialPositions} from './dial-layout.js';
 const $=id=>document.getElementById(id);
@@ -7,7 +7,7 @@ let ex=generate('inicial','R2',12345);
 let seenOverload=false;
 // Els fusibles representen un estat físic persistent, independent de l’exercici.
 const fuseState={mA:true,'10A':true};
-let s={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:null,blackNode:null,probe:'red',view:'schema',powered:true,seriesOpen:false,isolated:''};
+let s={range:'OFF',redJack:'VΩmA',blackJack:'COM',redNode:null,blackNode:null,probe:'red',view:'schema',powered:false,seriesOpen:false,isolated:''};
 const points=[['A',75,44],['B',405,44],['C',405,246],['D',146,44],['E',194,44]];
 function markings(){
  return points.map(([id,x,y])=>['red','black'].filter(p=>s[p+'Node']===id).map((p,i)=>{
@@ -74,11 +74,12 @@ function renderJacks(){
  document.querySelectorAll('[data-jack]').forEach(b=>{
   const j=b.dataset.jack,red=s.redJack===j,black=s.blackJack===j;
   b.classList.toggle('plug-red',red);b.classList.toggle('plug-black',black);
+  b.dataset.occupant=red?'red':black?'black':'none';
   b.setAttribute('aria-pressed',String((s.probe==='red'?red:black)));
   b.setAttribute('aria-label','Born '+j+(red?', connector vermell connectat':black?', connector negre connectat':', lliure'));
   b.title=(red?'Connector vermell':black?'Connector negre':'Born lliure')+' · '+j;
   const occupant=b.querySelector('.socket-occupant');
-  if(occupant)occupant.textContent=red?'VERMELLA':black?'NEGRE':'LLIURE';
+  if(occupant)occupant.textContent=red?'VERMELL':black?'NEGRE':'LLIURE';
  });
  for(const p of ['red','black']){
   const lead=$(p+'Lead'),jack=s[p+'Jack'];
@@ -92,23 +93,24 @@ function renderJacks(){
 function connectJack(jack,probe=s.probe){
  const other=probe==='red'?'black':'red';
  if(s[other+'Jack']===jack){
-  feedback('El born '+jack+' ja està ocupat per el connector '+(other==='red'?'vermell':'negre')+'. Mou primer l’altra clavilla.','error');
+  feedback('El born '+jack+' ja està ocupat pel connector '+(other==='red'?'vermell':'negre')+'. Mou primer l’altra clavilla.','error');
   return;
  }
  s.probe=probe;
  s[probe+'Jack']=jack;
  renderJacks();
- feedback('Connector '+(probe==='red'?'vermell':'negre')+' connectada a '+jack+'. '+reading().status);
+ feedback('Connector '+(probe==='red'?'vermell':'negre')+' connectat a '+jack+'. '+reading().status);
 }
 function unplugJack(probe=s.probe){
  s[probe+'Jack']=null;
  renderJacks();
- feedback('Connector '+(probe==='red'?'vermell':'negre')+' desendollada. Selecciona un born lliure.');
+ feedback('Connector '+(probe==='red'?'vermell':'negre')+' desendollat. Selecciona un born lliure.');
 }
 
 function feedback(message,type=''){const el=$('feedback');el.textContent=message;el.className='feedback '+(type?'feedback-'+type:'');}
 function updateWiring(){
- $('powerToggle').textContent='Font: '+(s.powered?'connectada':'desconnectada');
+ $('powerState').textContent='Font · '+(s.powered?'ON':'OFF');
+ $('powerToggle').classList.toggle('switch-on',s.powered);
  $('powerToggle').setAttribute('aria-pressed',String(s.powered));
  $('seriesToggle').textContent='Circuit: '+(s.seriesOpen?'obert (D–E)':'tancat');
  $('seriesToggle').setAttribute('aria-pressed',String(s.seriesOpen));
@@ -125,23 +127,26 @@ function renderFuses(){
  $('circuit').classList.toggle('circuit-fuse-fault',!Object.values(fuseState).every(Boolean));
  $('fuseNote').textContent=Object.values(fuseState).every(Boolean)?
   'Protecció simulada: un curtcircuit directe pot fer fondre el fusible.':
-  'Fusible fos: font desconnectada i puntes retirades abans de substituir-lo.';
+  'Fusible fos: prem Substitueix per aïllar el circuit i instal·lar el fusible nou.';
 }
 function reading(){
- let m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,fuses:fuseState});
- if(m.faultFuse&&fuseState[m.faultFuse]){
-  const blown=m.faultFuse;
-  fuseState[blown]=false;
-  m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,fuses:fuseState});
-  // Conservem l'avís del curtcircuit en lloc d'ocultar-ne la causa.
-  m={...m,status:'Curtcircuit simulat entre A i C! S’ha fos el fusible '+blown+'. Desconnecta la font i revisa les connexions.'};
-  feedback(m.status,'error');
+ // L'alimentació de l'instrument només controla la pantalla:
+ // la protecció del born d'intensitat continua connectada.
+ const cfg={...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,fuses:fuseState};
+ const fault=currentFuseFault(cfg);
+ if(fault&&fuseState[fault]){
+  fuseState[fault]=false;
+  feedback('Sobrecorrent: fusible '+fault+' fos. Desconnecta la font i revisa les puntes.','error');
  }
+ let m=measure({...cfg,fuses:fuseState});
+ const broken=Object.entries(fuseState).filter(([,ok])=>!ok).map(([id])=>id);
+ if(broken.length&&s.range==='OFF')m={...m,status:'Selector en OFF. Fusible '+broken.join(' i ')+' fos. Revisa la connexió abans de substituir-lo.'};
  $('reading').textContent=m.display;
  $('unit').textContent=m.unit;
- $('readingDetail').textContent=m.status+(ex.mode==='OHM'?' · Contactes actuals: vermell '+(s.redNode||'sense connectar')+'; negre '+(s.blackNode||'sense connectar')+'.':'');
+ $('readingDetail').textContent=m.status+(ex.mode==='OHM'&&s.range!=='OFF'?' · Contactes: vermell '+(s.redNode||'sense connectar')+'; negre '+(s.blackNode||'sense connectar')+'.':'');
  $('readingDetail').classList.toggle('reading-alert',m.display==='FUS'||m.display==='RISC'||m.display==='Err');
  $('reading').classList.toggle('meter-fuse-fault',m.display==='FUS');
+ $('reading').closest?.('.lcd')?.classList.toggle('lcd-off',s.range==='OFF');
  if(m.display==='OL')seenOverload=true;
  renderFuses();
  return m;
@@ -177,7 +182,7 @@ function kinds(level,selected){
  if(selected&&items.some(([id])=>id===selected))$('kind').value=selected;
 }
 function load(v){
- ex=v;seenOverload=false;s.redNode=null;s.blackNode=null;s.range=v.mode==='ADC'?'ADC20m':v.mode==='OHM'?'OHM20k':'VDC20';s.redJack='VΩmA';s.blackJack='COM';s.powered=true;s.seriesOpen=false;s.isolated='';
+ ex=v;seenOverload=false;s.redNode=null;s.blackNode=null;s.range='OFF';s.redJack='VΩmA';s.blackJack='COM';s.powered=false;s.seriesOpen=false;s.isolated='';
  $('level').value=v.level;$('magnitude').value=kindMode(v.kind);kinds(v.level,v.kind);$('exerciseCode').value=v.code;
  $('task').innerHTML='<p class="task-level">'+({inicial:'Inicial',basic:'Bàsic',intermedi:'Intermedi',avancat:'Avançat'}[v.level])+' · '+levelKinds[v.level].find(([id])=>id===v.kind)[1]+'</p><strong>'+v.text+'</strong><p>Observa el circuit i tria connexions i escala. La resolució numèrica només apareix amb Mostra l’explicació.</p>';
  $('explanation').innerHTML=v.mode==='ADC'?
@@ -203,13 +208,13 @@ const theory=[
  ['6. Exemple de divisor de tensió','Amb U = 12 V, R1 = 1 kΩ i R2 = 2 kΩ: I = 12/(1000 + 2000) = 4 mA. La caiguda a R1 és 4 V i a R2 és 8 V. Així, A = 12 V, B = 8 V i C = 0 V. Les lectures entre nodes segueixen les diferències de potencial, no el nom dels components.','parallel']
 ];
 const help=[
- ['1. Crear un exercici','Tria Inicial, Bàsic, Intermedi o Avançat. Selecciona un tipus o Exercici aleatori i prem Nou exercici. Canviar només el desplegable no genera una pràctica. Els nous valors de font i resistències es mostren al circuit.','range'],
+ ['1. Crear un exercici','Tria Inicial, Bàsic, Intermedi o Avançat. Selecciona la magnitud i el tipus, i prem Nou exercici. Cada pràctica comença en repòs: font desconnectada i selector del multímetre en OFF. L’alumne ha de preparar el muntatge i activar els dos equips quan correspongui.','range'],
  ['2. Interpretar l’enunciat','L’enunciat és al requadre Pràctica actual, damunt del circuit. Indica què has de mesurar, però no revela els nodes exactes ni els resultats. Resol primer la pràctica i obre Mostra l’explicació només quan necessitis la resolució numèrica.','parallel'],
  ['3. Identificar grup i escala','Els sectors del dial són V⎓: 200 mV, 2, 20, 200 i 600 V; V~: 200 i 600 V; A⎓: 200 µA, 2, 20, 200 mA i 10 A; Ω: 200 Ω, 2 kΩ, 20 kΩ, 200 kΩ i 2 MΩ. La indicació sota el dial mostra el grup i l’escala seleccionats.','range'],
- ['4. Connectar els cables i controlar la font','Selecciona primer el cable vermell o negre; a continuació prem el born adequat. Per a V⎓ i Ω: negre a COM, vermell a VΩmA. Per a A⎓: VΩmA en els rangs µA/mA i 10A només al rang 10 A. La font es pot connectar i desconnectar amb el botó superior; mai canviïs el muntatge mentre està alimentat.','jacks'],
+ ['4. Connectar els cables i controlar la font','Selecciona primer el cable vermell o negre; a continuació prem el born adequat. Per a V⎓ i Ω: negre a COM, vermell a VΩmA. Per a A⎓: VΩmA en els rangs µA/mA i 10A només al rang 10 A. La font té un interruptor propi. El selector del multímetre disposa de posició OFF, que apaga la pantalla. Canvia el muntatge només amb la font desconnectada.','jacks'],
  ['5. Intensitat i resistència pas a pas','Intensitat: desconnecta la font, obre Circuit: tancat, connecta vermell a D i negre a E, selecciona A⎓ i torna a connectar la font. Resistència: desconnecta la font, selecciona R1 o R2 al control Resistència aïllada, tria Ω i mesura entre A–B o B–C respectivament. OL indica rang insuficient o camí de mesura obert.','series'],
  ['6. Comprovar i recuperar','Prem Comprova la mesura després d’ajustar el mode, els borns i el circuit. El missatge serà verd o vermell. Amb Mostra l’explicació es desenvolupen els càlculs en V, mA o Ω segons l’exercici. El codi TL-MM1 permet reproduir-ne els components i l’objectiu.','range'],
- ['7. Fusibles i connexions perilloses','El simulador representa dos fusibles independents: mA i 10 A. Una connexió directa entre els borns de la font a través d’un terminal d’intensitat pot simular un curtcircuit i mostrar FUS. Això és diferent d’OL, que només indica rang insuficient. Per substituir un fusible simulat, desconnecta la font i retira les puntes del circuit; després prem Substitueix. És una simplificació educativa: el resultat real depèn de l’instrument i de la protecció instal·lada.','jacks']
+ ['7. Fusibles i connexions perilloses','El simulador representa dos fusibles independents: mA i 10 A. Els llindars didàctics són 0,2 A per a mA i 10 A per al born 10A. El model suposa una font amb 20 A de corrent de curtcircuit màxim; un contacte directe amb la font pot fondre la protecció del born utilitzat. Una mesura en sèrie que superi el llindar també pot fondre-la. La posició OFF apaga el visor, però no desconnecta físicament el born d’intensitat. Això és diferent d’OL, que només indica rang insuficient. Per substituir un fusible simulat, prem Substitueix: el simulador desconnecta automàticament la font, retira les puntes del circuit i situa el selector en OFF abans de recuperar el fusible. És una simplificació educativa: el resultat real depèn de l’instrument i de la protecció instal·lada.','jacks']
 ];
 function lessons(id,title,lead,items){$(id).innerHTML='<h2>'+title+'</h2><p class="intro">'+lead+'</p><div class="lesson-grid">'+items.map(([t,b,fig])=>'<article class="panel"><h3>'+t+'</h3>'+illustration(fig)+'<p>'+b+'</p></article>').join('')+'</div>';}
 lessons('tab-fonaments','Fonaments de mesura','Explicacions i esquemes per comprendre les connexions, els rangs i els resultats.',theory);
@@ -236,9 +241,9 @@ for(const probe of ['red','black']){
 $('unplugLead').onclick=()=>unplugJack();
 
 $('powerToggle').onclick=()=>{
- if(!s.powered&&(s.seriesOpen&&! ((s.redNode==='D'&&s.blackNode==='E')||(s.redNode==='E'&&s.blackNode==='D')))){feedback('Abans de connectar la font, tanca el circuit o completa la connexió en sèrie entre D i E.','error');return;}
  if(!s.powered&&s.isolated){feedback('Torna a muntar la resistència abans de connectar la font.','error');return;}
- s.powered=!s.powered;render();feedback(reading().status);
+ s.powered=!s.powered;render();
+ const result=reading();feedback(result.status,Object.values(fuseState).every(Boolean)?'':'error');
 };
 $('seriesToggle').onclick=()=>{
  if(s.powered){feedback('Desconnecta primer la font abans d’obrir o tancar el circuit.','error');return;}
@@ -250,13 +255,21 @@ $('isolation').onchange=e=>{
 };
 for(const [id,button] of [['mA','replaceMa'],['10A','replace10']]){
  $(button).onclick=()=>{
-  if(s.powered||s.redNode||s.blackNode){
-   feedback('Per substituir un fusible, desconnecta la font i retira les dues puntes del circuit.','error');return;
-  }
+  if(fuseState[id]){feedback('El fusible '+id+' ja està correcte.');return;}
+  // Una substitució és una sola acció segura: primer aïllar el muntatge.
+  // L'estat d'avaria dels altres fusibles no es modifica.
+  const disconnected=s.powered||Boolean(s.redNode)||Boolean(s.blackNode);
+  s.powered=false;
+  s.redNode=null;
+  s.blackNode=null;
+  s.range='OFF';
   fuseState[id]=true;
-  renderFuses();
-  reading();
-  feedback('Fusible '+id+' substituït. Revisa el muntatge abans de connectar la font.');
+  render();
+  const message='Fusible '+id+' substituït correctament. '+
+    (disconnected?'La font s’ha desconnectat i s’han retirat les puntes del circuit. ':'')+
+    'Multímetre en OFF. Revisa el muntatge abans de tornar a mesurar.';
+  $('fuseNote').textContent=message;
+  feedback(message,'ok');
  };
 }
 $('reset').onclick=()=>{s.redNode=null;s.blackNode=null;render();feedback('Puntes desconnectades.');};
@@ -266,12 +279,13 @@ $('newExercise').onclick=()=>load(generate($('level').value,$('kind').value));
 $('copyExercise').onclick=()=>{const code=$('exerciseCode').value;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(code).then(()=>{$('codeStatus').textContent='Codi copiat: '+code;}).catch(()=>{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';});}else{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';}};
 $('recover').onclick=()=>{try{let p=fromCode($('recoverCode').value);load(generate(p.level,p.kind,p.seed));$('codeStatus').textContent='Exercici recuperat: '+ex.code;}catch(e){$('codeStatus').textContent='Error: '+e.message;}};
 $('check').onclick=()=>{
- const ok=isCorrect({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2},ex),m=reading();
+ const m=reading(),ok=isCorrect({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,fuses:fuseState},ex);
  const strict=ex.strictRange&&s.range!==ex.range,missingOL=ex.requiresOverload&&!seenOverload;
- const correct=ok&&!strict&&!missingOL;
+ const correct=ok&&!strict&&!missingOL&&s.range!=='OFF';
  feedback(correct?'Correcte: '+m.display+' '+m.unit+'. Connexió, seguretat i escala adequades.':
   ok&&strict?'La mesura és correcta, però cal seleccionar el rang més petit vàlid.':
   ok&&missingOL?'La mesura és correcta, però falta provocar primer OL amb una escala insuficient.':
+  s.range==='OFF'?'El selector es troba en OFF.':
   'Encara no és correcte. '+m.status,correct?'ok':'error');
 };
 $('helpToggle').onclick=()=>{$('explanation').hidden=!$('explanation').hidden;};
