@@ -27,10 +27,10 @@ test('selector organitzat per grups de magnitud',async()=>{
 });
 test('10A ha d’utilitzar el born 10A',()=>{
  assert.equal(measure({...base,range:'ADC10',redJack:'VΩmA'}).display,'Err');
- assert.equal(measure({...base,range:'ADC10',redJack:'10A'}).display,'RISC');
+ assert.equal(measure({...base,range:'ADC10',redJack:'10A'}).display,'----');
 });
 test('escales petites de corrent amb VΩmA',()=>{
- assert.equal(measure({...base,range:'ADC20m'}).display,'RISC');
+ assert.equal(measure({...base,range:'ADC20m'}).display,'----');
  assert.equal(measure({...base,range:'ADC20m',redJack:'10A'}).display,'Err');
 });
 test('els cables no comparteixen un únic born',()=>{
@@ -72,7 +72,7 @@ test('amperímetre connectat en sèrie: 12 V / 3 kΩ = 4 mA',()=>{
  const cfg={...base,range:'ADC20m',redNode:'D',blackNode:'E',seriesOpen:true,powered:true};
  assert.equal(measure(cfg).value,0.004);
  assert.equal(measure(cfg).display,'4.00');
- assert.equal(measure({...cfg,seriesOpen:false}).display,'RISC');
+ assert.equal(measure({...cfg,seriesOpen:false}).display,'----');
  assert.equal(measure({...cfg,powered:false}).value,0);
  assert.equal(measure({...cfg,range:'ADC2m'}).display,'OL');
  assert.equal(measure({...cfg,range:'ADC10',redJack:'10A'}).value,0.004);
