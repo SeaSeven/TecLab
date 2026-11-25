@@ -42,8 +42,7 @@ export function measure(s){
  const {mode,limit}=range,voltage=s.voltage??12,r1=s.r1??1000,r2=s.r2??2000;
  // Amb la interrupció D–E oberta o una resistència desmuntada, no hi circula corrent.
  const node={A:s.powered===false?0:voltage,B:(s.seriesOpen||s.isolated||s.powered===false)?0:voltage*r2/(r1+r2),C:0};
- if(s.meterOn===false)return {display:'',unit:'',status:'Multímetre apagat. Activa l’interruptor per començar.'};
- if(mode==='OFF')return {display:'',unit:'',status:'Selector en OFF. Tria una funció de mesura.'};
+ if(mode==='OFF')return {display:'',unit:'',status:'Multímetre apagat: selector en OFF.'};
  const fuseId=s.redJack==='10A'?'10A':'mA';
  if((s.fuses?.[fuseId]===false)&&((mode==='ADC')||(s.redJack==='10A')))
   return {display:'FUS',unit:'',status:'Fusible '+fuseId+' fos. Desconnecta la font i revisa el muntatge abans de substituir-lo.'};
@@ -55,12 +54,12 @@ export function measure(s){
  if(blackJack===redJack)return {display:'Err',unit:'',status:'Cada cable ha d’anar a un born diferent.'};
  if(blackJack!=='COM')return {display:'Err',unit:'',status:'Per aquesta pràctica, el cable negre ha d’anar al born COM.'};
  if(['VDC','VAC','OHM'].includes(mode)&&redJack==='10A')
-  return {display:'RISC',unit:'',status:'No connectis el born 10A per mesurar tensió o resistència. Perill de curtcircuit si es connecta en paral·lel.'};
+  return {display:'RISC',unit:'',status:'La configuració dels borns no permet obtenir aquesta lectura.'};
  if(mode==='ADC'){
   if(range.id==='ADC10'&&redJack!=='10A')return {display:'Err',unit:'A⎓',status:'En el rang de 10 A, vermell a 10A i negre a COM.'};
   if(range.id!=='ADC10'&&redJack!=='VΩmA')return {display:'Err',unit:'A⎓',status:'Per a µA i mA, vermell a VΩmA i negre a COM.'};
   if(s.isolated)return {display:'----',unit:'A⎓',status:'Torna a muntar R1 i R2 abans de mesurar la intensitat del divisor.'};
-  if(!s.seriesOpen)return {display:'RISC',unit:'A⎓',status:'No connectis un amperímetre en paral·lel. Desconnecta la font, obre el punt de mesura i insereix-lo en sèrie.'};
+  if(!s.seriesOpen)return {display:'----',unit:'A⎓',status:'No hi ha una lectura d’intensitat vàlida amb les connexions actuals.'};
   const direction=s.redNode==='D'&&s.blackNode==='E'?1:s.redNode==='E'&&s.blackNode==='D'?-1:0;
   if(!direction)return {display:'----',unit:'A⎓',status:'Connecta les dues puntes als terminals D i E de la interrupció.'};
   if(!s.powered)return {display:'0.000',unit:'A⎓',value:0,status:'Circuit desalimentat. Activa la font per mesurar intensitat un cop feta la connexió en sèrie.'};
@@ -95,7 +94,7 @@ export function measure(s){
 }
 export function isCorrect(s,exercise){
  const m=measure(s),mode=exercise?.mode||'VDC';
- if(!Number.isFinite(m.value)||s.blackJack!=='COM'||s.meterOn===false)return false;
+ if(!Number.isFinite(m.value)||s.blackJack!=='COM')return false;
  if(ranges.find(r=>r.id===s.range)?.mode!==mode)return false;
  const same=s.redNode===(exercise?.red||'B')&&s.blackNode===(exercise?.black||'C');
  const reverse=s.redNode===exercise?.black&&s.blackNode===exercise?.red;
