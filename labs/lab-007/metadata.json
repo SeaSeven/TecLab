@@ -1,7 +1,7 @@
 {
   "id": "LAB-007",
   "title": "Mesures amb multímetre",
-  "description": "Multímetre virtual amb font i instrument inicialment apagats, interruptors independents, mesures V⎓, A⎓ i Ω, i simulació de fusibles segons sobrecorrent.",
+  "description": "Multímetre amb font inicialment desconnectada, selector OFF com a únic comandament d'encesa, mesures V⎓, A⎓ i Ω, i fusibles simulats per sobrecorrent.",
   "courses": [
     "EE10",
     "EE30",
@@ -9,7 +9,7 @@
     "Enginyeria"
   ],
   "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "status": "in-review",
   "access": "public",
   "entry": "labs/lab-007/",
@@ -46,7 +46,8 @@
     "fuse-replacement-workflow",
     "visible-short-circuit-warning",
     "source-default-off",
-    "meter-independent-on-off",
-    "fuse-current-threshold-model"
+    "fuse-current-threshold-model",
+    "meter-rotary-off-switch",
+    "fuse-replacement-after-overcurrent"
   ]
 }
