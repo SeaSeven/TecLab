@@ -254,13 +254,21 @@ $('isolation').onchange=e=>{
 };
 for(const [id,button] of [['mA','replaceMa'],['10A','replace10']]){
  $(button).onclick=()=>{
-  if(s.powered||s.redNode||s.blackNode){
-   feedback('Per substituir un fusible, desconnecta la font i retira les dues puntes del circuit.','error');return;
-  }
+  if(fuseState[id]){feedback('El fusible '+id+' ja està correcte.');return;}
+  // Una substitució és una sola acció segura: primer aïllar el muntatge.
+  // L'estat d'avaria dels altres fusibles no es modifica.
+  const disconnected=s.powered||Boolean(s.redNode)||Boolean(s.blackNode);
+  s.powered=false;
+  s.redNode=null;
+  s.blackNode=null;
+  s.range='OFF';
   fuseState[id]=true;
-  renderFuses();
-  reading();
-  feedback('Fusible '+id+' substituït. Revisa el muntatge abans de connectar la font.');
+  render();
+  const message='Fusible '+id+' substituït correctament. '+
+    (disconnected?'La font s’ha desconnectat i s’han retirat les puntes del circuit. ':'')+
+    'Multímetre en OFF. Revisa el muntatge abans de tornar a mesurar.';
+  $('fuseNote').textContent=message;
+  feedback(message,'ok');
  };
 }
 $('reset').onclick=()=>{s.redNode=null;s.blackNode=null;render();feedback('Puntes desconnectades.');};
