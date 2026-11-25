@@ -102,5 +102,6 @@ export function isCorrect(s,exercise){
  if(mode==='OHM')return (same||reverse)&&s.powered===false&&s.isolated===exercise?.resistor&&s.redJack==='VΩmA';
  if(!same)return false;
  if(mode==='ADC')return s.seriesOpen===true&&s.powered===true&&s.redJack===(s.range==='ADC10'?'10A':'VΩmA');
+ if(mode==='VDC'&&s.powered===false)return false;
  return s.redJack==='VΩmA';
 }
