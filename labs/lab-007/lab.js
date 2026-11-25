@@ -138,6 +138,8 @@ function reading(){
   feedback('Sobrecorrent: fusible '+fault+' fos. Desconnecta la font i revisa les puntes.','error');
  }
  let m=measure({...cfg,fuses:fuseState});
+ const broken=Object.entries(fuseState).filter(([,ok])=>!ok).map(([id])=>id);
+ if(broken.length&&s.meterOn===false)m={...m,status:'Multímetre apagat. Fusible '+broken.join(' i ')+' fos. Revisa la connexió abans de substituir-lo.'};
  $('reading').textContent=m.display;
  $('unit').textContent=m.unit;
  $('readingDetail').textContent=m.status+(ex.mode==='OHM'&&s.meterOn?' · Contactes: vermell '+(s.redNode||'sense connectar')+'; negre '+(s.blackNode||'sense connectar')+'.':'');
@@ -248,7 +250,8 @@ $('meterPower').onclick=()=>{
 $('powerToggle').onclick=()=>{
  if(!s.powered&&(s.seriesOpen&&! ((s.redNode==='D'&&s.blackNode==='E')||(s.redNode==='E'&&s.blackNode==='D')))){feedback('Abans de connectar la font, tanca el circuit o completa la connexió en sèrie entre D i E.','error');return;}
  if(!s.powered&&s.isolated){feedback('Torna a muntar la resistència abans de connectar la font.','error');return;}
- s.powered=!s.powered;render();feedback(reading().status);
+ s.powered=!s.powered;render();
+ const result=reading();feedback(result.status,Object.values(fuseState).every(Boolean)?'':'error');
 };
 $('seriesToggle').onclick=()=>{
  if(s.powered){feedback('Desconnecta primer la font abans d’obrir o tancar el circuit.','error');return;}
