@@ -1,4 +1,4 @@
-import {measure,ranges,isCorrect} from './meter.js';
+import {measure,ranges,isCorrect,currentFuseFault} from './meter.js';
 import {generate,fromCode,levelKinds} from './exercises.js';
 import {dialLayout,polar,sectorPath,dialPositions} from './dial-layout.js';
 const $=id=>document.getElementById(id);
@@ -7,7 +7,7 @@ let ex=generate('inicial','R2',12345);
 let seenOverload=false;
 // Els fusibles representen un estat físic persistent, independent de l’exercici.
 const fuseState={mA:true,'10A':true};
-let s={range:'VDC20',redJack:'VΩmA',blackJack:'COM',redNode:null,blackNode:null,probe:'red',view:'schema',powered:true,seriesOpen:false,isolated:''};
+let s={range:'OFF',meterOn:false,redJack:'VΩmA',blackJack:'COM',redNode:null,blackNode:null,probe:'red',view:'schema',powered:false,seriesOpen:false,isolated:''};
 const points=[['A',75,44],['B',405,44],['C',405,246],['D',146,44],['E',194,44]];
 function markings(){
  return points.map(([id,x,y])=>['red','black'].filter(p=>s[p+'Node']===id).map((p,i)=>{
@@ -108,7 +108,8 @@ function unplugJack(probe=s.probe){
 
 function feedback(message,type=''){const el=$('feedback');el.textContent=message;el.className='feedback '+(type?'feedback-'+type:'');}
 function updateWiring(){
- $('powerToggle').textContent='Font: '+(s.powered?'connectada':'desconnectada');
+ $('powerState').textContent='Font · '+(s.powered?'ON':'OFF');
+ $('powerToggle').classList.toggle('switch-on',s.powered);
  $('powerToggle').setAttribute('aria-pressed',String(s.powered));
  $('seriesToggle').textContent='Circuit: '+(s.seriesOpen?'obert (D–E)':'tancat');
  $('seriesToggle').setAttribute('aria-pressed',String(s.seriesOpen));
@@ -128,20 +129,24 @@ function renderFuses(){
   'Fusible fos: font desconnectada i puntes retirades abans de substituir-lo.';
 }
 function reading(){
- let m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,fuses:fuseState});
- if(m.faultFuse&&fuseState[m.faultFuse]){
-  const blown=m.faultFuse;
-  fuseState[blown]=false;
-  m=measure({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,fuses:fuseState});
-  // Conservem l'avís del curtcircuit en lloc d'ocultar-ne la causa.
-  m={...m,status:'Curtcircuit simulat entre A i C! S’ha fos el fusible '+blown+'. Desconnecta la font i revisa les connexions.'};
-  feedback(m.status,'error');
+ // L'alimentació de l'instrument només controla la pantalla:
+ // la protecció del born d'intensitat continua connectada.
+ const cfg={...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,fuses:fuseState};
+ const fault=currentFuseFault(cfg);
+ if(fault&&fuseState[fault]){
+  fuseState[fault]=false;
+  feedback('Sobrecorrent: fusible '+fault+' fos. Desconnecta la font i revisa les puntes.','error');
  }
+ let m=measure({...cfg,fuses:fuseState});
  $('reading').textContent=m.display;
  $('unit').textContent=m.unit;
- $('readingDetail').textContent=m.status+(ex.mode==='OHM'?' · Contactes actuals: vermell '+(s.redNode||'sense connectar')+'; negre '+(s.blackNode||'sense connectar')+'.':'');
+ $('readingDetail').textContent=m.status+(ex.mode==='OHM'&&s.meterOn?' · Contactes: vermell '+(s.redNode||'sense connectar')+'; negre '+(s.blackNode||'sense connectar')+'.':'');
  $('readingDetail').classList.toggle('reading-alert',m.display==='FUS'||m.display==='RISC'||m.display==='Err');
  $('reading').classList.toggle('meter-fuse-fault',m.display==='FUS');
+ $('meterPowerLabel').textContent='Multímetre · '+(s.meterOn?'ON':'OFF');
+ $('meterPower').setAttribute('aria-pressed',String(s.meterOn));
+ $('meterPower').classList.toggle('switch-on',s.meterOn);
+ $('reading').closest?.('.lcd')?.classList.toggle('lcd-off',!s.meterOn||s.range==='OFF');
  if(m.display==='OL')seenOverload=true;
  renderFuses();
  return m;
@@ -177,7 +182,7 @@ function kinds(level,selected){
  if(selected&&items.some(([id])=>id===selected))$('kind').value=selected;
 }
 function load(v){
- ex=v;seenOverload=false;s.redNode=null;s.blackNode=null;s.range=v.mode==='ADC'?'ADC20m':v.mode==='OHM'?'OHM20k':'VDC20';s.redJack='VΩmA';s.blackJack='COM';s.powered=true;s.seriesOpen=false;s.isolated='';
+ ex=v;seenOverload=false;s.redNode=null;s.blackNode=null;s.range='OFF';s.meterOn=false;s.redJack='VΩmA';s.blackJack='COM';s.powered=false;s.seriesOpen=false;s.isolated='';
  $('level').value=v.level;$('magnitude').value=kindMode(v.kind);kinds(v.level,v.kind);$('exerciseCode').value=v.code;
  $('task').innerHTML='<p class="task-level">'+({inicial:'Inicial',basic:'Bàsic',intermedi:'Intermedi',avancat:'Avançat'}[v.level])+' · '+levelKinds[v.level].find(([id])=>id===v.kind)[1]+'</p><strong>'+v.text+'</strong><p>Observa el circuit i tria connexions i escala. La resolució numèrica només apareix amb Mostra l’explicació.</p>';
  $('explanation').innerHTML=v.mode==='ADC'?
@@ -235,6 +240,11 @@ for(const probe of ['red','black']){
 }
 $('unplugLead').onclick=()=>unplugJack();
 
+$('meterPower').onclick=()=>{
+ s.meterOn=!s.meterOn;
+ render();
+ feedback(s.meterOn?'Multímetre encès. Selecciona la funció i el rang.':'Multímetre apagat.');
+};
 $('powerToggle').onclick=()=>{
  if(!s.powered&&(s.seriesOpen&&! ((s.redNode==='D'&&s.blackNode==='E')||(s.redNode==='E'&&s.blackNode==='D')))){feedback('Abans de connectar la font, tanca el circuit o completa la connexió en sèrie entre D i E.','error');return;}
  if(!s.powered&&s.isolated){feedback('Torna a muntar la resistència abans de connectar la font.','error');return;}
@@ -266,12 +276,13 @@ $('newExercise').onclick=()=>load(generate($('level').value,$('kind').value));
 $('copyExercise').onclick=()=>{const code=$('exerciseCode').value;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(code).then(()=>{$('codeStatus').textContent='Codi copiat: '+code;}).catch(()=>{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';});}else{$('exerciseCode').focus();$('exerciseCode').select();$('codeStatus').textContent='Selecciona i copia el codi.';}};
 $('recover').onclick=()=>{try{let p=fromCode($('recoverCode').value);load(generate(p.level,p.kind,p.seed));$('codeStatus').textContent='Exercici recuperat: '+ex.code;}catch(e){$('codeStatus').textContent='Error: '+e.message;}};
 $('check').onclick=()=>{
- const ok=isCorrect({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2},ex),m=reading();
+ const m=reading(),ok=isCorrect({...s,voltage:ex.voltage,r1:ex.r1,r2:ex.r2,fuses:fuseState},ex);
  const strict=ex.strictRange&&s.range!==ex.range,missingOL=ex.requiresOverload&&!seenOverload;
- const correct=ok&&!strict&&!missingOL;
+ const correct=ok&&!strict&&!missingOL&&s.meterOn&&s.range!=='OFF';
  feedback(correct?'Correcte: '+m.display+' '+m.unit+'. Connexió, seguretat i escala adequades.':
   ok&&strict?'La mesura és correcta, però cal seleccionar el rang més petit vàlid.':
   ok&&missingOL?'La mesura és correcta, però falta provocar primer OL amb una escala insuficient.':
+  !s.meterOn?'Encén el multímetre abans de comprovar la mesura.':
   'Encara no és correcte. '+m.status,correct?'ok':'error');
 };
 $('helpToggle').onclick=()=>{$('explanation').hidden=!$('explanation').hidden;};
