@@ -28,7 +28,7 @@ export const nodeVoltages=Object.freeze({A:12,B:8,C:0});
 export const fuseLimits=Object.freeze({mA:0.2,'10A':10});
 export const sourceShortCircuitAmps=20; // font limitada del model ideal (A)
 export function currentFuseFault(s){
- if(s.meterOn===false||!s.powered||s.isolated||s.blackJack!=='COM')return null;
+ if(!s.powered||s.isolated||s.blackJack!=='COM')return null;
  const range=ranges.find(r=>r.id===s.range);
  const jack=s.redJack==='10A'?'10A':s.redJack==='VΩmA'&&range?.mode==='ADC'?'mA':null;
  if(!jack)return null;
@@ -48,7 +48,7 @@ export function measure(s){
  if((s.fuses?.[fuseId]===false)&&((mode==='ADC')||(s.redJack==='10A')))
   return {display:'FUS',unit:'',status:'Fusible '+fuseId+' fos. Desconnecta la font i revisa el muntatge abans de substituir-lo.'};
  const fault=currentFuseFault(s);
- if(fault)return {display:'FUS',unit:'',faultFuse:fault,status:'Sobrecorrent simulada al born '+fault+' (llindar de fusible superat). S’ha fos la protecció.'};
+ if(fault&&s.fuses?.[fault]!==false)return {display:'FUS',unit:'',faultFuse:fault,status:'Sobrecorrent simulada al born '+fault+' (llindar de fusible superat). S’ha fos la protecció.'};
 
  const blackJack=s.blackJack===undefined?'COM':s.blackJack,redJack=s.redJack===undefined?'VΩmA':s.redJack;
  if(!blackJack||!redJack)return {display:'----',unit:'',status:'Connecta les dues clavilles als borns del multímetre.'};
