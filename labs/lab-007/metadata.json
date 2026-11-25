@@ -1,7 +1,7 @@
 {
   "id": "LAB-007",
   "title": "Mesures amb multímetre",
-  "description": "Multímetre virtual amb mesures V⎓, A⎓ i Ω, exercicis per magnitud, clavilles arrossegables i simulació educativa d'avaria i fusibles mA/10A.",
+  "description": "Multímetre virtual amb font i instrument inicialment apagats, interruptors independents, mesures V⎓, A⎓ i Ω, i simulació de fusibles segons sobrecorrent.",
   "courses": [
     "EE10",
     "EE30",
@@ -9,8 +9,8 @@
     "Enginyeria"
   ],
   "iconPath": "M8 42h64M40 8v32m-15-23 15-9 15 9",
-  "version": "0.7.4",
-  "status": "published",
+  "version": "0.8.0",
+  "status": "in-review",
   "access": "public",
   "entry": "labs/lab-007/",
   "tags": [
@@ -44,6 +44,9 @@
     "unplug-probes",
     "fuse-fault-protection",
     "fuse-replacement-workflow",
-    "visible-short-circuit-warning"
+    "visible-short-circuit-warning",
+    "source-default-off",
+    "meter-independent-on-off",
+    "fuse-current-threshold-model"
   ]
 }
