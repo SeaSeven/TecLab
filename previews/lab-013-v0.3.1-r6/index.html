@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Laboratori interactiu TecLab: cablejat, alimentació, adreçament, parametrització i verificació d'una instal·lació KNX TP.">
+<title>LAB-013 · Sistemes KNX | TecLab</title>
+<style>
+
+:root{color-scheme:light;--ink:#142d3b;--muted:#58717e;--line:#d9e5e9;--pale:#f3f8f9;--white:#fff;--teal:#096a6b;--teal-dark:#064b50;--amber:#ad7008;--red:#b62d3c;--green:#167648;--shadow:0 12px 32px #163b4812}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f8fbfb;color:var(--ink);font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}a{color:var(--teal-dark)}.skip-link{position:absolute;top:-100px;left:10px;padding:10px;background:#fff;z-index:99}.skip-link:focus{top:10px}.topbar{height:78px;background:#102e3c;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 max(28px,calc((100vw - 1320px)/2));gap:14px}.brand{display:flex;align-items:center;color:#fff;text-decoration:none;gap:12px;font-size:22px;font-weight:750;letter-spacing:-.6px}.brand svg{width:46px;height:46px;fill:none;stroke:#7dd3cf;stroke-width:5}.brand small{display:block;font-size:10px;font-weight:500;letter-spacing:.5px;color:#a8c8d0}.version{font-size:12px;color:#b9d6de;display:flex;gap:12px}.version em{font-style:normal;color:#f1b96b}main{max-width:1320px;margin:auto;padding:16px 28px 60px}.back{display:inline-block;text-decoration:none;font-size:13px;color:#496879;margin:3px 0 15px}.hero{display:grid;grid-template-columns:1fr 295px;align-items:center;background:linear-gradient(120deg,#e8f5f4,#f6fafa);border:1px solid #d9eeec;border-radius:16px;padding:24px 28px 24px 30px;overflow:hidden}.eyebrow{text-transform:uppercase;letter-spacing:1.8px;color:#137778;font-size:10px;font-weight:800;margin:0 0 8px}h1{font-size:clamp(25px,2.7vw,36px);letter-spacing:-1px;line-height:1.15;margin:0 0 10px}h2{font-size:20px;line-height:1.3;letter-spacing:-.3px;margin:0 0 10px}h3{font-size:16px;margin:14px 0 5px}.intro{color:#4a6672;max-width:720px;line-height:1.65;margin:0}.hero-notes{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.hero-notes span{border:1px solid #d0e6e2;background:#ffffffa3;border-radius:20px;padding:4px 9px;font-size:11px;color:#366f70;font-weight:650}.hero-visual svg{width:100%;height:auto;filter:drop-shadow(0 9px 14px #143a4720)}.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:21px 0 16px}.tabs button{background:transparent;border:0;border-bottom:3px solid transparent;padding:11px 19px;color:#66818b;font-weight:700}.tabs button.active{border-bottom-color:#0b8481;color:#09676b}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:15px}.workspace-main{min-width:0}.subtabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:13px}.subtabs button{border:1px solid #d8e6e7;border-radius:8px;background:white;color:#536d78;padding:8px 13px;font-size:12px;font-weight:700}.subtabs button.active{background:#0b6668;color:white;border-color:#0b6668}.panel{background:white;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:18px}.panel + .panel{margin-top:14px}.panel p{color:#4b6571}.panel h2{margin-bottom:6px}.muted,.hint{color:var(--muted);font-size:12px}.tiny{font-size:11px}.statusline{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}.pill{font-size:11px;border-radius:30px;padding:4px 10px;background:#eef3f4;color:#60737e;border:1px solid #e0e8eb;font-weight:650}.pill.ok{background:#e4f7eb;color:#186d45;border-color:#b6e7cb}.pill.warn{background:#fcf1dd;color:#975e0b;border-color:#f4d6a4}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}.section-heading h2{margin:0}.button-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.btn{background:#fff;color:#194958;border:1px solid #bfced3;border-radius:8px;padding:9px 13px;font-weight:650;font-size:12px}.btn:hover{border-color:#0e8384;background:#f0f8f7}.btn.primary{background:#0b696c;border-color:#0b696c;color:#fff}.btn.primary:hover{background:#064f52}.btn.danger{color:#9e3142;border-color:#e7c5cd}.btn.active{background:#e1f3f1;color:#0b696c;border-color:#0b8383}.control-label{display:block;font-size:11px;font-weight:760;letter-spacing:.25px;color:#4d6873;margin:7px 0 5px}.field{width:100%;border:1px solid #cbdce2;border-radius:7px;padding:9px 10px;background:#fff;color:#183641;font-size:13px}.field:focus,.btn:focus-visible,.tabs button:focus-visible,.subtabs button:focus-visible{outline:3px solid #7ad4ce;outline-offset:2px}.canvas-wrap{overflow-x:auto;border-radius:9px;border:1px solid #d5e2e5;background:#edf3f4}.canvas-wrap svg{display:block;width:100%;min-width:860px;height:auto;touch-action:pan-y;user-select:none}.unit{cursor:default}.move-mode .unit{cursor:grab}.move-mode .unit:active{cursor:grabbing}.port-hit{cursor:crosshair}.port-hit:hover+.port-dot{stroke:#0a8985;stroke-width:5}.wire-hit{cursor:pointer;stroke:transparent;stroke-width:14;fill:none}.wire-hit:hover+.wire-visible{stroke-width:6}.selected-port .port-dot{stroke:#ffb02e;stroke-width:6}.board-tag{font-size:14px;font-weight:800;fill:#1a3f4c}.board-sub{font-size:11px;fill:#52717b}.help-note{background:#f1f8fa;border-left:3px solid #4eaba7;border-radius:4px;padding:10px 13px;color:#3d5f6b;font-size:12px;margin:11px 0}.notice{font-size:12px;line-height:1.55;padding:10px 12px;background:#eff6f7;border-radius:8px;color:#325969;border:1px solid #cfe3e6}.notice.error{background:#fff1f1;border-color:#f5cbcd;color:#962c40}.notice.success{background:#edf9ef;border-color:#c1e9cc;color:#186c41}.checklist{display:grid;gap:10px;margin-top:12px}.check{display:flex;align-items:flex-start;gap:9px;font-size:12px;padding:9px 10px;background:#f6f9fa;border-radius:8px}.dot{flex:0 0 auto;border-radius:50%;width:11px;height:11px;margin-top:3px;background:#aebfc6}.dot.ok{background:#29a46d}.dot.bad{background:#d69c3b}.wires-list{max-height:240px;overflow:auto;display:grid;gap:6px}.wire-item{display:flex;align-items:center;gap:8px;justify-content:space-between;font-size:11px;background:#f5f9f9;border-radius:7px;padding:6px 8px}.wire-item button{border:none;background:transparent;color:#b12f43;font-weight:700;font-size:15px}.krow{display:grid;grid-template-columns:1fr 1fr;gap:9px}.device-config{padding:16px;border:1px solid #dbe6ea;border-radius:10px;background:#fbfdfd;margin-top:14px}.device-config h3{margin:0}.config-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.readout{display:flex;gap:7px;flex-wrap:wrap;font-size:11px;color:#617784;margin:8px 0 0}.readout code{color:#075c5b;background:#e4f3f1;padding:2px 5px;border-radius:4px}.switch-line{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f4f8f8;padding:11px;border-radius:8px;margin:10px 0}.switch-line strong{font-size:12px}.switch-line button{min-width:90px}.scene{position:relative;min-height:235px;display:grid;grid-template-columns:1fr 1fr;gap:18px;background:linear-gradient(180deg,#e2f1f6,#f8f6ed 70%,#e4ded0 70%);border:1px solid #d0e3e7;border-radius:11px;padding:22px;overflow:hidden}.scene .bulb{width:80px;height:80px;border-radius:50%;background:#c3d3d7;box-shadow:inset 0 0 0 7px #ffffff50;margin:20px auto 0;display:grid;place-items:center;font-size:44px;filter:grayscale(1);transition:background .2s}.scene .bulb.lit{background:#ffdf68;box-shadow:0 0 27px 15px #ffe28275,inset 0 0 0 7px #fff7bc;filter:none}.scene .wall-switch{margin:auto;padding:17px;background:#fff;border-radius:9px;box-shadow:0 4px 14px #15334520;border:2px solid #c0d2d6;font-size:13px;font-weight:700;color:#355f6a;max-width:140px}.scene-box{text-align:center}.scene-box p{font-size:12px;color:#46616b}.monitor{width:100%;border-collapse:collapse;font-size:11px}.monitor th{text-align:left;color:#647e8a;background:#f1f6f7;font-size:10px;letter-spacing:.3px}.monitor td,.monitor th{padding:9px 8px;border-bottom:1px solid #e5eded;white-space:nowrap}.monitor-wrap{overflow:auto}.monitor .good{color:var(--green)}.monitor .bad{color:var(--red)}.issues{display:grid;gap:7px}.issue{border-radius:8px;padding:9px 11px;background:#f4f7f8;color:#546b74;font-size:12px;border-left:3px solid #9fb3b9}.issue.danger{border-color:#bb3045;background:#fff1f1;color:#8c2940}.issue.error{border-color:#d09a30;background:#fff5e2;color:#81601f}.issue.success{border-color:#279468;background:#eaf7ef;color:#176d48}.learning{max-width:1000px;display:grid;grid-template-columns:minmax(0,1fr);gap:13px}.learning p,.learning li{font-size:14px;line-height:1.7;color:#4b6671}.learning ul,.learning ol{padding-left:22px}.learning table{width:100%;border-collapse:collapse;font-size:13px}.learning td,.learning th{padding:9px;border-bottom:1px solid #dce7e8;text-align:left}.illustration{background:#eef5f6;border-radius:10px;padding:15px;margin:14px 0}.illustration svg{max-width:100%;height:auto;display:block;margin:auto}.learning details{border:1px solid #d9e6e7;padding:12px 15px;border-radius:9px;margin:9px 0}.learning summary{cursor:pointer;font-weight:750;color:#225865}.alert-intro{background:#fffaef;border:1px solid #f2dfad;border-radius:9px;padding:13px;margin:10px 0;font-size:13px;color:#7b6328}footer{background:#102e3c;color:#acc5ce;padding:25px max(28px,calc((100vw - 1320px)/2));display:flex;justify-content:space-between;gap:20px;font-size:11px}footer a{color:#a9dad6}@media(max-width:940px){.workspace{grid-template-columns:minmax(0,1fr)}.hero{grid-template-columns:1fr 210px}.config-grid{grid-template-columns:1fr 1fr}}@media(max-width:620px){main{padding:12px 14px 35px}.topbar{padding:8px 15px;height:auto;min-height:72px}.version{flex-direction:column;gap:0;text-align:right}.version em{font-size:10px}.hero{display:block;padding:21px}.hero-visual{display:none}.tabs button{padding:9px 12px}.config-grid{grid-template-columns:1fr}.scene{grid-template-columns:1fr}footer{padding:22px 16px;display:grid}.section-heading h2{font-size:17px}}
+
+
+/* LAB-013 v0.1.1 · carril DIN, borns, cablejat assistit */
+.canvas-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:8px 0}
+.zoom-controls{display:flex;align-items:center;gap:5px}.zoom-controls .btn{padding:4px 10px;font-size:12px}.zoom-controls strong{font-size:12px;min-width:44px;text-align:center}
+.canvas-wrap{max-height:690px;overflow:auto;background:#e6eef0;overscroll-behavior:contain}
+.canvas-wrap svg{max-width:none;min-width:0;touch-action:pan-y;user-select:none}
+.port-hit{cursor:crosshair;touch-action:none}.port-hit:focus-visible{outline:none;filter:drop-shadow(0 0 5px #edb635)}
+.selected-port{filter:drop-shadow(0 0 6px #f5ac24)}.selected-port rect,.selected-port circle{stroke:#ffb72e;stroke-width:3}
+.port-hit:hover{filter:drop-shadow(0 0 5px #2bbca8)}
+.wire-preview{stroke-width:3.4;stroke-dasharray:7 5;fill:none;pointer-events:none;stroke-linecap:round}
+.wire-group.wire-selected .wire-visible{filter:drop-shadow(0 0 3px #146d73)}
+.wire-group:hover .wire-visible{stroke-width:6}.wire-group .wire-hit{stroke-width:15}
+.wire-group{cursor:pointer}
+.wire-item.is-selected{background:#e0f4f1;border:1px solid #7ebdb2}
+.wire-item .wire-identify{background:none;border:0;text-align:left;font:inherit;color:#28545c;cursor:pointer;min-width:0;flex:1;padding:3px}
+.wire-tools{display:flex;gap:3px;align-items:center;flex-shrink:0}
+.wire-tools button{border:1px solid #c2d4d8;border-radius:4px;background:white;color:#23646b;cursor:pointer;font-size:16px;min-width:27px}
+.wire-tools button:last-child{color:#bb3845}
+.drag-grip{cursor:grab}.move-mode .unit{cursor:grab}.move-mode .unit:active{cursor:grabbing}
+.move-mode [data-protect]{cursor:pointer}.unit-wall{filter:drop-shadow(0 5px 7px #31485315)}
+@media(max-width:620px){.canvas-wrap{max-height:560px}.zoom-controls strong{font-size:11px}.canvas-toolbar{align-items:flex-start}}
+
+/* v0.1.3 · material, rutes seleccionables, etiquetes visibles */
+.material-box{background:#edf5f6;border:1.5px solid #aacbd0;border-radius:12px;padding:15px;margin:14px 0 16px}
+.material-box .section-heading h3{margin:0;font-size:17px}.material-box .section-heading p{margin:4px 0 0;font-size:13px}
+.material-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px;margin-top:12px}
+.material-item{background:#fff;border:1px solid #bfd2d7;display:flex;align-items:center;gap:8px;border-radius:9px;padding:9px;min-width:0}
+.material-item:not(.is-installed){cursor:grab;touch-action:none}.material-item:not(.is-installed):active{cursor:grabbing}
+.material-item.is-installed{background:#f4f7f7;border-color:#d4e2e5}
+.material-icon{border-radius:7px;background:#dcebee;min-width:29px;height:33px;display:grid;place-items:center;font-size:19px;color:#145762}
+.material-info{min-width:0;flex:1;display:flex;flex-direction:column}.material-info strong{font-size:12px;line-height:1.3}.material-info small{color:#597681;font-size:11px;line-height:1.35}
+.material-item .btn{padding:6px 8px;font-size:11px;white-space:nowrap}
+.wire-halo{stroke:#fff;stroke-width:7.5;fill:none;pointer-events:none;stroke-linecap:round;stroke-linejoin:round}
+#wire-layer.with-selection .wire-other{opacity:.18}#wire-layer.with-selection .wire-selected{opacity:1;filter:drop-shadow(0 0 2px #fff)}
+.route-handle{cursor:ns-resize;touch-action:none;filter:drop-shadow(0 1px 3px #2a586d70)}
+.wire-selected .wire-halo{stroke:#fff;stroke-width:10}
+.wires-list{max-height:410px;overflow:auto}
+.wire-tools button{min-width:31px;min-height:30px}
+.material-ghost{position:fixed;z-index:9999;top:0;left:0;background:#0c5961;color:white;border:1px solid #9bdbd6;border-radius:8px;padding:9px 13px;box-shadow:0 10px 24px #1a3d5360;white-space:nowrap;font-size:13px;font-weight:750;pointer-events:none;}
+@media(max-width:750px){.material-grid{grid-template-columns:repeat(auto-fit,minmax(158px,1fr))}.material-box{padding:10px}.material-item{padding:7px}}
+
+/* v0.1.3 · corbes Bézier i eines de muntatge a tocar del quadre */
+.board-dock{position:sticky;top:6px;z-index:12;margin:10px 0 7px;padding:9px;display:flex;gap:9px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#e8f4f3f5;border:1px solid #a9d0cb;border-radius:10px;box-shadow:0 6px 12px #183c4617;backdrop-filter:blur(8px)}
+.dock-mode,.dock-placement{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.board-dock .btn{padding:8px 10px;white-space:nowrap}
+.dock-placement label{font-size:12px;font-weight:700;color:#305460}
+.dock-placement select{max-width:150px;min-width:110px;padding:7px 6px;border:1px solid #b5cdd0;border-radius:7px;background:white;color:#164354;font-size:12px}
+#material-drawer{margin-bottom:8px;max-height:280px;overflow:auto;border-radius:12px}
+#material-drawer .material-box{margin:0 0 4px}
+.wire-floating-action{cursor:pointer;filter:drop-shadow(0 3px 6px #24414e44)}
+.wire-floating-action:hover rect,.wire-floating-action:focus rect{fill:#fdf0f1;stroke-width:3}
+.wire-floating-action:focus-visible{outline:none;filter:drop-shadow(0 0 5px #d84a62)}
+.wire-overlay{pointer-events:none}.wire-overlay [data-wire-remove],.wire-overlay [data-route-handle]{pointer-events:all}
+.wires-details{margin:0}.wires-details summary{cursor:pointer;color:#244955;padding:3px 0}.wires-details .wires-list{margin-top:12px}
+.wire-group .wire-halo{stroke-width:8}.wire-group .wire-visible{filter:drop-shadow(0 1px 1px #34526130)}
+@media(max-width:660px){.board-dock{top:0;padding:7px}.dock-mode,.dock-placement{width:100%}.dock-placement select{flex:1}.board-dock .btn{font-size:11px}}
+
+/* LAB-013 v0.2.0 - catàleg dinàmic */
+.sim-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:18px}
+.sim-device{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border:1px solid #c7d8dd;border-radius:8px;background:#f8fbfb;margin:9px 0;padding:12px}
+.sim-device strong{font-size:13px}.sim-device small{color:#54737e}
+.sim-device .btn{margin-left:auto}
+.unit-focused{filter:drop-shadow(0 0 5px #218d8c70)}
+.material-item:not(.is-installed){cursor:grab}
+.material-box{background:#f5fafa;border:1px solid #bfd8dd;border-radius:10px;padding:13px}
+@media(max-width:820px){.sim-grid{grid-template-columns:1fr}}
+/* Els borns han de quedar visibles quan la vista els desplaça sota la barra d'eines. */
+#knx-board [data-port]{scroll-margin-top:120px;scroll-margin-bottom:45px}
+
+/* Selecció de conductor: remarcar els dos terminals, sense alterar-ne les connexions. */
+.port-hit.wire-endpoint{filter:drop-shadow(0 0 5px #0b7a85a6)}
+.port-hit.wire-endpoint .wire-end-mark{pointer-events:none}
+.port-hit.wire-endpoint .wire-end-ring{stroke-linejoin:round}
+.port-hit.wire-endpoint:focus-visible{filter:drop-shadow(0 0 7px #0c8087)}
+
+/* LAB-013 v0.2.1 · Dispositius KNX multicanal */
+.channel-configs{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:14px 0}
+.channel-config{padding:12px;border:1px solid #bed5d9;background:#f4fafb;border-radius:9px}
+.channel-config .section-heading{margin-bottom:7px;gap:8px;flex-wrap:wrap}
+.channel-config .section-heading strong{font-size:13px}
+.channel-config .pill{font-size:11px}
+.channel-config .config-grid{grid-template-columns:1fr 1fr;gap:8px}
+.channel-config .control-label{font-size:11px}
+.sim-device.sim-multi{display:block}
+.sim-device.sim-multi>strong{display:block;margin-bottom:4px}
+.sim-channels{display:grid;gap:7px;margin-top:10px}
+.sim-channel{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid #d7e5e9;background:white;padding:8px;border-radius:7px}
+.sim-channel span:first-child{font-size:12px;font-weight:700}.sim-channel small{display:block;font-weight:400}
+#knx-board [data-press]{cursor:pointer}
+#knx-board [data-press]:focus-visible{filter:drop-shadow(0 0 5px #0f9c8c)}
+@media(max-width:620px){.channel-config .config-grid{grid-template-columns:1fr}}
+
+/* Catàleg v0.2.1 completament visible; nous models identificables */
+#material-drawer{max-height:none;overflow:visible}
+.material-item.material-new{border-color:#8ac7bd;background:#f5fffc}
+.new-model-mark{display:inline-block;font-style:normal;font-weight:800;font-size:9px;background:#096a6b;color:white;padding:1px 5px;border-radius:4px;margin-right:4px;vertical-align:baseline}
+
+/* Catàleg estable per funció: els models nous van dins de la família corresponent. */
+.material-sections{display:grid;gap:13px;margin-top:13px}
+.material-section{padding:12px;border:1px solid #c6dade;border-radius:9px;background:#fff}
+.material-group-heading{display:flex;gap:6px 14px;align-items:baseline;flex-wrap:wrap;margin-bottom:9px}
+.material-group-heading h4{margin:0;font-size:14px;color:#194453}
+.material-group-heading span{font-size:12px;color:#597681}
+.material-section .material-grid{margin-top:0}
+@media(max-width:650px){.material-section{padding:9px}.material-group-heading{display:block}.material-group-heading span{display:block;margin-top:2px}}
+
+/* v0.2.2 - manuals de borns accessibles des del dispositiu o la caixa */
+.device-manual-button{cursor:help;outline:none}.device-manual-button:hover circle,.device-manual-button:focus-visible circle{fill:#fff0ce;stroke:#d3932a;stroke-width:3}
+.material-help{min-width:34px!important;min-height:33px;padding:4px!important;font-size:18px!important;font-weight:850!important;color:#166d6f!important}
+.manual-backdrop{position:fixed;inset:0;background:#102e3cbc;z-index:1000;display:flex;align-items:center;justify-content:center;padding:18px}
+.manual-dialog{background:#fff;color:#173846;border-radius:14px;width:min(690px,100%);max-height:min(88vh,820px);overflow:auto;box-shadow:0 22px 75px #071f2988;border:1px solid #bad2d6}
+.manual-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 22px;background:#e9f4f4;border-bottom:1px solid #c6dcde}
+.manual-header h2{font-size:20px;margin:3px 0 0}.manual-header small{font-size:11px;letter-spacing:.02em;color:#547a84}
+.manual-close{border:1px solid #aacacf;background:white;border-radius:8px;font-size:20px;color:#194653;min-width:40px;min-height:40px}
+.manual-content{padding:17px 22px 22px;font-size:14px}.manual-content>p:first-child{margin:0 0 14px}.manual-content h3{font-size:15px;margin:17px 0 8px}
+.guide-flow{padding:12px;border-radius:8px;background:#eef6f6;color:#23515b;font-weight:650;text-align:center}
+.guide-channels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}
+.guide-channels>div{border:1px solid #b2cdd3;background:#eef5f6;border-radius:8px;display:flex;align-items:center;flex-direction:column;gap:5px;padding:9px 3px;font-weight:700;color:#30515f;font-size:13px}
+.guide-channels strong{color:#0b656b}.guide-channels span:nth-of-type(2){font-size:19px;color:#577583;letter-spacing:-2px}
+.guide-mini{font-size:13px;color:#3b5b64;margin:7px 0}.guide-connection{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#eff5f5;border-radius:8px;padding:10px;font-size:13px;font-weight:600}
+.guide-table{width:100%;border-collapse:collapse;font-size:13px}.guide-table th{text-align:left;color:#3c6871;background:#eef6f6}.guide-table td,.guide-table th{padding:7px 9px;border-bottom:1px solid #dfebed}.guide-table td:first-child{width:90px;white-space:nowrap}
+.guide-terminal{display:inline-block;border-radius:4px;background:#f4f7f7;padding:4px 7px;font-weight:800}
+.guide-tip{background:#fff8e9;border-left:3px solid #d39b37;margin:16px 0 9px;padding:10px 12px;font-size:13px}
+.guide-disclaimer{font-size:11px;color:#657b83;margin:6px 0}
+@media(max-width:480px){.manual-backdrop{padding:7px}.manual-content{padding:12px}.manual-header{padding:11px}.guide-channels{gap:3px}.guide-channels>div{font-size:11px;padding:6px 1px}.guide-table{font-size:12px}}
+
+.guide-chooser{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:7px}.guide-chooser .btn{text-align:left;white-space:normal;padding:8px 11px}.guide-chooser span{float:right}.guide-back{margin:8px 0}.guide-back .btn{padding:5px 10px;font-size:12px}.quick-manual-button{font-weight:700;color:#0b6473!important;border:1px solid #a6cad0!important;border-radius:7px}.quick-manual-inline{display:flex;justify-content:flex-end;margin:5px 0 12px}
+
+/* LAB-013 v0.2.3 · contactes d'actuador en parelles als borns inferiors */
+.relay-channel{pointer-events:none}
+.guide-pair{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;margin:8px 0 3px}
+.guide-pair span{font-weight:800;font-size:12px;letter-spacing:.1px;color:#234d5b}
+.guide-pair svg{display:block;width:54px;max-width:36%;height:30px;flex-shrink:1}
+@media(max-width:520px){.guide-channels{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.guide-pair span{font-size:11px}.guide-pair svg{max-width:35%}}
+
+.guide-pair span:nth-of-type(2){font-size:12px;letter-spacing:.1px;color:#234d5b}
+@media(max-width:520px){.guide-pair span:nth-of-type(2){font-size:11px}}
+
+/* LAB-013 v0.3.0: pràctica de persianes */
+.shutter-lab{margin:22px 0;padding:20px;border:1px solid #c3d7dc;border-radius:12px;background:#f4f8f9}
+.shutter-layout{display:grid;grid-template-columns:1fr 1.15fr;gap:20px}
+.shutter-layout h4{margin:14px 0 8px}
+.shutter-control,.shutter-receiver{border:1px solid #cbdbdf;border-radius:9px;padding:13px;margin:10px 0;background:#fff}
+.shutter-control strong,.shutter-control small,.shutter-receiver strong{display:block}
+.shutter-control small{font-size:12px;color:#607986}
+.shutter-control .button-row{margin-top:9px}
+.shutter-window{position:relative;margin:12px auto 8px;width:175px;height:160px;border:8px solid #f0f2f3;background:#a6d5eb;box-shadow:inset 0 0 0 3px #7799a7,0 6px 16px #22384b20;overflow:hidden;border-radius:3px}
+.shutter-sky{position:absolute;inset:0;background:linear-gradient(#82c7ed,#dff5ff 60%,#9ac79e)}
+.shutter-blind{position:absolute;top:0;left:0;right:0;background:repeating-linear-gradient(to bottom,#b9cbd1 0px,#cdd8db 10px,#839da6 12px,#e2e9eb 14px);box-shadow:0 3px 4px #385e6a40;transition:height .18s linear}
+.shutter-muntin{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#f1f6f6;pointer-events:none}
+.shutter-meta{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:#345e69}
+.shutter-time{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;font-size:12px;color:#4c6973}
+.shutter-time input{width:72px;padding:5px;border:1px solid #aebfc8;border-radius:5px}
+@media(max-width:880px){.shutter-layout{grid-template-columns:1fr}.shutter-lab{padding:12px}}
+
+/* Revisió v0.3.1 · esquema d'actuador i noms del motor */
+.guide-actuator-schematic{margin:12px 0;padding:8px;background:#eef6f7;border:1px solid #b6d0d3;border-radius:8px}
+.guide-actuator-schematic svg{width:100%;height:auto;display:block}
+.guide-actuator-schematic p{margin:3px 8px 6px;color:#355761;font-size:12px}
+
+/* v0.3.1-r1 · Retirada contextual d'equips */
+.device-floating-remove{cursor:pointer;filter:drop-shadow(0 3px 7px #48293650);touch-action:manipulation}
+.device-floating-remove:hover circle,.device-floating-remove:focus-visible circle{fill:#ffe2e6;stroke:#92273a;stroke-width:3.4}
+.device-floating-remove:focus-visible{outline:none;filter:drop-shadow(0 0 5px #d34b60)}
+.unit-focused{filter:drop-shadow(0 0 6px #168b8370)}
+
+/* LAB-013 v0.3.1-r2: navegació fixa i controls KNX de programació */
+#knx-app .subtabs{position:sticky;top:0;z-index:40;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 13px;padding:9px 8px;background:#f8fbfbf7;border:1px solid #d5e6e8;border-radius:9px;box-shadow:0 4px 12px #183c4617;backdrop-filter:blur(9px);scroll-margin-top:0}
+#knx-app .subtabs button{min-height:37px}
+#knx-app .subtabs button.active{background:#0b6668;color:#fff;border-color:#0b6668}
+#knx-app .board-dock{top:var(--lab-subtabs-height,65px);z-index:25}
+#knx-app .knx-prog-control{color:#a92335;border:1.5px solid #d7959f;background:#fff6f7}
+#knx-app .knx-prog-control::before{content:'';display:inline-block;width:9px;height:9px;background:#c33444;border-radius:50%;margin-right:5px;vertical-align:middle;box-shadow:inset 0 0 0 1px #942638}
+#knx-app .knx-prog-control.is-programming{color:#fff;background:#ba293b;border-color:#9f1f32}
+#knx-app .knx-prog-control.is-programming::before{background:#ff293b;box-shadow:0 0 0 2px #fff7,0 0 8px #ff4c60}
+#knx-app [data-program]{cursor:pointer}
+#knx-app [data-program]:focus-visible{outline:3px solid #ff7587;outline-offset:3px}
+@media(max-width:600px){#knx-app .subtabs{gap:5px;padding:6px 5px}#knx-app .subtabs button{font-size:11px;padding:7px 8px;min-height:34px}#knx-app .board-dock{top:var(--lab-subtabs-height,95px)}}
+
+/* LAB-013 v0.3.1-r4: estança física de la simulació i fitxes per equip */
+.room-scene-block{margin:18px 0 24px;padding:13px;background:#f7f9f8;border:1px solid #d3dfdd;border-radius:12px}
+.room-scene-heading{display:flex;gap:15px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin:2px 0 11px}
+.room-scene-heading h3{margin:0 0 4px;font-size:17px;color:#244c57}
+.room-scene-heading p{margin:0;font-size:12.5px;color:#57737a;max-width:660px}
+.room-sim-scroll{width:100%;overflow-x:auto;overflow-y:hidden;border-radius:9px;box-shadow:0 5px 16px #304f5922;border:1px solid #d2d8d2;background:#f4f0e8;overscroll-behavior-inline:contain}
+#room-sim-board{display:block;width:100%;min-width:870px;height:auto;min-height:280px}
+.room-fixture{filter:drop-shadow(2px 4px 4px #3c46433b)}
+.room-rocker{cursor:pointer;outline:none}
+.room-rocker:hover rect,.room-rocker:focus-visible rect{stroke:#138b8b;stroke-width:3;filter:brightness(1.025)}
+.room-rocker:active rect{filter:brightness(.94)}
+.room-scene-note{font-size:11.5px;color:#688087;margin:8px 2px 0}
+.room-control-section{margin:18px 0}
+.room-control-section>h3{margin:0 0 13px;font-size:18px}
+.room-device-category{margin-bottom:19px}
+.room-device-category>h4{font-size:14px;font-weight:800;letter-spacing:.2px;color:#315a61;margin:0 0 9px}
+.room-control-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:11px}
+.room-control-card{min-width:0;border:1px solid #cadadd;background:white;border-radius:11px;padding:13px 14px;box-shadow:0 3px 12px #244b5810}
+.room-control-card>header{display:flex;justify-content:space-between;align-items:flex-start;gap:9px;margin-bottom:11px}
+.room-control-card>header strong,.room-control-card>header small{display:block}
+.room-control-card>header strong{font-size:13.5px;line-height:1.35;color:#234a57}
+.room-control-card>header small{font-size:11px;color:#64818b;margin-top:2px}
+.room-control-card .shutter-meta{margin:8px 0 10px}
+.room-control-card .shutter-time{margin:13px 0 0}
+.room-control-card .button-row{gap:6px;flex-wrap:wrap}
+.room-control-card .button-row .btn{font-size:12px;padding:6px 8px}
+.room-card-description{font-size:12px;line-height:1.5;color:#5b7580;margin:0 0 10px}
+.room-control-card .sim-channel{padding:7px 0;border-bottom:1px solid #e9f0f2}
+.room-control-card .sim-channel:last-child{border:0}
+.room-control-card .sim-channel small{font-size:11px;color:#627c85;display:block}
+@media(max-width:620px){.room-scene-block{padding:8px}.room-scene-heading h3{font-size:15px}#room-sim-board{min-width:850px}.room-control-grid{grid-template-columns:1fr}}
+
+/* v0.3.1-r6: tres accions en una única fila compacta, també en mòbil */
+#knx-app .prog-compact-block{width:fit-content;max-width:100%;margin:11px 0 3px;padding:8px;border:1px solid #cddde0;border-radius:9px;background:#f5f9f9}
+#knx-app .prog-action-row{display:grid;grid-template-columns:66px 151px 129px;align-items:stretch;gap:6px;max-width:100%}
+#knx-app .prog-linked-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;min-width:0;min-height:44px;padding:4px;border:1.5px solid #9caeb4;background:#edf2f3;border-radius:7px;color:#334e57;font-size:10px;font-weight:800;cursor:pointer;line-height:1.1}
+#knx-app .prog-linked-lens{display:block;width:18px;height:18px;border:4px solid #e1d8d8;border-radius:50%;background:#87484e;box-shadow:inset 0 0 0 1px #5c3b40,0 0 0 1px #a49a9d}
+#knx-app .prog-linked-button.is-active .prog-linked-lens{background:#f12e45;border-color:#ffe5e6;box-shadow:inset 0 0 0 1px #b3162e,0 0 0 3px #f5324566,0 0 10px #f12e4580}
+#knx-app .prog-linked-button.is-active{border-color:#d66c7a;background:#fff6f7}
+#knx-app .prog-compact-action{display:flex;align-items:center;justify-content:center;min-width:0;margin:0;padding:5px 8px;font-size:11.5px;line-height:1.2;text-align:center;white-space:normal}
+#knx-app .prog-compact-status{display:flex;flex-wrap:wrap;align-items:center;gap:3px 9px;padding:6px 2px 0;font-size:10.5px;line-height:1.35;color:#607781}
+#knx-app .prog-compact-status strong{font-size:10.5px;color:#4d6670;white-space:nowrap}
+#knx-app .prog-compact-status [data-state="on"]{color:#b7253a}
+#knx-app .prog-linked-button:focus-visible{outline:3px solid #e86d80;outline-offset:2px}
+@media(max-width:520px){#knx-app .prog-compact-block{width:100%;padding:6px}#knx-app .prog-action-row{grid-template-columns:53px minmax(0,1.15fr) minmax(0,1fr);gap:5px}#knx-app .prog-compact-action{font-size:11px;padding:5px 5px}#knx-app .prog-compact-status span{font-size:10px}}
+
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Salta al contingut</a>
+<header class="topbar"><a class="brand" href="https://seaseven.github.io/TecLab/"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 6 87 27V73L50 94 13 73V27Z M7 52H29L40 26 52 76 63 43 71 52H93"/></svg><span>TecLab<small>Laboratoris tècnics interactius</small></span></a><span class="version">LAB-013 <em>v0.3.1-r6 · Prototip modular</em></span></header>
+<main id="main-content"><a class="back" href="https://seaseven.github.io/TecLab/">← Catàleg de laboratoris</a>
+<section class="hero"><div><p class="eyebrow">LAB-013 · INSTAL·LACIONS I AUTOMATITZACIÓ</p><h1>Laboratori de sistemes KNX</h1><p class="intro">Munta una instal·lació KNX TP des de zero, afegeix diversos dispositius genèrics, programa cada unitat i comprova bombetes i persianes motoritzades.</p><div class="hero-notes"><span>KNX TP · 30 V CC</span><span>230 V CA</span><span>1 línia · Estança interactiva</span></div></div><div class="hero-visual" aria-hidden="true"><svg viewBox="0 0 270 145"><defs><linearGradient id="u" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#263f51"/><stop offset="1" stop-color="#0c2534"/></linearGradient></defs><path d="M16 25H254M16 122H254" stroke="#527486" stroke-width="4"/><rect x="22" y="34" width="60" height="80" rx="6" fill="url(#u)" stroke="#7ba5b3"/><rect x="94" y="34" width="74" height="80" rx="6" fill="url(#u)" stroke="#7ba5b3"/><rect x="181" y="34" width="62" height="80" rx="6" fill="url(#u)" stroke="#7ba5b3"/><path d="M54 112v18h77v-18M131 130h81v-18" stroke="#e84848" stroke-width="3" fill="none"/><path d="M60 112v10h80v-10M140 122h65v-10" stroke="#657986" stroke-width="3" fill="none"/><circle cx="52" cy="65" r="13" fill="#f0b957"/><rect x="109" y="50" width="44" height="18" rx="3" fill="#f0b957"/><path d="M127 82h15M134 75v14" stroke="#a2d4da" stroke-width="2"/><circle cx="211" cy="63" r="10" fill="#73d59f"/><path d="M199 92h25" stroke="#94b8c1" stroke-width="3"/></svg></div></section>
+<nav class="tabs" aria-label="Apartats del laboratori"><button class="active" data-major="laboratori" type="button">Laboratori</button><button data-major="fonaments" type="button">Fonaments</button><button data-major="ajuda" type="button">Ajuda</button></nav>
+<div id="knx-app"></div></main>
+<footer><span>TecLab · Creat per Albert Marcet i Valdés</span><span>Prototip v0.3.1-r6 · <a href="https://seaseven.github.io/TecLab/#credits">Autoria i condicions de reutilització</a> · Llicència pendent</span></footer>
+
+<script>
+/** LAB-013 - Models genèrics, preparats per a referències comercials futures. */
+const screw=(id,name,kind,x,y)=>({id,name,kind,x,y,connector:'screw'});
+const bus=(id,name,kind,x,y)=>({id,name,kind,x,y,connector:'knx-tp'});
+const BOARD=Object.freeze({width:1580,height:1250,wallTop:707,dinRows:[180,402],sourceX:40,sourceY:280});
+const CATALOG=Object.freeze({
+ mains:{id:'mains',title:'Xarxa 230 V',subtitle:'Escomesa · L / N / PE',kind:'source',mount:'panel',single:true,w:172,h:145,ports:[screw('l','L','ac-l',38,0),screw('n','N','ac-n',87,0),screw('pe','PE','ac-pe',137,0)]},
+ mcb:{id:'mcb',title:'Magnetotèrmic',subtitle:'1P+N · 10 A',kind:'protection',mount:'din',single:true,w:142,h:145,ports:[screw('li','L','ac-l',48,0),screw('ni','N','ac-n',94,0),screw('lo','L','ac-l',48,145),screw('no','N','ac-n',94,145)]},
+ rcd:{id:'rcd',title:'Diferencial',subtitle:'2P · 30 mA',kind:'protection',mount:'din',single:true,w:142,h:145,ports:[screw('li','L','ac-l',48,0),screw('ni','N','ac-n',94,0),screw('lo','L','ac-l',48,145),screw('no','N','ac-n',94,145)]},
+ psu:{id:'psu',title:'Font KNX',subtitle:'230 V CA → KNX TP',kind:'psu',mount:'din',single:true,w:155,h:145,ports:[screw('l','L','ac-l',43,0),screw('n','N','ac-n',112,0),bus('p','+','bus-p',68,145),bus('m','−','bus-m',100,145)]},
+ button:{id:'button',title:'Pulsador KNX',subtitle:'Commutació · 1 tecla',kind:'button',mount:'wall',single:false,w:155,h:150,ports:[bus('p','+','bus-p',65,-24),bus('m','−','bus-m',97,-24)],channels:1,objects:[{id:'A',label:'Tecla 1',dpt:'1.001',direction:'send'}]},
+ button2:{id:'button2',title:'Pulsador KNX · 2 tecles',subtitle:'2 objectes independents',kind:'button',mount:'wall',single:false,w:170,h:152,ports:[bus('p','+','bus-p',73,-24),bus('m','−','bus-m',105,-24)],channels:2,objects:[{id:'A',label:'Tecla A',dpt:'1.001',direction:'send'},{id:'B',label:'Tecla B',dpt:'1.001',direction:'send'}]},
+ button4:{id:'button4',title:'Pulsador KNX · 4 tecles',subtitle:'4 objectes independents',kind:'button',mount:'wall',single:false,w:196,h:170,ports:[bus('p','+','bus-p',88,-24),bus('m','−','bus-m',120,-24)],channels:4,objects:['A','B','C','D'].map((c,i)=>({id:c,label:`Tecla ${c}`,dpt:'1.001',direction:'send'}))},
+ act:{id:'act',title:'Actuador KNX',subtitle:'Relé · 1 canal',kind:'act',mount:'din',single:false,w:166,h:145,ports:[bus('p','+','bus-p',75,-24),bus('m','−','bus-m',106,-24),screw('l','L','ac-l',50,145),screw('out','OUT','ac-l',115,145)],channels:1,objects:[{id:'A',label:'Canal A',dpt:'1.001',direction:'receive'}]},
+ act4:{id:'act4',title:'Actuador KNX · 4 canals',subtitle:'L/N auxiliars · 4 contactes IN/OUT',kind:'act',mount:'din',single:false,w:464,h:188,ports:[
+  bus('p','+','bus-p',237,-24),bus('m','−','bus-m',269,-24),
+  screw('l','L','ac-l',48,0),screw('n','N','ac-n',100,0),
+  // Cada canal forma un parell IN/OUT adjacent al marge inferior.
+  // Conservem els identificadors: els projectes existents mantenen el cablejat.
+  ...[0,1,2,3].flatMap(i=>[
+   screw(`in${i+1}`,`IN${i+1}`,'ac-l',143+i*79,188),
+   screw(`out${i+1}`,`OUT${i+1}`,'ac-l',181+i*79,188)
+  ])
+ ],channels:4,objects:['A','B','C','D'].map(c=>({id:c,label:`Canal ${c}`,dpt:'1.001',direction:'receive'}))},
+ blindButton:{id:'blindButton',title:'Pulsador KNX · persiana',subtitle:'Pujar / baixar · aturar',kind:'button',mount:'wall',single:false,w:190,h:156,ports:[bus('p','+','bus-p',80,-24),bus('m','−','bus-m',112,-24)],channels:2,objects:[{id:'move',label:'Pujar / baixar',dpt:'1.008',direction:'send'},{id:'stop',label:'Aturar',dpt:'1.007',direction:'send'}]},
+ blindAct:{id:'blindAct',title:'Actuador KNX · persiana',subtitle:'KNX via bus · L comú / ↑ / ↓',kind:'shutter-act',mount:'din',single:false,w:248,h:180,ports:[bus('p','+','bus-p',115,-24),bus('m','−','bus-m',147,-24),screw('in','L / COM','ac-l',57,180),screw('up','↑ PUJAR','ac-l',125,180),screw('down','↓ BAIXAR','ac-l',201,180)],channels:2,objects:[{id:'move',label:'Pujar / baixar',dpt:'1.008',direction:'receive'},{id:'stop',label:'Aturar / pas',dpt:'1.007',direction:'receive'}]},
+ shutter:{id:'shutter',title:'Motor i persiana · 230 V',subtitle:'Motor reversible · N / PE',kind:'shutter',mount:'wall',single:false,w:252,h:246,ports:[screw('up','↑ PUJAR','ac-l',39,0),screw('down','↓ BAIXAR','ac-l',100,0),screw('n','N','ac-n',162,0),screw('pe','PE','ac-pe',220,0)]},
+ lamp:{id:'lamp',title:'Bombeta E27',subtitle:'Portalàmpades E27 · 230 V',kind:'lamp',mount:'wall',single:false,w:154,h:139,ports:[screw('l','L','ac-l',50,0),screw('n','N','ac-n',106,0)]}
+});
+/** Classificació pedagògica estable. Afegir nous models no canvia la posició de les famílies. */
+const MODEL_GROUPS=Object.freeze([
+ {id:'supply',label:'Alimentació i proteccions',description:'Origen de tensió, proteccions i font del bus KNX',models:['mains','mcb','rcd','psu']},
+ {id:'control',label:'Comandament',description:'Pulsadors ordenats per nombre de tecles',models:['button','button2','button4','blindButton']},
+ {id:'actuation',label:'Actuadors',description:'Sortides de relé ordenades per nombre de canals',models:['act','act4','blindAct']},
+ {id:'loads',label:'Receptors',description:'Càrregues de la instal·lació',models:['lamp','shutter']}
+]);
+const MODEL_ORDER=MODEL_GROUPS.flatMap(group=>group.models);
+
+const PROGRAMMABLE=new Set(['button','button2','button4','act','act4','blindButton','blindAct']);
+const INPUT_MODELS=new Set(['button','button2','button4','blindButton']);
+const OUTPUT_MODELS=new Set(['act','act4']);
+const SHUTTER_ACTUATORS=new Set(['blindAct']);
+const SHUTTER_SENDERS=new Set(['blindButton']);
+const GENERIC_BUTTONS=new Set(['button','button2','button4']);
+const BUTTON_DPTS=Object.freeze(['1.001','1.008','1.007']);
+const allowedDpt=(model,index,dpt)=>GENERIC_BUTTONS.has(model)?BUTTON_DPTS.includes(dpt):defaultDpt(model,index)===dpt;
+const defaultDpt=(model,index)=>CATALOG[model]?.objects?.[index]?.dpt||'1.001';
+const channelCount=model=>CATALOG[model]?.channels||1;
+function modelFor(project,id){return CATALOG[project.devices[id]?.model];}
+function terminal(project,ref){if(typeof ref!=='string')return null;const sep=ref.lastIndexOf(':');if(sep<1)return null;const id=ref.slice(0,sep),key=ref.slice(sep+1),device=project.devices[id],model=CATALOG[device?.model],port=model?.ports.find(p=>p.id===key);return port?{id,key,device,model,port}:null;}
+function terminalRef(id,key){return `${id}:${key}`;}
+
+/** Guia breu de borns. Model didàctic, no substitueix l'esquema del fabricant. */
+const DEVICE_GUIDES=Object.freeze({
+ mains:{summary:'Origen de tensió alterna dins del quadre. Connecta’l al sistema de proteccions abans d’alimentar qualsevol equip.',flow:'L/N → proteccions → càrregues; PE → carcassa del motor',terms:{l:'Fase de la xarxa, 230 V CA.',n:'Neutre de la xarxa.',pe:'Conductor de protecció PE, independent de fase i neutre.'},tip:'No connectis mai aquests borns directament al bus KNX.'},
+ mcb:{summary:'Magnetotèrmic 1P+N. Interromp l’alimentació de la instal·lació quan és obert.',flow:'Fase i neutre → magnetotèrmic → diferencial',terms:{li:'Fase L, born superior d’entrada.',ni:'Neutre N, born superior d’entrada.',lo:'Fase L, born inferior de sortida.',no:'Neutre N, born inferior de sortida.'},tip:'En aquest model docent, entrada a dalt i sortida a baix. El frontal només indica L i N.'},
+ rcd:{summary:'Interruptor diferencial de dos pols. En aquest prototip, la palanca habilita el pas de L i N.',flow:'Magnetotèrmic → diferencial → font KNX i circuits de càrrega',terms:{li:'Fase L, born superior d’entrada.',ni:'Neutre N, born superior d’entrada.',lo:'Fase L, born inferior de sortida.',no:'Neutre N, born inferior de sortida.'},tip:'Model didàctic: no simula la detecció real de corrents de fuga.'},
+ psu:{summary:'Font de bus KNX: rep 230 V CA i proporciona alimentació KNX TP de 30 V CC.',flow:'230 V L/N → font KNX → bus vermell (+) i gris (−)',terms:{l:'Fase 230 V CA d’entrada.',n:'Neutre 230 V CA d’entrada.',p:'Positiu del bus KNX TP (vermell).',m:'Negatiu del bus KNX TP (gris fosc).'},tip:'El bus KNX i els conductors de 230 V són circuits diferents. No els interconnectis.'},
+ button:{summary:'Pulsador genèric d’una tecla: selecciona per a l’objecte DPT 1.001 (commutació), 1.008 (pujar/baixar) o 1.007 (pas/aturada).',flow:'Bus KNX +/− → pulsador → telegrama de grup',terms:{p:'Positiu de bus KNX (+), vermell.',m:'Negatiu de bus KNX (−), gris fosc.'},tip:'Configura el DPT i el valor 0/1 per a les ordres de persiana: 1.008 (0 pujar, 1 baixar) i 1.007 (pas/aturada). Descarrega l’aplicació després dels canvis.'},
+ button2:{summary:'Pulsador KNX de dues tecles. Cada tecla pot enviar DPT 1.001, 1.008 o 1.007 amb la seva adreça de grup i valor configurats.',flow:'Bus KNX +/− → tecles A i B → grups configurats',terms:{p:'Positiu de bus KNX (+), vermell.',m:'Negatiu de bus KNX (−), gris fosc.'},tip:'Per exemple, configura A com a DPT 1.008, valor 0 (pujar), i B com a DPT 1.008, valor 1 (baixar). Per aturar amb una tecla genèrica, cal assignar una altra tecla al DPT 1.007.'},
+ button4:{summary:'Pulsador KNX de quatre tecles. Cada tecla és configurable per a commutació DPT 1.001, moviment DPT 1.008 o pas/aturada DPT 1.007.',flow:'Bus KNX +/− → tecles A, B, C i D → grups configurats',terms:{p:'Positiu de bus KNX (+), vermell.',m:'Negatiu de bus KNX (−), gris fosc.'},tip:'Una combinació didàctica per a persiana: tecla A = 1.008 pujar; B = 1.008 baixar; C = 1.007 aturar; D = 1.001 llum. Cada tecla té el seu grup i valor configurats.'},
+ act:{summary:'Actuador KNX d’un canal: el relé connecta L amb OUT quan rep una ordre ON.',flow:'Fase protegida → L → relé → OUT → bombeta L; neutre → bombeta N',terms:{p:'Positiu del bus KNX (+).',m:'Negatiu del bus KNX (−).',l:'Entrada de fase del contacte del relé.',out:'Sortida de fase commutada cap a la càrrega.'},tip:'L’actuador d’un canal s’alimenta pel bus. OUT no proporciona tensió si no s’ha connectat L.'},
+ act4:{summary:'Actuador genèric de quatre relés independents amb alimentació auxiliar L/N de 230 V, més el bus KNX.',flow:'L/N 230 V → alimentació auxiliar · cada parella inferior IN/OUT correspon a un contacte de relé independent',terms:{p:'Positiu de bus KNX (+), vermell.',m:'Negatiu de bus KNX (−), gris fosc.',l:'Fase L de l’alimentació auxiliar 230 V de l’actuador.',n:'Neutre N de l’alimentació auxiliar 230 V de l’actuador.',in1:'Entrada de fase del contacte del canal A.',out1:'Sortida commutada del contacte del canal A.',in2:'Entrada de fase del contacte del canal B.',out2:'Sortida commutada del contacte del canal B.',in3:'Entrada de fase del contacte del canal C.',out3:'Sortida commutada del contacte del canal C.',in4:'Entrada de fase del contacte del canal D.',out4:'Sortida commutada del contacte del canal D.'},tip:'Els borns IN1/OUT1, IN2/OUT2, IN3/OUT3 i IN4/OUT4 són parelles contigües a la part inferior. El símbol imprès representa un contacte de relé normalment obert. Cal alimentar L/N auxiliars i portar fase protegida a cada IN utilitzat: els IN no estan pontats internament. Cada OUT va a la càrrega corresponent; el neutre de la càrrega és independent. Aquest esquema és del model docent i pot diferir del fabricant.'},
+ blindButton:{summary:'Pulsador per a persianes amb ordres KNX diferenciades de moviment i aturada.',flow:'Tecles ↑ i ↓ → DPT 1.008 (0 pujar / 1 baixar). Atura → DPT 1.007.',terms:{p:'Positiu del bus KNX TP (+).',m:'Negatiu del bus KNX TP (−).'},tip:'Té una única adreça física i dos objectes KNX. El grup de pujar/baixar i el d’aturada són diferents.'},
+ blindAct:{summary:'Actuador genèric de persiana de 230 V amb tres borns de potència: L/COM, PUJAR i BAIXAR. L’electrònica s’alimenta únicament pel bus KNX, com en alguns actuadors ABB JRA/S; aquest model no necessita neutre auxiliar.',flow:'Fase protegida → L/COM; relé enclavat → ↑ PUJAR o ↓ BAIXAR; N i PE → directament al motor',terms:{p:'Positiu del bus KNX TP (+), alimentació i comunicació.',m:'Negatiu del bus KNX TP (−), alimentació i comunicació.',in:'L / COM: entrada comuna de fase protegida per als dos contactes de sortida. No és una entrada de neutre.',up:'Sortida de fase commutada cap al born PUJAR del motor.',down:'Sortida de fase commutada cap al born BAIXAR del motor.'},tip:'El motor rep N i PE directament, no a través de l’actuador. Mai no es poden tancar simultàniament els contactes de pujada i baixada. A diferència d’aquest model alimentat pel bus, altres actuadors (p. ex. Theben JMG 4 T) també necessiten alimentació auxiliar de xarxa: consulta sempre l’esquema del fabricant.'},
+ shutter:{summary:'Motor de persiana de 230 V amb borns de pujada, baixada, neutre i protecció, identificats sobre la carcassa del motor.',flow:'↑ PUJAR des de l’actuador → PUJAR · ↓ BAIXAR des de l’actuador → BAIXAR · N i PE directament del quadre',terms:{up:'Entrada de fase per pujar la persiana.',down:'Entrada de fase per baixar la persiana.',n:'Neutre del motor de 230 V.',pe:'Terra de protecció de la carcassa del motor.'},tip:'No alimentis mai ↑ i ↓ alhora. Connecta el PE; la simulació bloqueja el moviment quan falta aquesta connexió. És un esquema didàctic, no una instrucció de muntatge real.'},
+ lamp:{summary:'Bombeta incandescent amb portalàmpades de rosca E27. En CA la bombeta pot encendre’s amb L/N invertits, però la connexió seria insegura.',flow:'OUT de l’actuador → L central E27 · neutre → N rosca exterior',terms:{l:'Fase commutada: contacte central del portalàmpades E27.',n:'Neutre: contacte exterior roscat del portalàmpades E27.'},tip:'Si inverteixes L i N la llum pot encendre’s, però la diagnosi advertirà que la connexió és insegura i no donarà la instal·lació per correcta.'}
+});
+
+
+const SCHEMA='teclab-knx-v0.2';
+const addressRE=/^(\d{1,2})\.(\d{1,2})\.(\d{1,3})$/;
+const groupRE=/^(\d{1,2})\/(\d{1,2})\/(\d{1,3})$/;
+const isAddress=s=>{const m=addressRE.exec(String(s??'').trim());return !!m&&+m[1]>=1&&+m[1]<=15&&+m[2]<=15&&+m[3]>=1&&+m[3]<=255;};
+const isGroup=s=>{const m=groupRE.exec(String(s??'').trim());return !!m&&+m[1]<=31&&+m[2]<=7&&+m[3]<=255&&(+m[1]+ +m[2]+ +m[3])>0;};
+const blankConfig=(channels=1,model='')=>({draft:{address:'',ga:'',dpt:defaultDpt(model,0),value:'0'},loaded:{address:'',ga:'',dpt:defaultDpt(model,0),value:'0'},programLed:false,channels:channels>1?Array.from({length:channels},(_,i)=>({draft:{ga:'',dpt:defaultDpt(model,i),value:'0'},loaded:{ga:'',dpt:defaultDpt(model,i),value:'0'}})):[]});
+function objectConfig(device,channel=0){if(!device?.config)return null;const count=channelCount(device.model);if(!Number.isInteger(channel)||channel<0||channel>=count)return null;return count===1?device.config:device.config.channels?.[channel]||null;}
+function relayState(device,channel=0){return device?.model==='act4'?device.relays?.[channel]===true:device?.model==='act'?device.relay===true:false;}
+function setRelay(device,channel,value){if(!device||!OUTPUT_MODELS.has(device.model))return false;if(device.model==='act4'){if(channel<0||channel>=4)return false;device.relays[channel]=!!value;}else if(channel===0)device.relay=!!value;else return false;return true;}
+function modelChannels(device){return CATALOG[device?.model]?.objects||[];}
+function channelLabel(device,index){return modelChannels(device)[index]?.label||`Canal ${index+1}`;}
+function createProject(){return {schema:SCHEMA,devices:{},order:[],nextId:1,wires:[],groupValues:{},logs:[]};}
+function installed(p,model){return p.order.map(id=>p.devices[id]).filter(d=>d?.model===model);}
+function deviceByModel(p,model){return installed(p,model)[0]||null;}
+function preferredPosition(p,model,point){
+ const m=CATALOG[model];if(!m)return null;
+ if(m.mount==='panel')return {x:BOARD.sourceX,y:Math.max(225,Math.min(BOARD.wallTop-m.h-20,point?.y??BOARD.sourceY))};
+ if(m.mount==='din'){
+  const rows=point?.y!=null?[...BOARD.dinRows].sort((a,b)=>Math.abs(a-point.y)-Math.abs(b-point.y)):BOARD.dinRows;
+  const candidates=[];for(const row of rows)for(let x=242;x<=BOARD.width-m.w-23;x+=10){
+   const collides=p.order.some(id=>{const d=p.devices[id],o=CATALOG[d.model];return o.mount==='din'&&d.position.y===row&&x<d.position.x+o.w+12&&x+m.w+12>d.position.x;});
+   if(!collides)candidates.push({x,y:row});
+  }
+  if(!candidates.length)return null;
+  const destX=point?.x==null?255:point.x-m.w/2;
+  return candidates.sort((a,b)=>(Math.abs(a.y-(point?.y??BOARD.dinRows[0]))*1.2+Math.abs(a.x-destX))-(Math.abs(b.y-(point?.y??BOARD.dinRows[0]))*1.2+Math.abs(b.x-destX)))[0];
+ }
+ let x=point?.x==null?75+(p.order.length%6)*225:point.x-m.w/2;
+ let y=point?.y==null?BOARD.wallTop+88:point.y-m.h/2;
+ x=Math.max(26,Math.min(BOARD.width-m.w-22,x));y=Math.max(BOARD.wallTop+62,Math.min(BOARD.height-m.h-20,y));
+ for(let k=0;k<15;k++){const occupied=p.order.some(id=>{const d=p.devices[id],o=CATALOG[d.model];return o.mount==='wall'&&Math.abs(x-d.position.x)<Math.max(o.w,m.w)-5&&Math.abs(y-d.position.y)<Math.max(o.h,m.h)-10;});if(!occupied)break;x=Math.max(26,Math.min(BOARD.width-m.w-22,x+165));}
+ return {x,y};
+}
+function addDevice(p,model,point){const m=CATALOG[model];if(!m)return {ok:false,msg:'Model no disponible.'};if(m.single&&installed(p,model).length)return {ok:false,msg:`Només es permet un exemplar de ${m.title} en aquesta versió.`};const pos=preferredPosition(p,model,point);if(!pos)return {ok:false,msg:'No queda espai lliure al carril DIN. Reorganitza els equips.'};const id=`u${p.nextId++}`,d={id,model,position:pos,protection:false,relay:false,relays:model==='act4'?[false,false,false,false]:null,shutterDirection:model==='blindAct'?'stop':null,shadePosition:model==='shutter'?50:null,travelSec:model==='shutter'?12:null,config:PROGRAMMABLE.has(model)?blankConfig(channelCount(model),model):null};p.devices[id]=d;p.order.push(id);return {ok:true,id,msg:`${m.title} col·locat (${id}).`};}
+function moveDevice(p,id,point){const d=p.devices[id],m=CATALOG[d?.model];if(!d||!m||!point)return false;const x=Math.max(m.mount==='din'?242:m.mount==='panel'?BOARD.sourceX:25,Math.min(m.mount==='panel'?BOARD.sourceX:BOARD.width-m.w-22,point.x-m.w/2));const y=m.mount==='din'?[...BOARD.dinRows].sort((a,b)=>Math.abs(a-point.y)-Math.abs(b-point.y))[0]:m.mount==='panel'?Math.max(225,Math.min(BOARD.wallTop-m.h-20,point.y-m.h/2)):Math.max(BOARD.wallTop+62,Math.min(BOARD.height-m.h-20,point.y-m.h/2));d.position={x:m.mount==='din'?Math.round(x/10)*10:x,y};return true;}
+function removeDevice(p,id){if(!p.devices[id])return false;delete p.devices[id];p.order=p.order.filter(k=>k!==id);p.wires=p.wires.filter(w=>terminal(p,w.a)&&terminal(p,w.b));return true;}
+function wireKind(p,a,b){const k=terminal(p,a)?.port.kind,l=terminal(p,b)?.port.kind;if(!k||!l)return 'invalid';if(k.startsWith('ac')&&l.startsWith('ac'))return k===l?k:'ac-mixed';if(k.startsWith('bus')&&l.startsWith('bus'))return k===l?k:'bus-mixed';return 'hazard';}
+function connect(p,a,b){if(!terminal(p,a)||!terminal(p,b)||a===b)return {ok:false,msg:'Selecciona dos terminals diferents i instal·lats.'};if(p.wires.some(w=>w.a===a&&w.b===b||w.a===b&&w.b===a))return {ok:false,msg:'Ja existeix aquest conductor.'};p.wires.push({a,b,route:0,offset:0});return {ok:true,msg:wireKind(p,a,b)==='hazard'?'Connexió perillosa entre circuits de diferent tensió.':'Conductor connectat.'};}
+function disconnect(p,i){if(i<0||i>=p.wires.length)return false;p.wires.splice(i,1);return true;}
+function graph(p,domain,options={}){
+ const refs=p.order.flatMap(id=>CATALOG[p.devices[id].model].ports.filter(t=>t.kind.startsWith(domain)).map(t=>terminalRef(id,t.id)));
+ const parent=new Map(refs.map(r=>[r,r]));const root=a=>{if(!parent.has(a))return null;let b=a;while(parent.get(b)!==b){parent.set(b,parent.get(parent.get(b)));b=parent.get(b);}return b;};
+ const join=(a,b)=>{const x=root(a),y=root(b);if(x!==null&&y!==null&&x!==y)parent.set(x,y);};
+ for(const w of p.wires)if(wireKind(p,w.a,w.b)!=='invalid'&&wireKind(p,w.a,w.b)!=='hazard')join(w.a,w.b);
+ if(domain==='ac')for(const id of p.order){const d=p.devices[id];if(['mcb','rcd'].includes(d.model)&&(options.protections?.[id]??d.protection)){join(terminalRef(id,'li'),terminalRef(id,'lo'));join(terminalRef(id,'ni'),terminalRef(id,'no'));}if(d.model==='blindAct'){const dir=options.shutterDirections?.[id]??d.shutterDirection;if(dir==='up'||dir==='down')join(terminalRef(id,'in'),terminalRef(id,dir));}
+  if(OUTPUT_MODELS.has(d.model))for(let c=0;c<channelCount(d.model);c++){ 
+  const override=options.relays?.[id],isClosed=typeof override==='boolean'?override:Array.isArray(override)?override[c]===true:relayState(d,c);
+  if(isClosed)join(terminalRef(id,d.model==='act4'?`in${c+1}`:'l'),terminalRef(id,d.model==='act4'?`out${c+1}`:'out'));
+ }}
+ return {connected:(a,b)=>root(a)!==null&&root(a)===root(b)};
+}
+function evaluate(p){
+ const source=deviceByModel(p,'mains'),psu=deviceByModel(p,'psu'),mcb=deviceByModel(p,'mcb'),rcd=deviceByModel(p,'rcd');
+ const sourceL=source&&terminalRef(source.id,'l'),sourceN=source&&terminalRef(source.id,'n');
+ const ac=graph(p,'ac'),bus=graph(p,'bus');const live=ref=>!!sourceL&&ac.connected(sourceL,ref),neutral=ref=>!!sourceN&&ac.connected(sourceN,ref);
+ const hazards=p.wires.filter(w=>wireKind(p,w.a,w.b)==='hazard');
+ const sourcePE=source&&terminalRef(source.id,'pe');
+ const acShort=!!sourceL&&ac.connected(sourceL,sourceN);
+ const peFault=!!sourcePE&&(ac.connected(sourcePE,sourceL)||ac.connected(sourcePE,sourceN));
+ const busShort=!!psu&&bus.connected(terminalRef(psu.id,'p'),terminalRef(psu.id,'m'));
+ const safeAC=!acShort&&!peFault&&!hazards.length;const psuPowered=!!psu&&safeAC&&live(terminalRef(psu.id,'l'))&&neutral(terminalRef(psu.id,'n'));
+ const noMCB=mcb?graph(p,'ac',{protections:{[mcb.id]:false}}):null;
+ const noRCD=rcd?graph(p,'ac',{protections:{[rcd.id]:false}}):null;
+ const sinks=p.order.flatMap(id=>{const d=p.devices[id];if(d.model==='psu')return [terminalRef(id,'l'),terminalRef(id,'n')];if(d.model==='act4')return [terminalRef(id,'l'),terminalRef(id,'n'),...[1,2,3,4].map(c=>terminalRef(id,`in${c}`))];if(d.model==='blindAct')return [terminalRef(id,'in')];if(d.model==='shutter')return [terminalRef(id,'n')];if(OUTPUT_MODELS.has(d.model))return [terminalRef(id,'l')];if(d.model==='lamp')return [terminalRef(id,'n')];return [];});
+ const bypassIn=g=>!g||sinks.some(s=>{const t=terminal(p,s);return t?.port.kind==='ac-n'?g.connected(sourceN,s):g.connected(sourceL,s);});
+ const bypassMcb=!!source&&!mcb||!!mcb&&bypassIn(noMCB);
+ const bypassRcd=!!source&&!rcd||!!rcd&&bypassIn(noRCD);
+ const poweredBus=psuPowered&&!busShort;
+ const status={};
+ for(const id of p.order){const d=p.devices[id],m=CATALOG[d.model];
+  if(INPUT_MODELS.has(d.model)||OUTPUT_MODELS.has(d.model)||SHUTTER_ACTUATORS.has(d.model)){
+   const plus=psu&&bus.connected(terminalRef(psu.id,'p'),terminalRef(id,'p'));
+   const minus=psu&&bus.connected(terminalRef(psu.id,'m'),terminalRef(id,'m'));
+   const reversed=!!psu&&(bus.connected(terminalRef(psu.id,'p'),terminalRef(id,'m'))||bus.connected(terminalRef(psu.id,'m'),terminalRef(id,'p')));
+   const auxPowered=d.model==='act4'?!!(safeAC&&live(terminalRef(id,'l'))&&neutral(terminalRef(id,'n'))):true;
+   status[id]={powered:!!(poweredBus&&plus&&minus),auxPowered,reversed};
+  }
+  if(m.kind==='protection')status[id]={closed:!!d.protection};
+  if(m.kind==='shutter'){const up=!!(safeAC&&live(terminalRef(id,'up'))),down=!!(safeAC&&live(terminalRef(id,'down'))),hasN=!!(safeAC&&neutral(terminalRef(id,'n'))),hasPE=!!sourcePE&&ac.connected(sourcePE,terminalRef(id,'pe'));const shortDirections=up&&down;const travel=Number.isFinite(d.travelSec)?d.travelSec:12;const pos=Number.isFinite(d.shadePosition)?Math.max(0,Math.min(100,d.shadePosition)):0;const direction=!shortDirections&&hasN&&hasPE&&up!==down?(up?'up':'down'):'stop';status[id]={direction,up,down,hasN,hasPE,shortDirections,position:pos,travelSec:travel,moving:direction==='up'?pos>0:direction==='down'?pos<100:false};}
+  if(m.kind==='lamp'){const correct=!!(safeAC&&live(terminalRef(id,'l'))&&neutral(terminalRef(id,'n'))),reversed=!!(safeAC&&live(terminalRef(id,'n'))&&neutral(terminalRef(id,'l')));status[id]={on:correct||reversed,reversed,correct};}
+ }
+ const allProgrammed=p.order.filter(id=>PROGRAMMABLE.has(p.devices[id].model));const duplicates=new Set();
+ for(let i=0;i<allProgrammed.length;i++)for(let j=i+1;j<allProgrammed.length;j++){const a=p.devices[allProgrammed[i]].config.loaded.address,b=p.devices[allProgrammed[j]].config.loaded.address;if(a&&a===b)duplicates.add(a);}
+ const controlledLamps=new Set();
+ for(const lamp of installed(p,'lamp')){const open=graph(p,'ac',{relays:Object.fromEntries(p.order.filter(id=>OUTPUT_MODELS.has(p.devices[id].model)).map(id=>[id,false]))}),on=graph(p,'ac',{relays:Object.fromEntries(p.order.filter(id=>OUTPUT_MODELS.has(p.devices[id].model)).map(id=>[id,true]))});if(sourceL&&on.connected(sourceL,terminalRef(lamp.id,'l'))&&!open.connected(sourceL,terminalRef(lamp.id,'l'))&&neutral(terminalRef(lamp.id,'n')))controlledLamps.add(lamp.id);}
+ const controlledShutters=new Set();
+ for(const motor of installed(p,'shutter')){const upGraph=graph(p,'ac',{shutterDirections:Object.fromEntries(installed(p,'blindAct').map(a=>[a.id,'up']))}),downGraph=graph(p,'ac',{shutterDirections:Object.fromEntries(installed(p,'blindAct').map(a=>[a.id,'down']))}),openGraph=graph(p,'ac',{shutterDirections:Object.fromEntries(installed(p,'blindAct').map(a=>[a.id,'stop']))});const m=motor.id; if(sourceL&&upGraph.connected(sourceL,terminalRef(m,'up'))&&downGraph.connected(sourceL,terminalRef(m,'down'))&&!openGraph.connected(sourceL,terminalRef(m,'up'))&&!openGraph.connected(sourceL,terminalRef(m,'down'))&&neutral(terminalRef(m,'n'))&&status[m]?.hasPE&&!status[m]?.shortDirections)controlledShutters.add(m);}
+ const addressesValid=allProgrammed.length>0&&allProgrammed.every(id=>{const addr=p.devices[id].config.loaded.address;return isAddress(addr)&&addr.startsWith('1.1.')&&!duplicates.has(addr);});
+ const senders=p.order.map(id=>p.devices[id]).filter(d=>INPUT_MODELS.has(d.model));const receivers=p.order.map(id=>p.devices[id]).filter(d=>OUTPUT_MODELS.has(d.model));
+ const linkedSwitch=senders.some(b=>Array.from({length:channelCount(b.model)},(_,i)=>objectConfig(b,i)?.loaded).some(bc=>bc&&isGroup(bc.ga)&&bc.dpt==='1.001'&&receivers.some(a=>Array.from({length:channelCount(a.model)},(_,i)=>objectConfig(a,i)?.loaded).some(ac=>ac?.ga===bc.ga&&ac.dpt==='1.001'))));
+ const matchShutter=dpt=>senders.some(b=>Array.from({length:channelCount(b.model)},(_,i)=>objectConfig(b,i)?.loaded).some(o=>o?.dpt===dpt&&isGroup(o.ga)&&installed(p,'blindAct').some(a=>{const idx=dpt==='1.008'?0:1,ao=objectConfig(a,idx)?.loaded;return ao?.ga===o.ga&&ao?.dpt===dpt;})));
+ const linkedShutter=matchShutter('1.008')&&matchShutter('1.007');
+ const linked=linkedSwitch||linkedShutter;
+ const safeLampholders=!installed(p,'lamp').some(d=>status[d.id]?.reversed);
+ const ready=(senders.length>0||installed(p,'blindButton').length>0)&&(receivers.length>0||installed(p,'blindAct').length>0)&&(controlledLamps.size>0||controlledShutters.size>0)&&psuPowered&&!bypassMcb&&!bypassRcd&&addressesValid&&linked&&safeLampholders&&p.order.filter(id=>PROGRAMMABLE.has(p.devices[id].model)).every(id=>status[id].powered&&status[id].auxPowered!==false)&&!hazards.length&&!acShort&&!peFault&&!busShort&&!installed(p,'shutter').some(d=>status[d.id]?.shortDirections||!status[d.id]?.hasPE);
+ return {status,source,psu,mcb,rcd,psuPowered,acShort,busShort,hazards,bypassMcb,bypassRcd,controlledLamps,controlledShutters,peFault,duplicates,addressesValid,linked,ready};
+}
+function issues(p,e=evaluate(p)){
+ const list=[];const push=(severity,text)=>list.push({severity,text});
+ if(!p.order.length)push('info','El plànol és buit. Selecciona els equips de la caixa de material.');
+ if(e.hazards.length)push('danger','Un conductor uneix la instal·lació de 230 V amb el bus KNX.');
+ if(e.acShort)push('danger','Curtcircuit entre fase i neutre: alimentació bloquejada.');
+ if(e.peFault)push('danger','Connexió incorrecta: el conductor PE ha quedat unit a fase o neutre.');
+ if(e.busShort)push('danger','Curtcircuit entre + i − del bus KNX.');
+ if(e.bypassMcb||e.bypassRcd)push('error','Una alimentació no passa per totes les proteccions requerides.');
+ if(!e.psuPowered)push('info','La font KNX encara no rep una alimentació correcta.');
+ if(p.order.some(id=>PROGRAMMABLE.has(p.devices[id].model)&&e.status[id]?.reversed))push('error','S’ha invertit la polaritat del bus en algun dispositiu.');
+ for(const d of installed(p,'act4'))if(!e.status[d.id]?.auxPowered)push('error',`${d.id}: l’actuador de 4 canals necessita alimentació auxiliar 230 V als borns L/N.`);
+ for(const d of installed(p,'shutter')){const s=e.status[d.id];if(!s?.hasPE)push('error',`${d.id}: falta el conductor de protecció PE del motor.`);if(s?.shortDirections)push('danger',`${d.id}: fase simultània a PUJAR i BAIXAR. Moviment bloquejat.`);if(!s?.hasN)push('info',`${d.id}: el motor necessita el neutre N.`);}
+ for(const d of installed(p,'lamp'))if(e.status[d.id]?.reversed)push('error',`${d.id}: connexió insegura: fase i neutre invertits al portalàmpades E27. La bombeta pot encendre’s, però cal corregir-la.`);
+ if(e.duplicates.size)push('error',`Adreça física duplicada: ${[...e.duplicates].join(', ')}.`);
+ if(!e.addressesValid&&p.order.some(id=>PROGRAMMABLE.has(p.devices[id].model)))push('info','Cal descarregar adreces físiques diferents als dispositius KNX.');
+ if(!e.linked&&p.order.some(id=>INPUT_MODELS.has(p.devices[id].model))&&p.order.some(id=>OUTPUT_MODELS.has(p.devices[id].model)||SHUTTER_ACTUATORS.has(p.devices[id].model)))push('info','Els objectes de commutació no comparteixen cap adreça de grup carregada.');
+ if(installed(p,'lamp').length&&!e.controlledLamps.size)push('info','Cap bombeta té un circuit de fase controlat exclusivament per un relé.');
+ if(installed(p,'shutter').length&&!e.controlledShutters.size)push('info','El motor de persiana no té les dues fases de moviment controlades per l’actuador.');
+ if(e.ready)push('success','Instal·lació preparada: comprova la commutació o la persiana amb els pulsadors.');
+ return list;
+}
+function toggleProtection(p,id){const d=p.devices[id];if(!d||!['mcb','rcd'].includes(d.model))return false;d.protection=!d.protection;return true;}
+function toggleProgram(p,id){const d=p.devices[id],e=evaluate(p);if(!d||!PROGRAMMABLE.has(d.model)||!e.status[id]?.powered)return {ok:false,msg:'Aquest dispositiu ha de rebre alimentació KNX abans de programar-se.'};d.config.programLed=!d.config.programLed;return {ok:true,msg:`LED PROG ${d.config.programLed?'activat':'desactivat'} (${id}).`};}
+function downloadAddress(p,id){const d=p.devices[id],e=evaluate(p);if(!d||!PROGRAMMABLE.has(d.model))return {ok:false,msg:'Dispositiu no programable.'};if(!e.status[id]?.powered)return {ok:false,msg:'Dispositiu sense alimentació de bus.'};if(!d.config.programLed)return {ok:false,msg:'Prem primer PROG.'};const addr=d.config.draft.address.trim();if(!isAddress(addr)||!addr.startsWith('1.1.'))return {ok:false,msg:'Adreça invàlida: utilitza 1.1.1 a 1.1.255.'};if(p.order.some(other=>other!==id&&p.devices[other].config?.loaded.address===addr))return {ok:false,msg:'L’adreça física ja està assignada.'};d.config.loaded.address=addr;d.config.programLed=false;return {ok:true,msg:`Adreça física ${addr} descarregada a ${id}.`};}
+function downloadApplication(p,id){
+ const d=p.devices[id],e=evaluate(p);if(!d||!PROGRAMMABLE.has(d.model))return {ok:false,msg:'Dispositiu no programable.'};
+ if(!e.status[id]?.powered)return {ok:false,msg:'Dispositiu sense alimentació de bus.'};
+ if(!isAddress(d.config.loaded.address))return {ok:false,msg:'Descarrega primer l’adreça física.'};
+ const groups=Array.from({length:channelCount(d.model)},(_,i)=>objectConfig(d,i)?.draft);
+ if(!groups.some(o=>o?.ga.trim()))return {ok:false,msg:'Defineix almenys una adreça de grup.'};
+ if(groups.some(o=>o?.ga.trim()&&!isGroup(o.ga)))return {ok:false,msg:'Hi ha una adreça de grup invàlida.'};
+ if(groups.some((o,i)=>o?.ga.trim()&&!allowedDpt(d.model,i,o.dpt)))return {ok:false,msg:'DPT incompatible amb aquest objecte KNX.'};
+ if(groups.some(o=>o?.ga.trim()&&GENERIC_BUTTONS.has(d.model)&&!['0','1'].includes(o.value)))return {ok:false,msg:'El valor de telegrama ha de ser 0 o 1.'};
+ for(let i=0;i<groups.length;i++){const cfg=objectConfig(d,i);cfg.loaded.ga=cfg.draft.ga.trim();cfg.loaded.dpt=cfg.draft.dpt;cfg.loaded.value=cfg.draft.value;}
+ return {ok:true,msg:`Aplicació carregada a ${id}, ${groups.filter(o=>o.ga.trim()).length} objecte(s) amb adreça de grup.`};
+}
+function pressButton(p,id,channel=0){
+ const b=p.devices[id],e=evaluate(p);if(!b||!INPUT_MODELS.has(b.model))return {ok:false,msg:'Selecciona un pulsador.'};
+ if(!e.status[id]?.powered)return {ok:false,msg:'Pulsador sense alimentació KNX.'};
+ const cfg=objectConfig(b,channel)?.loaded;if(!cfg)return {ok:false,msg:'Tecla no disponible.'};
+ const {ga,dpt}=cfg,address=b.config.loaded.address;
+ if(!isAddress(address)||!isGroup(ga)||!allowedDpt(b.model,channel,dpt))return {ok:false,msg:'La tecla no té una adreça de grup i un DPT carregats vàlids.'};
+ if(dpt==='1.008'||dpt==='1.007'){
+  const bit=cfg.value;if(bit!=='0'&&bit!=='1')return {ok:false,msg:'El valor KNX de la tecla ha de ser 0 o 1.'};
+  const received=[],action=dpt==='1.007'?'stop':bit==='0'?'up':'down',idx=dpt==='1.008'?0:1;
+  for(const act of installed(p,'blindAct')){const ac=objectConfig(act,idx)?.loaded;if(!e.status[act.id]?.powered||!isAddress(act.config.loaded.address)||act.config.loaded.address===address||e.duplicates.has(act.config.loaded.address)||ac?.ga!==ga||ac?.dpt!==dpt)continue;act.shutterDirection=action;received.push(act.id);}
+  const value=dpt==='1.008'?`${bit} · ${action==='up'?'PUJAR':'BAIXAR'}`:`${bit} · PAS/ATURAR`;
+  p.logs.unshift({time:new Date().toLocaleTimeString('ca-ES',{hour12:false}),source:address,sourceId:`${id} · ${channelLabel(b,channel)}`,ga,value,service:'GroupValueWrite',dest:received.join(', ')||'Sense receptor'});p.logs=p.logs.slice(0,80);
+  return {ok:received.length>0,msg:received.length?`Ordre ${action==='up'?'de pujada':action==='down'?'de baixada':'d’aturada'} rebuda per ${received.length} actuador(s).`:'Telegram enviat, però no hi ha actuador de persiana amb el mateix grup i DPT.'};
+ }
+ const value=!p.groupValues[ga];p.groupValues[ga]=value;
+ const received=[];
+ for(const id2 of p.order){const a=p.devices[id2];if(!OUTPUT_MODELS.has(a.model)||(!e.status[id2]?.powered||e.status[id2]?.auxPowered===false)||!isAddress(a.config.loaded.address)||a.config.loaded.address===address||e.duplicates.has(a.config.loaded.address))continue;
+  for(let k=0;k<channelCount(a.model);k++){const ac=objectConfig(a,k)?.loaded;if(ac?.ga===ga&&ac?.dpt===dpt){setRelay(a,k,value);received.push(`${a.id}${channelCount(a.model)>1?` · ${channelLabel(a,k)}`:''}`);}}
+ }
+ p.logs.unshift({time:new Date().toLocaleTimeString('ca-ES',{hour12:false}),source:address,sourceId:`${id}${channelCount(b.model)>1?` · ${channelLabel(b,channel)}`:''}`,ga,value:value?'1 · ON':'0 · OFF',service:'GroupValueWrite',dest:received.join(', ')||'Sense receptor'});p.logs=p.logs.slice(0,80);
+ return {ok:received.length>0,msg:received.length?`Telegram ${value?'ON':'OFF'} rebut per ${received.length} canal(s).`:'Telegram emès, sense canals receptors compatibles.'};
+}
+/** Enviament KNX de moviment (DPT 1.008) o aturada (DPT 1.007). */
+function pressShutter(p,id,action){
+ const sender=p.devices[id],e=evaluate(p);
+ if(sender?.model!=='blindButton'||!['up','down','stop'].includes(action))return {ok:false,msg:'Selecciona un pulsador de persiana i una ordre vàlida.'};
+ if(!e.status[id]?.powered||!isAddress(sender.config.loaded.address))return {ok:false,msg:'Cal alimentar i programar el pulsador KNX.'};
+ const idx=action==='stop'?1:0,obj=objectConfig(sender,idx)?.loaded;
+ if(!obj||!isGroup(obj.ga)||obj.dpt!==defaultDpt('blindButton',idx))return {ok:false,msg:'Cal descarregar els grups de moviment i aturada al pulsador.'};
+ const received=[];
+ for(const act of installed(p,'blindAct')){
+  const cfg=objectConfig(act,idx)?.loaded;
+  if(!e.status[act.id]?.powered||!isAddress(act.config.loaded.address)||act.config.loaded.address===sender.config.loaded.address||e.duplicates.has(act.config.loaded.address)||cfg?.ga!==obj.ga||cfg?.dpt!==obj.dpt)continue;
+  act.shutterDirection=action;received.push(act.id);
+ }
+ const value=action==='up'?'0 · PUJAR':action==='down'?'1 · BAIXAR':'STOP';
+ p.logs.unshift({time:new Date().toLocaleTimeString('ca-ES',{hour12:false}),source:sender.config.loaded.address,sourceId:`${id} · ${action.toUpperCase()}`,ga:obj.ga,value,service:'GroupValueWrite',dest:received.join(', ')||'Sense receptor'});p.logs=p.logs.slice(0,80);
+ return {ok:received.length>0,msg:received.length?`Ordre «${action==='up'?'Pujar':action==='down'?'Baixar':'Aturar'}» rebuda per ${received.length} actuador(s).`:'Telegram enviat, però no hi ha cap actuador de persiana amb aquest grup.'};
+}
+/** Avança la mecànica sense accelerar el temps real ni saltar els finals de carrera. */
+function advanceShutters(p,seconds){
+ if(!Number.isFinite(seconds)||seconds<=0||seconds>10)return false;
+ const e=evaluate(p);let changed=false;
+ for(const motor of installed(p,'shutter')){const s=e.status[motor.id];if(!s?.moving)continue;const next=Math.max(0,Math.min(100,motor.shadePosition+(s.direction==='up'?-1:1)*100*seconds/motor.travelSec));if(next!==motor.shadePosition){motor.shadePosition=next;changed=true;}}
+ return changed;
+}
+function saveProject(p){return JSON.parse(JSON.stringify({...p,logs:[]}));}
+function loadProject(raw){
+ if(!raw||!Array.isArray(raw.wires)||raw.wires.length>1200)throw Error('Projecte invàlid: connexions incorrectes.');
+ if(raw.schema==='teclab-knx-v0.1')return migrateLegacy(raw);
+ if(raw.schema!==SCHEMA||!Array.isArray(raw.order)||raw.order.length>200)throw Error('Versió de projecte incompatible.');
+ const p=createProject();const seen=new Set();
+ for(const id of raw.order){if(typeof id!=='string'||!/^u\d{1,6}$/.test(id)||seen.has(id))throw Error('Identificador de dispositiu invàlid.');const d=raw.devices?.[id];if(!CATALOG[d?.model])throw Error('Model de dispositiu desconegut.');if(CATALOG[d.model].single&&installed(p,d.model).length)throw Error('Equip únic repetit.');seen.add(id);const m=CATALOG[d.model];const x=Number(d.position?.x),y=Number(d.position?.y);p.devices[id]={id,model:d.model,position:{x:Number.isFinite(x)?Math.max(12,Math.min(BOARD.width-m.w-10,x)):300,y:m.mount==='din'?(BOARD.dinRows.includes(y)?y:BOARD.dinRows[0]):m.mount==='wall'?(Number.isFinite(y)?Math.max(BOARD.wallTop+62,Math.min(BOARD.height-m.h-20,y)):BOARD.wallTop+80):(Number.isFinite(y)?Math.max(80,Math.min(BOARD.wallTop-m.h-20,y)):BOARD.sourceY)},protection:d.protection===true,relay:d.relay===true,relays:d.model==='act4'?Array.from({length:4},(_,i)=>d.relays?.[i]===true):null,shutterDirection:d.model==='blindAct'&&['up','down'].includes(d.shutterDirection)?d.shutterDirection:'stop',shadePosition:d.model==='shutter'&&Number.isFinite(d.shadePosition)?Math.max(0,Math.min(100,d.shadePosition)):50,travelSec:d.model==='shutter'&&Number.isFinite(d.travelSec)?Math.max(5,Math.min(60,d.travelSec)):12,config:PROGRAMMABLE.has(d.model)?blankConfig(channelCount(d.model),d.model):null};
+  if(PROGRAMMABLE.has(d.model))for(const part of ['draft','loaded'])for(const key of ['address','ga','dpt','value'])if(typeof d.config?.[part]?.[key]==='string')p.devices[id].config[part][key]=d.config[part][key].slice(0,32);
+  if(PROGRAMMABLE.has(d.model)&&channelCount(d.model)>1)for(let i=0;i<channelCount(d.model);i++)for(const part of ['draft','loaded'])for(const key of ['ga','dpt','value']){
+   const val=d.config?.channels?.[i]?.[part]?.[key];if(typeof val==='string')p.devices[id].config.channels[i][part][key]=val.slice(0,32);
+  }
+  p.order.push(id);
+ }
+ p.nextId=Math.max(1,...p.order.map(id=>Number(id.slice(1))+1));
+ // Compatibilitat: la v0.2.1 anterior anomenava l1..l4 els nous IN1..IN4.
+ const adaptRef=ref=>{if(typeof ref!=='string')return ref;const sep=ref.lastIndexOf(':');if(sep<1)return ref;const id=ref.slice(0,sep),key=ref.slice(sep+1);return p.devices[id]?.model==='act4'&&/^l[1-4]$/.test(key)?`${id}:in${key.slice(1)}`:ref;};
+ p.wires=raw.wires.map(w=>({...w,a:adaptRef(w?.a),b:adaptRef(w?.b)})).filter(w=>terminal(p,w.a)&&terminal(p,w.b)&&w.a!==w.b).map(w=>({a:w.a,b:w.b,route:Number.isFinite(w.route)?Math.max(-12,Math.min(12,w.route)):0,offset:Number.isFinite(w.offset)?Math.max(-240,Math.min(240,w.offset)):0}));
+ p.groupValues=raw.groupValues&&typeof raw.groupValues==='object'?Object.fromEntries(Object.entries(raw.groupValues).filter(([k,v])=>isGroup(k)&&typeof v==='boolean')):{};return p;
+}
+function migrateLegacy(x){const p=createProject(),map={};for(const model of MODEL_ORDER){if(x.placed&&x.placed[model]!==true)continue;const oldPos=x.positions?.[model],r=addDevice(p,model,oldPos&&{x:oldPos.x+CATALOG[model].w/2,y:oldPos.y+CATALOG[model].h/2});if(!r.ok)continue;map[model]=r.id;const d=p.devices[r.id];if(oldPos&&Number.isFinite(oldPos.x)&&Number.isFinite(oldPos.y))d.position={x:oldPos.x,y:CATALOG[model].mount==='din'?BOARD.dinRows[0]:oldPos.y};if(model==='mcb'||model==='rcd')d.protection=x.protection?.[model]===true;if(model==='act')d.relay=x.relay===true;if(PROGRAMMABLE.has(model))for(const part of ['draft','loaded'])for(const key of ['address','ga','dpt'])if(typeof x.config?.[model]?.[part]?.[key]==='string')d.config[part][key]=x.config[model][part][key];}
+ for(const w of x.wires){const convert=ref=>{const split=String(ref||'').split('.');return map[split[0]]?terminalRef(map[split[0]],split[1]):null;};const a=convert(w.a),b=convert(w.b);if(terminal(p,a)&&terminal(p,b)){connect(p,a,b);const last=p.wires[p.wires.length-1];last.offset=Number.isFinite(w.offset)?w.offset:0;last.route=Number.isFinite(w.route)?w.route:0;}}
+ return p;}
+
+
+
+const root=document.querySelector('#knx-app');
+let state=createProject(),section='laboratori',tab='muntatge',mode='wire',selectedWire=-1,selectedDevice='',firstPort='',notice='',noticeType='',materialOpen=true,zoom=1,wireDrag=null,dragging=null,routing=null,trayDrag=null,ghost=null,skipPortClick=false,manualModel='',manualFocus=null;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const devices=()=>state.order.map(id=>state.devices[id]).filter(Boolean);
+const label=id=>state.devices[id]?`${CATALOG[state.devices[id].model].title} · ${id}`:'Equip retirat';
+const ptLabel=ref=>{const t=terminal(state,ref);return t?`${label(t.id)} · ${t.port.name}`:'Terminal absent';};
+const portPoint=ref=>{const t=terminal(state,ref);return t?{x:t.device.position.x+t.port.x,y:t.device.position.y+t.port.y}:null;};
+const wireColor=w=>({'ac-l':'#b46829','ac-n':'#267cc1','ac-pe':'#6a892a','bus-p':'#dd4444','bus-m':'#3e5159','ac-mixed':'#e5a133','bus-mixed':'#b88a23',hazard:'#bc3049'}[wireKind(state,w.a,w.b)]||'#5c6c73');
+function show(message,type=''){notice=message;noticeType=type;render();}
+function routeInfo(w,i){
+ const a=portPoint(w.a),b=portPoint(w.b);if(!a||!b)return {d:'',handle:{x:0,y:0},axis:'x'};
+ const ta=terminal(state,w.a),tb=terminal(state,w.b),dx=b.x-a.x,dy=b.y-a.y;
+ const sa=ta.port.y<=0?-1:1,sb=tb.port.y<=0?-1:1;
+ const spread=((i*11)%23-11)*7+(w.route||0)*26+(w.offset||0);
+ let mid,axis;
+ if(sa===sb){const edge=sa>0?Math.max(a.y,b.y):Math.min(a.y,b.y);mid={x:(a.x+b.x)/2,y:Math.max(30,Math.min(BOARD.height-28,edge+sa*(72+spread)))};axis='y';}
+ else{mid={x:Math.max(30,Math.min(BOARD.width-28,(a.x+b.x)/2+spread)),y:(a.y+b.y)/2};axis='x';}
+ const pull=Math.min(157,Math.max(44,Math.abs(dy)*.23)),bendX=Math.min(145,Math.max(36,Math.abs(dx)*.17)),dir=dx>=0?1:-1;
+ const d=`M ${a.x} ${a.y} C ${a.x} ${a.y+sa*pull}, ${mid.x-dir*bendX} ${mid.y}, ${mid.x} ${mid.y} C ${mid.x+dir*bendX} ${mid.y}, ${b.x} ${b.y+sb*pull}, ${b.x} ${b.y}`;
+ return {d,handle:mid,axis};
+}
+function wireMarkup(){return state.wires.map((w,i)=>({w,i})).sort((a,b)=>(a.i===selectedWire?1:0)-(b.i===selectedWire?1:0)).map(({w,i})=>{const info=routeInfo(w,i),sel=i===selectedWire,col=wireColor(w),a=portPoint(w.a),b=portPoint(w.b);if(!a||!b)return '';return `<g class="wire-group ${sel?'wire-selected':'wire-other'}" data-wire-index="${i}" role="button" tabindex="0" aria-label="Conductor ${esc(ptLabel(w.a))} fins a ${esc(ptLabel(w.b))}"><path class="wire-halo" d="${info.d}"/><path class="wire-hit" d="${info.d}"/><path class="wire-visible" d="${info.d}" stroke="${col}" fill="none" stroke-width="${sel?5:3.6}" stroke-linecap="round" ${wireKind(state,w.a,w.b)==='hazard'?'stroke-dasharray="8 5"':''}/>${wireKind(state,w.a,w.b)==='ac-pe'?`<path class="wire-pe-stripe" d="${info.d}" stroke="#f5d54a" stroke-width="2.3" stroke-dasharray="9 10" fill="none" pointer-events="none"/>`: ''}<circle cx="${a.x}" cy="${a.y}" r="${sel?8:4.3}" fill="${col}" stroke="white" stroke-width="2"/><circle cx="${b.x}" cy="${b.y}" r="${sel?8:4.3}" fill="${col}" stroke="white" stroke-width="2"/><title>${esc(ptLabel(w.a))} → ${esc(ptLabel(w.b))}</title></g>`;}).join('');}
+function wireActionMarkup(){if(selectedWire<0||!state.wires[selectedWire])return '';const h=routeInfo(state.wires[selectedWire],selectedWire).handle,x=Math.max(12,Math.min(BOARD.width-162,h.x-72)),y=Math.max(36,Math.min(BOARD.height-62,h.y-77));return `<g class="wire-overlay"><circle class="route-handle" data-route-handle="${selectedWire}" cx="${h.x}" cy="${h.y}" r="13" fill="white" stroke="#12757b" stroke-width="3"/><circle cx="${h.x}" cy="${h.y}" r="3" fill="#12757b" pointer-events="none"/><g class="wire-floating-action" data-wire-remove="${selectedWire}" role="button" tabindex="0" aria-label="Desconnecta el cable"><rect x="${x}" y="${y}" width="144" height="40" rx="9" fill="white" stroke="#b93b48" stroke-width="2"/><text x="${x+72}" y="${y+25}" fill="#ad3441" font-size="13" text-anchor="middle" font-weight="750" pointer-events="none">✕ Desconnecta</text></g></g>`;}
+function previewWire(){if(!wireDrag?.start||!wireDrag?.point)return '';const a=portPoint(wireDrag.start),b=wireDrag.point;if(!a)return '';const dx=b.x-a.x,dy=b.y-a.y;return `<path class="wire-preview" d="M ${a.x} ${a.y} C ${a.x} ${a.y+dy*.53}, ${b.x-dx*.23} ${b.y}, ${b.x} ${b.y}" stroke="#0f8386"/>`;}
+function led(cx,cy,color){return `<circle cx="${cx}" cy="${cy}" r="6" fill="${color}" stroke="#294e58" stroke-width="1.5"/>`;}
+// Polsador físic vermell; LED PROG apagat = vermell mat, activat = llum vermella visible.
+function programButton(cx,cy,active){return `<g class="knx-program-button ${active?'prog-on':'prog-off'}"><circle cx="${cx}" cy="${cy}" r="16" fill="transparent"/><circle cx="${cx}" cy="${cy}" r="10" fill="${active?'#ffe5e6':'#e1d8d8'}" stroke="${active?'#b62735':'#a49a9d'}" stroke-width="1.4"/><circle cx="${cx}" cy="${cy}" r="6.2" fill="${active?'#f12e45':'#87484e'}" stroke="${active?'#b3162e':'#5c3b40'}" stroke-width="1.1"/>${active?`<circle cx="${cx-1.8}" cy="${cy-2}" r="1.4" fill="#fff4f4"/><circle cx="${cx}" cy="${cy}" r="13.2" fill="none" stroke="#f53245" stroke-width="2" opacity=".75"/>`:''}</g>`;}
+function unitMarkup(id,e){const d=state.devices[id],m=CATALOG[d.model],pos=d.position,s=e.status[id]||{},on=d.protection,prog=d.config?.programLed,selectedConductor=state.wires[selectedWire],selectedConductorColor=selectedConductor?wireColor(selectedConductor):'';
+ let specific='';if(m.kind==='source')specific='<path d="M39 87q12-33 26 0t26 0" stroke="#ce9442" stroke-width="3" fill="none"/><text x="76" y="119" text-anchor="middle" font-size="13" fill="#446474">230 V~</text>';
+ if(m.kind==='protection')specific=`<g data-protect="${id}" role="button" tabindex="0" aria-label="${m.title} ${on?'connectat':'desconnectat'}"><rect x="40" y="54" width="63" height="81" rx="8" fill="#e8edef" stroke="#a5b8c0"/><rect x="54" y="${on?69:96}" width="36" height="26" rx="4" fill="${on?'#188963':'#6d7e88'}" stroke="white" stroke-width="2"/><text x="71" y="137" text-anchor="middle" font-size="9.1" font-weight="700" fill="${on?'#16835b':'#a23b49'}">${on?'CONNECTAT':'DESCONNECTAT'}</text></g>`;
+ if(m.kind==='psu')specific=`${led(77,74,e.psuPowered?'#23b687':'#92a6b0')}<text x="77" y="96" text-anchor="middle" font-size="11" fill="#405d67">${e.psuPowered?'BUS OK':'BUS OFF'}</text><text x="77" y="124" text-anchor="middle" font-size="11" fill="#506b75">30 V CC</text>`;
+ if(m.kind==='button'){
+  const n=channelCount(d.model),cols=n===4?2:n,baseWidth=n===4?49:n===2?53:67,gap=6,total=cols*baseWidth+(cols-1)*gap,x0=(m.w-total)/2, y0=n===4?86:91, h=n===4?29:36;
+  const keys=Array.from({length:n},(_,i)=>{const row=Math.floor(i/cols),col=i%cols,x=x0+col*(baseWidth+gap),y=y0+row*(h+5);
+   return `<g data-press="${id}:${i}" role="button" tabindex="0" aria-label="Acciona ${esc(channelLabel(d,i))} de ${esc(label(id))}"><rect x="${x}" y="${y}" width="${baseWidth}" height="${h}" rx="5" fill="#d5e8eb" stroke="#99b9c3" stroke-width="1.5"/><rect x="${x+5}" y="${y+5}" width="${baseWidth-10}" height="${h-10}" rx="4" fill="#b2cfd8"/><text x="${x+baseWidth/2}" y="${y+h/2+4}" font-size="11" font-weight="750" text-anchor="middle" fill="#245364" pointer-events="none">${esc('ABCD'[i])}</text></g>`;}).join('');
+  specific=`<g data-program="${id}" role="button" tabindex="0" aria-pressed="${prog===true}" aria-label="PROG de ${esc(label(id))}">${programButton(43,68,prog)}<text x="62" y="72" fill="#4e6871" font-size="10">PROG</text></g>${keys}`;
+ }
+ if(m.kind==='act'){
+  const n=channelCount(d.model);
+  if(d.model==='act4'){
+   // Frontal d'actuador didàctic: quatre contactes dibuixats, cada IN al costat del seu OUT.
+   // El símbol imprès és normalment obert; el LED superior indica l'estat real del relé.
+   const channels=Array.from({length:4},(_,i)=>{
+    const left=143+i*79,right=181+i*79,cx=(left+right)/2,on=relayState(d,i);
+    return `<g class="relay-channel" data-relay-channel="${i+1}" aria-label="Canal ${'ABCD'[i]}, contacte entre IN${i+1} i OUT${i+1}"><rect x="${left-14}" y="85" width="76" height="73" rx="6" fill="#eaf2f3" stroke="#b0c9cf" stroke-width="1.2"/><circle cx="${cx}" cy="101" r="6.2" fill="${on?'#27b177':'#94abb1'}" stroke="#fff" stroke-width="1.3"/><text x="${cx}" y="122" font-size="11" font-weight="800" text-anchor="middle" fill="#3b5d6b">CANAL ${'ABCD'[i]}</text><g stroke="#375e6b" fill="none" stroke-width="1.9" stroke-linecap="round" pointer-events="none"><path d="M ${left} 148 h 10 M ${right-9} 148 h 9"/><circle cx="${left+10}" cy="148" r="2.2" fill="#eaf2f3"/><circle cx="${right-9}" cy="148" r="2.2" fill="#eaf2f3"/><path d="M ${left+12} 146 L ${right-12} 140"/></g><title>Contacte normalment obert: IN${i+1} → OUT${i+1}, ${on?'tancat':'obert'}</title></g>`;
+   }).join('');
+   specific=`<g data-program="${id}" role="button" tabindex="0" aria-pressed="${prog===true}" aria-label="PROG de ${esc(label(id))}">${programButton(28,102,prog)}<text x="45" y="106" fill="#4e6871" font-size="10">PROG</text></g>${led(367,65,s.powered?'#2eb28a':'#91a5ae')}<text x="388" y="69" fill="#4e6871" font-size="10">BUS</text>${led(28,132,s.auxPowered?'#2eb28a':'#dd8569')}<text x="45" y="136" fill="#4e6871" font-size="10">230 V</text>${channels}`;
+  }else{
+   specific=`<g data-program="${id}" role="button" tabindex="0" aria-pressed="${prog===true}" aria-label="PROG de ${esc(label(id))}">${programButton(43,68,prog)}<text x="61" y="72" fill="#4e6871" font-size="10">PROG</text></g>${led(95,68,s.powered?'#2eb28a':'#91a5ae')}<text x="117" y="72" fill="#4e6871" font-size="10">BUS</text><text x="83" y="131" text-anchor="middle" font-weight="800" font-size="11" fill="${d.relay?'#18855e':'#6c7f85'}">Relé ${d.relay?'ON':'OFF'}</text>`;
+  }
+ }
+ if(d.model==='blindButton'){
+  const btn=(action,x,sign)=>`<g data-shutter="${id}:${action}" role="button" tabindex="0" aria-label="${action==='up'?'Pujar':'Baixar'} persiana amb ${esc(label(id))}"><rect x="${x}" y="90" width="67" height="43" rx="8" fill="#d2e8e9" stroke="#86b3bc" stroke-width="2"/><text x="${x+34}" y="119" font-size="27" font-weight="800" text-anchor="middle" fill="#155c69">${sign}</text></g>`;
+  specific=`<g data-program="${id}" role="button" tabindex="0" aria-pressed="${prog===true}">${programButton(41,70,prog)}<text x="60" y="74" font-size="10" fill="#526b75">PROG</text></g>${btn('up',23,'↑')}${btn('down',101,'↓')}<text x="96" y="148" font-size="9" text-anchor="middle" fill="#46717e">Aturada: simulació · DPT 1.007</text>`;
+ }
+ if(d.model==='blindAct'){
+  const direction=d.shutterDirection||'stop',col=s.powered?'#25a980':'#90a4ad';
+  specific=`<g data-program="${id}" role="button" tabindex="0" aria-pressed="${prog===true}">${programButton(34,74,prog)}<text x="52" y="78" font-size="10" fill="#385d6a">PROG</text></g>${led(184,74,col)}<text x="201" y="78" font-size="10" fill="#385d6a">BUS</text><rect x="22" y="100" width="205" height="53" rx="8" fill="#e6f0f1" stroke="#a7c2ca"/><text x="124" y="113" text-anchor="middle" font-size="10" font-weight="750" fill="#426775">CONTACTES ENCLAVATS · L/COM</text><g stroke="#355c69" stroke-width="2" fill="none"><path d="M57 139H84M84 139l25 -12M134 139h25M159 139l24 -12"/></g><text x="88" y="148" text-anchor="middle" font-size="10" font-weight="750" fill="${direction==='up'?'#14895b':'#64818b'}">${direction==='up'?'↑ ACTIU':'↑ PUJAR'}</text><text x="175" y="148" text-anchor="middle" font-size="10" font-weight="750" fill="${direction==='down'?'#14895b':'#64818b'}">${direction==='down'?'↓ ACTIU':'↓ BAIXAR'}</text>`;
+ }
+ if(m.kind==='shutter'){
+  const percent=Math.max(0,Math.min(100,s.position||0));const height=105*percent/100;
+  specific=`<defs><pattern id="shade-mount-${id}" width="9" height="13" patternUnits="userSpaceOnUse"><rect width="9" height="13" fill="#cbd5d9"/><path d="M0 11H9" stroke="#7a939c" stroke-width="2"/><path d="M0 4H9" stroke="#f3f6f6" stroke-width="1"/></pattern></defs><rect x="12" y="48" width="228" height="29" rx="6" fill="#f0f7f8" stroke="#b4cdd1"/><rect x="40" y="83" width="174" height="132" rx="6" fill="#f1ede8" stroke="#c7b6a3" stroke-width="2"/><rect x="45" y="88" width="162" height="119" rx="5" fill="#e5f2f7" stroke="#8eaebd" stroke-width="5"/><rect x="50" y="94" width="152" height="105" fill="#badfee"/><path d="M126 94v105" stroke="#fff" stroke-width="3"/><rect x="50" y="94" width="152" height="${height.toFixed(1)}" class="shutter-shade" fill="url(#shade-mount-${id})"/><rect x="45" y="88" width="162" height="10" rx="3" fill="#6a838f"/><text x="126" y="228" font-size="11" font-weight="800" text-anchor="middle" class="shutter-position" fill="#356575">${Math.round(percent)} % tancada · ${s.moving?s.direction==='up'?'PUJANT':'BAIXANT':'ATURADA'}</text>`;
+ }
+ if(m.kind==='lamp')specific=`<circle cx="76" cy="76" r="30" fill="${s.on?'#ffdf7b':'#e2eaec'}" stroke="${s.on?'#e0b32c':'#9bb8bf'}" stroke-width="3"/><path d="M63 74c0-17 26-17 26 0l-8 14H71Z" stroke="${s.on?'#bc8b27':'#719099'}" fill="none" stroke-width="3"/><path d="M72 91h12m-10 6h8" stroke="#64828b" stroke-width="3"/><text x="77" y="122" font-size="10" text-anchor="middle" font-weight="800" fill="${s.reversed?'#bf433d':s.on?'#99681d':'#617982'}">${s.reversed?'L/N INVERTITS':s.on?'ENCESA':'APAGADA'}</text>`;
+ const bports=m.ports.filter(p=>p.connector==='knx-tp');const busBody=bports.length===2?(()=>{const x=Math.min(...bports.map(p=>p.x))-14,y=bports[0].y<=0?-40:m.h-10;return `<g class="bus-terminal"><rect x="${x-5}" y="${y-4}" width="72" height="32" rx="5" fill="#d0d7da" stroke="#82999f"/><rect x="${x}" y="${y}" width="30" height="24" rx="3" fill="#c62c34"/><rect x="${x+30}" y="${y}" width="30" height="24" rx="3" fill="#3d4248"/>${[0,1,2,3,4,5,6,7].map(k=>`<circle cx="${x+8+(k%2)*12+(k>=4?30:0)}" cy="${y+7+(Math.floor(k/2)%2)*10}" r="2.3" fill="#171c21"/>`).join('')}</g>`;})():'',
+ ports=m.ports.map(p=>{const isBus=p.connector==='knx-tp',y=p.y,top=y<=0,ref=terminalRef(id,p.id),isSelectedEnd=!!selectedConductor&&(selectedConductor.a===ref||selectedConductor.b===ref);const terminalView=isBus?`<circle cx="${p.x}" cy="${y}" r="5.6" fill="#181e21" stroke="${p.kind==='bus-p'?'#f46e67':'#b3bec5'}" stroke-width="1.6"/>`:`<rect x="${p.x-13}" y="${y-11}" width="26" height="22" rx="4" fill="#b5c3ca" stroke="#6d818b" stroke-width="1.5"/><circle cx="${p.x}" cy="${y}" r="8" fill="#e6eef0" stroke="#8099a3"/><path d="M${p.x-4.4} ${y-4.4}l8.8 8.8m0-8.8l-8.8 8.8" stroke="#5b7582" stroke-width="1.5"/>`;return `<g data-port="${ref}" role="button" tabindex="0" class="port-hit ${firstPort===ref?'selected-port':''} ${isSelectedEnd?'wire-endpoint':''}" aria-label="Born ${esc(ptLabel(ref))}${isSelectedEnd?' · extrem del conductor seleccionat':''}"><circle cx="${p.x}" cy="${y}" r="24" fill="transparent"/>${isSelectedEnd?`<g class="wire-end-mark" aria-hidden="true" pointer-events="none"><circle cx="${p.x}" cy="${y}" r="23" fill="none" stroke="white" stroke-width="8"/><circle class="wire-end-ring" cx="${p.x}" cy="${y}" r="23" fill="none" stroke="${selectedConductorColor}" stroke-width="4"/><circle cx="${p.x}" cy="${y}" r="12" fill="${selectedConductorColor}" fill-opacity=".18"/></g>`:''}${terminalView}${p.kind==='ac-pe'?`<circle cx="${p.x}" cy="${y}" r="11.5" fill="none" stroke="#6a8c32" stroke-width="3" stroke-dasharray="6 5" pointer-events="none"/>`:''}${isBus?'':`<text x="${p.x}" y="${top?(d.model==='shutter'?y+68:d.model==='act4'?y+60:y+28):y-18}" text-anchor="middle" fill="${d.model==='shutter'?'#174857':'#315465'}" font-size="${d.model==='shutter'?11.1:9.6}" font-weight="800" pointer-events="none">${esc(p.name)}</text>`}<title>${esc(ptLabel(terminalRef(id,p.id)))}</title></g>`;}).join('');
+ return `<g class="unit unit-${m.mount} ${selectedDevice===id?'unit-focused':''}" data-device="${id}" transform="translate(${pos.x} ${pos.y})"><rect x="0" y="0" width="${m.w}" height="${m.h}" rx="10" fill="${m.kind==='lamp'?'#fffefa':'#fcfefe'}" stroke="${selectedDevice===id?'#0d8d85':'#9ebcc3'}" stroke-width="${selectedDevice===id?3.8:2}"/><path d="M0 11Q0 0 11 0H${m.w-11}Q${m.w} 0 ${m.w} 11V42H0Z" fill="#1b4555"/><rect x="6" y="4" width="${m.w-12}" height="37" class="drag-grip" fill="transparent"/><text x="${m.w/2}" y="21" text-anchor="middle" font-size="12" font-weight="750" fill="white" pointer-events="none">${esc(m.title)}</text><text x="${m.w/2}" y="35" text-anchor="middle" font-size="9.1" fill="#c9e1e7" pointer-events="none">${esc(m.subtitle)}</text><text x="${m.w-10}" y="${d.model==='act4'?77:54}" text-anchor="end" font-size="9" fill="#64818b" pointer-events="none">${esc(id)}</text>${specific}${busBody}${ports}${selectedDevice===id?`<g class="device-floating-remove" data-device-remove="${esc(id)}" role="button" tabindex="0" aria-label="Retira ${esc(m.title)} i els seus conductors" transform="translate(${m.w+1} 12)"><circle cx="0" cy="0" r="19" fill="#fff6f6" stroke="#b63849" stroke-width="2.6"/><g stroke="#af3243" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none" pointer-events="none"><path d="M -7 -8 H 7 M -4 -11 H 4 M -6 -4 L -5 9 H 5 L 6 -4 M -2 -1 V 6 M 2 -1 V 6"/></g><title>Retira el dispositiu (i els cables connectats)</title></g>`:''}<g data-manual="${esc(m.id)}" role="button" tabindex="0" aria-label="Manual de connexions: ${esc(m.title)}" class="device-manual-button"><circle cx="20" cy="21" r="12" fill="#eef9f8" stroke="#59b4aa" stroke-width="1.5"/><text x="20" y="26" font-size="15" font-weight="800" fill="#135b60" text-anchor="middle" pointer-events="none">?</text></g></g>`;
+}
+function canvas(e){const count=state.order.length;const visibleOrder=selectedDevice&&state.devices[selectedDevice]?[...state.order.filter(id=>id!==selectedDevice),selectedDevice]:state.order;return `<div class="canvas-toolbar"><span class="muted">Quadre i estança · ${count} equip${count===1?'':'s'} instal·lat${count===1?'':'s'}</span><div class="zoom-controls"><button class="btn" data-zoom="out" aria-label="Redueix el zoom">−</button><strong>${Math.round(zoom*100)} %</strong><button class="btn" data-zoom="in" aria-label="Amplia el zoom">+</button><button class="btn" data-zoom="fit">Ajusta</button></div></div><div class="canvas-wrap" id="board-scroll"><svg id="knx-board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BOARD.width} ${BOARD.height}" style="width:${Math.round(zoom*100)}%;min-width:${Math.round(1000*zoom)}px" role="group" aria-label="Plànol: col·loca equips i connecta els borns"><defs><pattern id="board-grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#d5e3e7" stroke-width=".7"/></pattern><pattern id="room-brick" width="64" height="32" patternUnits="userSpaceOnUse"><rect width="64" height="32" fill="#faf6f0"/><path d="M0 0h64M0 32h64M32 0v16M0 16h64M0 16v16" fill="none" stroke="#e8e3db" stroke-width=".8"/></pattern></defs><rect width="${BOARD.width}" height="${BOARD.height}" fill="url(#board-grid)"/><rect x="15" y="18" width="${BOARD.width-30}" height="${BOARD.wallTop-32}" rx="16" fill="#eaf2f4" stroke="#b4cbd2" stroke-width="2"/><text x="34" y="52" class="board-tag">QUADRE ELÈCTRIC</text><text x="34" y="75" class="board-sub">Punt d'alimentació · proteccions · font · actuadors KNX</text><rect x="27" y="104" width="192" height="563" rx="13" fill="#e2e7e8" stroke="#9bafb7" stroke-dasharray="6 5" stroke-width="2"/><text x="46" y="129" class="board-sub">ENTRADA 230 V</text><text x="46" y="148" font-size="11" fill="#4d6571">Separada del carril DIN</text>${BOARD.dinRows.map((y,i)=>`<g><rect x="237" y="${y+54}" width="${BOARD.width-268}" height="58" rx="5" fill="#aabac1" stroke="#607782" stroke-width="2"/><rect x="246" y="${y+67}" width="${BOARD.width-284}" height="30" rx="3" fill="#7e929c"/><path d="M246 ${y+61}H${BOARD.width-38}M246 ${y+104}H${BOARD.width-38}" stroke="#eff3f4" stroke-width="4"/><text x="251" y="${y-35}" class="board-tag">CARRIL DIN ${i+1} · 35 mm</text></g>`).join('')}<rect x="15" y="${BOARD.wallTop}" width="${BOARD.width-30}" height="${BOARD.height-BOARD.wallTop-18}" rx="15" fill="url(#room-brick)" stroke="#dccdc0" stroke-width="2"/><text x="35" y="${BOARD.wallTop+30}" class="board-tag">ESTANÇA · MUNTATGE LLIURE</text><text x="35" y="${BOARD.wallTop+52}" class="board-sub">Pulsadors i punts de llum de la instal·lació</text><g id="wire-layer" class="${selectedWire>=0?'with-selection':''}">${wireMarkup()}</g><g id="drag-wire-layer">${previewWire()}</g>${visibleOrder.map(id=>unitMarkup(id,e)).join('')}${wireActionMarkup()}</svg></div>`;}
+function tray(){
+ const symbols={mains:'⚡',mcb:'▣',rcd:'▣',psu:'▤',button:'◉',button2:'◧',button4:'▦',act:'▥',act4:'▤',blindButton:'↕',blindAct:'⇅',shutter:'▤',lamp:'☼'};
+ const item=key=>{
+  const m=CATALOG[key],count=installed(state,key).length,disabled=m.single&&count>0;
+  return `<div class="material-item ${disabled?'is-installed':''}" data-tray="${key}" aria-label="Model ${esc(m.title)}"><span class="material-icon">${symbols[key]||'◻'}</span><span class="material-info"><strong>${esc(m.title)}</strong><small>${esc(m.subtitle)} · ${m.mount==='din'?'DIN':m.mount==='wall'?'Paret':'Quadre'} · instal·lats: ${count}</small></span><button type="button" class="btn material-help" data-manual="${key}" aria-label="Manual de connexions de ${esc(m.title)}" title="Consulta els borns">?</button><button type="button" class="btn" data-add="${key}" ${disabled?'disabled':''}>${disabled?'Instal·lat':'Afegeix'}</button></div>`;
+ };
+ return `<div class="material-box"><div class="section-heading"><div><h3>Caixa de material</h3><p class="muted">Dispositius agrupats per funció. Dins de cada família, els models s'ordenen per nombre de tecles o canals. Arrossega un equip al plànol o prem «Afegeix».</p></div><span class="pill">${state.order.length} equips</span></div><div class="material-sections">${MODEL_GROUPS.map(group=>`<section class="material-section" aria-label="${esc(group.label)}"><div class="material-group-heading"><h4>${esc(group.label)}</h4><span>${esc(group.description)}</span></div><div class="material-grid">${group.models.map(item).join('')}</div></section>`).join('')}</div></div>`;
+}
+function statusline(e){return `<div class="statusline"><span class="pill ${e.psuPowered?'ok':'warn'}">Font: ${e.psuPowered?'230 V OK':'Sense tensió'}</span><span class="pill ${e.addressesValid?'ok':'warn'}">Adreces: ${e.addressesValid?'OK':'Pendents'}</span><span class="pill ${e.linked?'ok':'warn'}">Grups: ${e.linked?'OK':'Pendents'}</span><span class="pill ${e.ready?'ok':'warn'}">Circuit: ${e.ready?'Preparat':'Incomplet'}</span></div>`;}
+function note(){return notice?`<div class="notice ${noticeType==='error'?'error':noticeType==='success'?'success':''}" role="status">${esc(notice)}</div>`:'';}
+function wiring(e){return `<section class="panel"><div class="section-heading"><div><h2>Muntatge i cablejat</h2><p class="muted">Comença amb el plànol buit. Afegeix els equips i connecta els terminals. Selecciona un equip tocant-ne la carcassa: apareixerà la paperera per retirar-lo. Clica un conductor per desconnectar-lo.</p></div></div>${statusline(e)}<div class="board-dock" role="toolbar" aria-label="Eines de muntatge"><div class="dock-mode"><button class="btn ${mode==='wire'?'active':''}" data-mode="wire">◉ Connectar cables</button><button class="btn ${mode==='move'?'active':''}" data-mode="move">✥ Moure equips</button></div><div class="dock-placement"><label for="quick-model">Equip:</label><select id="quick-model">${MODEL_GROUPS.map(group=>`<optgroup label="${esc(group.label)}">${group.models.map(key=>`<option value="${key}">${esc(CATALOG[key].title)}</option>`).join('')}</optgroup>`).join('')}</select><button class="btn primary" data-cmd="quick-add">+ Col·loca</button><button class="btn" data-cmd="toggle-tray">${materialOpen?'Amaga':'Mostra'} la caixa</button></div></div>${materialOpen?`<div id="material-drawer">${tray()}</div>`:''}${canvas(e)}<div class="help-note">${mode==='wire'?(firstPort?`Terminal inicial: <strong>${esc(ptLabel(firstPort))}</strong>. Selecciona el terminal final.`:'Arrossega d’un born a un altre o fes dos clics. Els cables són corbats i pots moure el punt de desviació de cada conductor.'):'Arrossega els equips. Els muntats en DIN s’encaixen al carril; els receptors i pulsadors queden a l’estança.'} ${selectedWire>=0&&state.wires[selectedWire]?`<strong>Conductor seleccionat:</strong> ${esc(ptLabel(state.wires[selectedWire].a))} → ${esc(ptLabel(state.wires[selectedWire].b))}. <strong>Els dos borns estan ressaltats al plànol.</strong>`:''} ${selectedDevice?`<strong>Equip seleccionat: ${esc(label(selectedDevice))}.</strong> Prem la paperera vermella al costat de l’equip per retornar-lo a la caixa de material.`:''}</div>${note()}<div class="button-row"><button class="btn" data-cmd="cancel">Cancel·la selecció</button><button class="btn" data-cmd="export">Exporta JSON</button><button class="btn" data-cmd="import">Importa projecte</button><button class="btn danger" data-cmd="reset">Reinicia</button><input id="project-file" type="file" accept="application/json,.json" hidden/></div></section><section class="panel"><details class="wires-details"><summary><strong>Conductors (${state.wires.length})</strong> · Obre la llista d'identificació</summary>${state.wires.length?`<div class="wires-list">${state.wires.map((w,i)=>`<div class="wire-item ${selectedWire===i?'is-selected':''}"><button class="wire-identify" data-wire-list="${i}"><b style="color:${wireColor(w)}">●</b> ${esc(ptLabel(w.a))} → ${esc(ptLabel(w.b))}</button><button class="btn" data-wire-remove="${i}" aria-label="Desconnecta conductor">✕</button></div>`).join('')}</div>`:'<p class="muted">No hi ha conductors.</p>'}</details></section>`;}
+/** El botó PROG de Programació i el del muntatge comparteixen d.config.programLed. */
+function progStation(d,st){
+ const active=d.config.programLed===true;
+ const powered=st.powered===true;
+ return `<div class="prog-compact-block" data-prog-device="${d.id}">
+   <div class="prog-action-row" role="group" aria-label="Programació de ${esc(label(d.id))}">
+    <button type="button" class="prog-linked-button ${active?'is-active':''}" data-program="${d.id}" aria-pressed="${active}" aria-label="${active?'Desactiva':'Activa'} PROG de ${esc(label(d.id))}" title="El mateix botó PROG que hi ha al muntatge"><span class="prog-linked-lens" aria-hidden="true"></span><span>PROG</span></button>
+    <button type="button" class="btn prog-compact-action" data-address="${d.id}">Descarrega adreça</button>
+    <button type="button" class="btn prog-compact-action" data-app="${d.id}">Descarrega app</button>
+   </div>
+   <div class="prog-compact-status" role="status">
+    <strong data-prog-indicator="${d.id}" data-state="${active?'on':'off'}">${active?'PROG activat':'PROG desactivat'}</strong>
+    <span>${powered?'Estat compartit amb el botó del muntatge.':'Sense bus KNX: connecta l’alimentació per activar PROG.'}</span>
+   </div>
+  </div>`;
+}
+function configCard(d,e){
+ const c=d.config,m=CATALOG[d.model],st=e.status[d.id]||{},n=channelCount(d.model),isGeneric=GENERIC_BUTTONS.has(d.model);
+ const groupFields=Array.from({length:n},(_,i)=>{const obj=objectConfig(d,i),name=channelLabel(d,i),base=n===1?`${d.id}`:`${d.id}.ch${i}`;
+  const dptOptions=isGeneric?`<option value="1.001" ${obj.draft.dpt==='1.001'?'selected':''}>1.001 · Commutació ON/OFF</option><option value="1.008" ${obj.draft.dpt==='1.008'?'selected':''}>1.008 · Persiana pujar/baixar</option><option value="1.007" ${obj.draft.dpt==='1.007'?'selected':''}>1.007 · Persiana pas/aturada</option>`:d.model==='blindButton'||d.model==='blindAct'?`<option value="${esc(m.objects[i].dpt)}">${esc(m.objects[i].dpt)} · ${i===0?'Pujar / baixar':'Aturar / pas'}</option>`:`<option value="1.001" ${obj.draft.dpt==='1.001'?'selected':''}>1.001 · Commutació</option><option value="5.001" ${obj.draft.dpt==='5.001'?'selected':''}>5.001 · No compatible</option>`;
+  const bitOptions=obj.draft.dpt==='1.008'?['↑ Pujar','↓ Baixar']:['Pas / atura ↑','Pas / atura ↓'];
+  const valueSelect=isGeneric&&obj.draft.dpt!=='1.001'?`<label><span class="control-label">Valor enviat per ${esc(name)}</span><select class="field" data-field="${base}.value" aria-label="Valor de telegrama ${esc(name)} ${d.id}"><option value="0" ${obj.draft.value!=='1'?'selected':''}>0 · ${bitOptions[0]}</option><option value="1" ${obj.draft.value==='1'?'selected':''}>1 · ${bitOptions[1]}</option></select></label>`:'';
+  const loadedInfo=obj.loaded.ga?`Carregat: ${esc(obj.loaded.ga)} · ${esc(obj.loaded.dpt)}${isGeneric&&obj.loaded.dpt!=='1.001'?` · ${esc(obj.loaded.value??'0')}`:''}`:'Sense grup carregat';
+  return `<div class="channel-config"><div class="section-heading"><strong>${esc(name)}</strong><span class="pill ${obj.loaded.ga?'ok':'warn'}">${loadedInfo}</span></div><div class="config-grid"><label><span class="control-label">Adreça de grup de ${esc(name)}</span><input class="field" data-field="${base}.ga" aria-label="Adreça de grup ${esc(name)} ${d.id}" value="${esc(obj.draft.ga)}" spellcheck="false"></label><label><span class="control-label">Tipus de dada (DPT)</span><select class="field" data-field="${base}.dpt" aria-label="DPT de ${esc(name)} ${d.id}">${dptOptions}</select></label>${valueSelect}</div></div>`;
+ }).join('');
+ return `<div class="device-config"><div class="section-heading"><h3>${esc(m.title)} <code>${esc(d.id)}</code></h3><button type="button" class="btn material-help" data-manual="${d.model}" title="Consulta els borns" aria-label="Manual de connexions ${esc(m.title)}">?</button><span class="pill ${st.powered?'ok':'warn'}">${st.powered?'Bus alimentat':'Sense bus'}</span>${d.model==='act4'?`<span class="pill ${st.auxPowered?'ok':'warn'}">${st.auxPowered?'230 V auxiliar OK':'Sense 230 V auxiliar'}</span>`:''}</div><p class="muted">Una adreça física per equip i ${n} objecte${n>1?'s':''} de comunicació. ${isGeneric?'Cada tecla pot enviar commutació 1.001, moviment de persiana 1.008 o pas/aturada 1.007.':'Els DPT dels objectes corresponen a la funció de l’actuador.'}</p><div class="config-grid"><label><span class="control-label">Adreça física del dispositiu</span><input class="field" data-field="${d.id}.address" aria-label="Adreça física ${d.id}" value="${esc(c.draft.address)}" spellcheck="false"></label><div class="readout"><span>Carregada: <code>${esc(c.loaded.address||'—')}</code></span></div></div><div class="channel-configs">${groupFields}</div><p class="tiny muted">Els grups buits queden sense vincular. Als pulsadors, configura el valor 0/1 de pujada/baixada o pas/aturada, i descarrega l'aplicació després de qualsevol canvi. Els canvis del projecte no tenen efecte fins a la descàrrega.</p>${progStation(d,st)}</div>`;
+}
+function programming(e){const list=devices().filter(d=>PROGRAMMABLE.has(d.model));return `<section class="panel"><h2>Topologia i programació</h2><p class="muted">Línia 1.1 · ${list.length} dispositiu(s) programable(s). Cada equip té la seva adreça i la seva pròpia configuració carregada.</p><div class="help-note">Alimenta el bus i prem el botó vermell PROG aquí o al mateix equip del muntatge: tots dos controlen el mateix LED, que continua encès quan canvies de pestanya. Descarrega l'adreça física, defineix el grup i descarrega l'aplicació. Els canvis del projecte no funcionen fins que els descarregues.</div>${statusline(e)}${list.length?list.map(d=>configCard(d,e)).join(''):'<div class="help-note">Encara no has col·locat cap pulsador ni actuador. Torna a «Muntatge».</div>'}${note()}</section>`;}
+/** Vista física: cada element apareix a les coordenades de l'estança del muntatge. */
+function roomDeviceMarkup(d,e){
+ const m=CATALOG[d.model],x=d.position.x,y=d.position.y-BOARD.wallTop,st=e.status[d.id]||{},n=channelCount(d.model),id=esc(d.id);
+ let shape='';
+ if(d.model==='shutter'){
+  const pct=Math.max(0,Math.min(100,Number(st.position)||0)),h=174*pct/100;
+  shape=`<rect x="7" y="12" width="238" height="210" rx="7" fill="#e7e2d9" stroke="#c3baa9" stroke-width="3"/><rect x="19" y="26" width="214" height="180" fill="#9dcee8" stroke="#fdfefe" stroke-width="10"/><rect x="29" y="36" width="194" height="160" fill="url(#room-sky)"/><path d="M126 31v170" stroke="#fcfcf7" stroke-width="8"/><rect x="29" y="34" width="194" height="${h.toFixed(2)}" class="room-shutter-blind" fill="url(#room-shutter-slat)"/><rect x="3" y="6" width="246" height="24" rx="6" fill="#cfd8db" stroke="#8b9fa7" stroke-width="1.5"/><path d="M15 16h220" stroke="#eff2f3" stroke-width="2"/><rect x="16" y="207" width="220" height="9" fill="#ded9d0"/><text class="room-shutter-label" x="126" y="239" text-anchor="middle" font-weight="750" font-size="12" fill="#2b525f">${Math.round(pct)} % tancada</text>`;
+ }else if(d.model==='lamp'){
+  const on=st.on===true;
+  shape=`${on?`<circle cx="77" cy="64" r="64" fill="url(#room-lamp-glow)" opacity=".8"/>`:''}<path d="M55 24h44l15 39H40Z" fill="#f2eee5" stroke="#adada4" stroke-width="3"/><path d="M41 63h72" stroke="#b2aaa0" stroke-width="4"/><circle cx="77" cy="74" r="22" fill="${on?'#fff4ad':'#dbe1de'}" stroke="${on?'#efb955':'#a1aaa9'}" stroke-width="3"/><path d="M67 72q10-22 20 0L80 84h-6Z" stroke="${on?'#e1a42a':'#819299'}" fill="none" stroke-width="3"/><rect x="61" y="91" width="32" height="7" rx="3" fill="#aeb6b3"/><text x="77" y="130" text-anchor="middle" font-weight="750" font-size="12" fill="#385867">${on?'Encesa':'Apagada'}</text>`;
+ }else if(d.model==='blindButton'){
+  const controls=[['up','↑','Pujar'],['down','↓','Baixar']];
+  shape=`<rect x="10" y="13" width="170" height="129" rx="16" fill="#f8f8f3" stroke="#babbb3" stroke-width="3"/><rect x="20" y="24" width="150" height="105" rx="10" fill="#eef0ea" stroke="#c2c8bf" stroke-width="2"/>${controls.map(([action,sign,title],i)=>`<g data-shutter="${id}:${action}" role="button" tabindex="0" aria-label="${title} amb ${esc(label(d.id))}" class="room-rocker"><rect x="${27+i*70}" y="32" width="64" height="89" rx="6" fill="url(#room-key-face)" stroke="#a9b3af" stroke-width="1.5"/><text x="${59+i*70}" y="85" text-anchor="middle" font-size="30" font-weight="750" fill="#42636e" pointer-events="none">${sign}</text></g>`).join('')}`;
+ }else if(m.kind==='button'){
+  const cols=n===4?2:n,rows=Math.ceil(n/cols),x0=14,y0=19,w=(m.w-28-(cols-1)*6)/cols,h=(m.h-39-(rows-1)*6)/rows;
+  shape=`<rect x="5" y="7" width="${m.w-10}" height="${m.h-19}" rx="13" fill="#fafaf7" stroke="#bdc2bd" stroke-width="3"/><rect x="11" y="13" width="${m.w-22}" height="${m.h-31}" rx="9" fill="#eef1ed"/>${Array.from({length:n},(_,i)=>{const col=i%cols,row=Math.floor(i/cols),xx=x0+col*(w+6),yy=y0+row*(h+6);return `<g class="room-rocker" data-press="${id}:${i}" role="button" tabindex="0" aria-label="${esc(channelLabel(d,i))} de ${esc(label(d.id))}"><rect x="${xx}" y="${yy}" width="${w}" height="${h}" rx="5" fill="url(#room-key-face)" stroke="#b8c1bc" stroke-width="1.8"/><path d="M${xx+6} ${yy+7}H${xx+w-7}" stroke="#fff" stroke-width="2"/><text x="${xx+w/2}" y="${yy+h/2+4}" font-size="${n===1?12:10}" font-weight="750" text-anchor="middle" fill="#627983" pointer-events="none">${n===1?'◯':'ABCD'[i]}</text></g>`;}).join('')}`;
+ }
+ return `<g class="room-fixture" data-room-device="${id}" transform="translate(${x} ${y})" aria-label="${esc(label(d.id))}"><title>${esc(label(d.id))}</title>${shape}</g>`;
+}
+function roomScene(e){
+ const devicesOnWall=devices().filter(d=>CATALOG[d.model].mount==='wall'),h=BOARD.height-BOARD.wallTop-18;
+ return `<section class="room-scene-block"><div class="room-scene-heading"><div><h3>Estança · vista real de la instal·lació</h3><p>Els dispositius conserven l'emplaçament triat a Muntatge. La persiana es mou aquí mateix i pots accionar els pulsadors directament.</p></div><span class="pill">${devicesOnWall.length} equip${devicesOnWall.length===1?'':'s'} a l'estança</span></div><div class="room-sim-scroll"><svg id="room-sim-board" viewBox="0 0 ${BOARD.width} ${h}" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Vista de l'estança amb els equips en la posició del muntatge"><defs><linearGradient id="room-wall" x2="0" y2="1"><stop stop-color="#f9f5ed"/><stop offset="1" stop-color="#eee8dd"/></linearGradient><linearGradient id="room-key-face" x2=".2" y2="1"><stop stop-color="#fbfcf9"/><stop offset="1" stop-color="#dce2de"/></linearGradient><linearGradient id="room-sky" x2="0" y2="1"><stop stop-color="#8cc7e3"/><stop offset=".75" stop-color="#c6e6ed"/><stop offset="1" stop-color="#a8cbb0"/></linearGradient><radialGradient id="room-lamp-glow"><stop stop-color="#fff6b6" stop-opacity=".9"/><stop offset="1" stop-color="#ffe2a1" stop-opacity="0"/></radialGradient><pattern id="room-shutter-slat" width="10" height="14" patternUnits="userSpaceOnUse"><rect width="10" height="14" fill="#cdd5d8"/><path d="M0 11H10" stroke="#81979f" stroke-width="2.2"/><path d="M0 4H10" stroke="#f6f7f6" stroke-width="1.2"/></pattern></defs><rect width="${BOARD.width}" height="${h}" fill="url(#room-wall)"/><rect y="${h-33}" width="${BOARD.width}" height="33" fill="#ded2bd"/><rect y="${h-46}" width="${BOARD.width}" height="14" fill="#f9f8f3" stroke="#cfc8b9" stroke-width="2"/><path d="M0 2H${BOARD.width}" stroke="#e3dbcd" stroke-width="4"/><text x="28" y="34" font-weight="800" font-size="17" letter-spacing="1" fill="#716f65">ESTANÇA · SIMULACIÓ</text><text x="29" y="55" font-size="12" fill="#8c877b">Vista sense el cablejat · posicions conservades</text>${devicesOnWall.map(d=>roomDeviceMarkup(d,e)).join('')}${devicesOnWall.length?'':`<text x="790" y="${h/2}" text-anchor="middle" font-size="23" fill="#7f817b">Afegeix pulsadors, bombetes o persianes des del muntatge</text>`}</svg></div><p class="room-scene-note">Desplaça't horitzontalment per veure tota l'estança en pantalles petites. Per moure equips o connectar-los, torna a «01 · Muntatge».</p></section>`;
+}
+function simulationDeviceCard(d,e){
+ const m=CATALOG[d.model],s=e.status[d.id]||{},n=channelCount(d.model);
+ let details='';
+ if(INPUT_MODELS.has(d.model)){
+  if(d.model==='blindButton')details=`<p class="room-card-description">Grup moviment: <code>${esc(objectConfig(d,0)?.loaded.ga||'—')}</code> · Grup aturada: <code>${esc(objectConfig(d,1)?.loaded.ga||'—')}</code></p><div class="button-row"><button class="btn primary" data-shutter="${d.id}:up">↑ Pujar</button><button class="btn primary" data-shutter="${d.id}:down">↓ Baixar</button><button class="btn" data-shutter="${d.id}:stop">■ Aturar</button></div>`;
+  else details=`<p class="room-card-description">Adreça física: <code>${esc(d.config.loaded.address||'—')}</code></p><div class="sim-channels">${Array.from({length:n},(_,i)=>{const cfg=objectConfig(d,i)?.loaded,action=cfg?.dpt==='1.008'?(cfg.value==='1'?'↓ Baixar':'↑ Pujar'):cfg?.dpt==='1.007'?'■ Aturar':'Prémer';return `<div class="sim-channel"><span>${esc(channelLabel(d,i))}<small>${esc(cfg?.ga||'Sense grup')} · ${esc(cfg?.dpt||'1.001')}</small></span><button class="btn primary" data-press="${d.id}:${i}">${action}</button></div>`;}).join('')}</div>`;
+ }else if(OUTPUT_MODELS.has(d.model)){
+  details=`<div class="sim-channels">${Array.from({length:n},(_,i)=>`<div class="sim-channel"><span>${esc(channelLabel(d,i))}<small>Grup ${esc(objectConfig(d,i)?.loaded.ga||'—')}</small></span><span class="pill ${relayState(d,i)?'ok':'warn'}">${relayState(d,i)?'Tancat':'Obert'}</span></div>`).join('')}</div>`;
+ }else if(d.model==='blindAct'){
+  details=`<p class="room-card-description">Contactes enclavats · fase L/COM</p><span class="pill ${s.powered?'ok':'warn'}">${s.powered?'Bus correcte':'Sense bus'}</span> <span class="pill">${d.shutterDirection==='up'?'↑ Pujada activa':d.shutterDirection==='down'?'↓ Baixada activa':'Contactes oberts'}</span>`;
+ }else if(d.model==='shutter'){
+  const pct=Math.round(s.position||0);
+  details=`<div data-shutter-receiver="${d.id}"><div class="shutter-meta"><strong>${pct} % tancada</strong><span>${s.moving?(s.direction==='up'?'↑ Pujant':'↓ Baixant'):s.shortDirections?'Error: dos sentits actius':!s.hasPE?'Sense PE':'Aturada'}</span></div></div><label class="shutter-time">Temps de recorregut (s) <input type="number" min="5" max="60" step="1" data-travel="${d.id}" value="${d.travelSec}" aria-label="Temps de recorregut de ${esc(label(d.id))}"></label>`;
+ }else if(d.model==='lamp'){
+  details=`<span class="pill ${s.on?'ok':'warn'}">${s.on?'Encesa':'Apagada'}</span>${s.reversed?' <span class="pill warn">L/N invertits</span>':''}`;
+ }else if(d.model==='mcb'||d.model==='rcd'){
+  details=`<span class="pill ${d.protection?'ok':'warn'}">${d.protection?'Connectat':'Desconnectat'}</span><p class="room-card-description">La palanca es pot accionar a Muntatge.</p>`;
+ }else if(d.model==='psu'){
+  details=`<span class="pill ${e.psuPowered?'ok':'warn'}">${e.psuPowered?'30 V KNX disponibles':'Sense alimentació'}</span>`;
+ }else details=`<p class="room-card-description">Origen de la xarxa 230 V · L / N / PE.</p>`;
+ return `<article class="room-control-card" data-control-device="${esc(d.id)}"><header><div><strong>${esc(m.title)}</strong><small>${esc(d.id)} · ${esc(m.mount==='wall'?'Estança':m.mount==='din'?'Carril DIN':'Quadre')}</small></div><button class="btn material-help" type="button" data-manual="${esc(d.model)}" aria-label="Manual de ${esc(m.title)}">?</button></header>${details}</article>`;
+}
+function simulation(e){
+ const functional=devices(),groups=[
+  {name:'Comandaments',items:functional.filter(d=>INPUT_MODELS.has(d.model))},
+  {name:'Actuadors',items:functional.filter(d=>OUTPUT_MODELS.has(d.model)||d.model==='blindAct')},
+  {name:'Receptors',items:functional.filter(d=>d.model==='lamp'||d.model==='shutter')},
+  {name:'Alimentació i proteccions',items:functional.filter(d=>['mains','mcb','rcd','psu'].includes(d.model))}];
+ return `<section class="panel"><h2>Simulació d'una instal·lació KNX</h2><p class="muted">El plànol de l'estança reprodueix els equips on els has col·locat i mostra els receptors en funcionament. Els controls i les dades de cada dispositiu es consulten a sota. Els telegrams necessiten programació i cablejat correctes.</p>${statusline(e)}${roomScene(e)}<div class="room-control-section"><h3>Control i estat dels dispositius</h3>${groups.filter(g=>g.items.length).map(g=>`<section class="room-device-category"><h4>${g.name}</h4><div class="room-control-grid">${g.items.map(d=>simulationDeviceCard(d,e)).join('')}</div></section>`).join('')||'<p class="muted">Encara no hi ha cap dispositiu instal·lat.</p>'}</div>${note()}<div class="button-row"><button class="btn" data-tab="diagnosi">Monitor KNX →</button><button class="btn" data-tab="muntatge">Torna al muntatge</button></div></section>`;
+}
+
+function diagnostics(e){return `<section class="panel"><div class="section-heading"><h2>Diagnosi i monitor del bus</h2><button class="btn" data-cmd="clear-logs">Neteja telegrames</button></div><p class="muted">Registre didàctic de GroupValueWrite: no són captures físiques del bus TP.</p><div class="monitor-wrap"><table class="monitor"><thead><tr><th>Hora</th><th>Origen</th><th>Grup</th><th>Ordre</th><th>Servei</th><th>Actuadors receptors</th></tr></thead><tbody>${state.logs.map(l=>`<tr><td>${esc(l.time)}</td><td>${esc(l.source)} (${esc(l.sourceId)})</td><td>${esc(l.ga)}</td><td>${esc(l.value)}</td><td>${esc(l.service)}</td><td>${esc(l.dest)}</td></tr>`).join('')||'<tr><td colspan="6">Encara no hi ha telegrams.</td></tr>'}</tbody></table></div></section><section class="panel"><h2>Comprovació del projecte</h2><div class="issues">${issues(state,e).map(item=>`<div class="issue ${esc(item.severity)}">${esc(item.text)}</div>`).join('')||'<p>Sense incidències.</p>'}</div>${note()}<button class="btn primary" data-cmd="verify">Comprova el projecte</button></section>`;}
+function aside(e){const program=devices().filter(d=>PROGRAMMABLE.has(d.model)),powers=devices().filter(d=>d.model==='mcb'||d.model==='rcd'),lamps=installed(state,'lamp');return `<aside><section class="panel"><h2>Proteccions</h2>${powers.length?powers.map(d=>`<div class="switch-line"><strong>${esc(label(d.id))}</strong><span class="pill ${d.protection?'ok':'warn'}">${d.protection?'Connectat':'Desconnectat'}</span></div>`).join(''):'<p class="muted">Encara no hi ha proteccions instal·lades.</p>'}<p class="tiny muted">Acciona les palanques directament sobre el quadre.</p></section><section class="panel"><h2>Estat del projecte</h2><div class="checklist">${[['Font KNX alimentada',e.psuPowered],['Adreces físiques correctes',e.addressesValid],['Objectes KNX associats',e.linked],['Càrrega controlada',e.controlledLamps.size>0||e.controlledShutters.size>0],['Proteccions no derivades',!e.bypassMcb&&!e.bypassRcd],['Projecte preparat',e.ready]].map(([t,ok])=>`<div class="check"><i class="dot ${ok?'ok':'bad'}"></i><span>${t}</span></div>`).join('')}</div><button class="btn primary" data-cmd="verify">Comprova</button></section><section class="panel"><h2>Instal·lació</h2><p class="muted">${state.order.length} equips · ${state.wires.length} conductors · ${program.length} dispositius KNX · ${lamps.length} bombetes · ${installed(state,'shutter').length} persianes.</p><div class="issues">${issues(state,e).slice(0,4).map(i=>`<div class="issue ${esc(i.severity)}">${esc(i.text)}</div>`).join('')}</div><button class="btn" data-tab="diagnosi">Diagnosi completa →</button></section></aside>`;}
+function foundations(){return `<div class="learning"><section class="panel"><h2>1. Arquitectura d'una instal·lació KNX TP</h2><p>Els conductors de 230 V CA alimenten la font KNX i el circuit dels receptors. El bus KNX TP utilitza un parell propi, habitualment alimentat a uns 30 V CC, que també transporta la comunicació entre dispositius.</p><div class="help-note"><strong>Camins separats:</strong> la font alimenta el bus, els polsadors envien telegrams i els actuadors commuten els contactes del circuit de potència. La presència de bus no implica que el receptor tingui tensió.</div><h2>2. Adreces físiques</h2><p>Identifiquen una instància a la topologia: 1.1.10 i 1.1.20 són equips diferents de l'àrea 1, línia 1. El prototip treballa amb la línia 1.1 i rebutja adreces duplicades.</p><h2>3. Adreces de grup</h2><p>La direcció 1/0/1 identifica una funció compartida. Pots assignar-la a diferents pulsadors i actuadors, independentment de la seva adreça física. Cada equip ha de rebre la programació perquè la connexió lògica sigui operativa.</p><h2>4. Objectes i DPT</h2><p>Un pulsador de quatre tecles és un únic participant del bus, però disposa de quatre objectes de comunicació. Cada objecte pot tenir una adreça de grup diferent. Un actuador de quatre canals té quatre contactes independents: connecta IN1 amb OUT1, IN2 amb OUT2, IN3 amb OUT3 i IN4 amb OUT4 només quan el relé corresponent és tancat.</p><table><thead><tr><th>Element</th><th>DPT</th><th>Funció</th></tr></thead><tbody><tr><td>Pulsador genèric (1, 2 o 4 tecles)</td><td>1.001 / 1.008 / 1.007</td><td>Per tecla: commutació, moviment (0 pujar / 1 baixar) o pas/aturada</td></tr><tr><td>Actuador de relé</td><td>1.001</td><td>Rebre ordre i canviar el contacte</td></tr><tr><td>Bombeta</td><td>—</td><td>Receptor de 230 V, sense objectes KNX</td></tr></tbody></table><h2>5. Persianes KNX: ordres i cablejat</h2><p>El motor reversible de 230 V disposa de dos conductors de fase per al sentit de pujada (↑) i baixada (↓), a més de neutre N i protecció PE. L’actuador rep fase protegida al born IN i només tanca un dels contactes ↑ o ↓; els dos no s’han d’alimentar simultàniament.</p><table><thead><tr><th>Objecte</th><th>DPT</th><th>Comportament</th></tr></thead><tbody><tr><td>Moviment</td><td>1.008</td><td>0 = pujar, 1 = baixar</td></tr><tr><td>Aturar / pas</td><td>1.007</td><td>Atura el moviment actual; sense regulació de lamel·les en aquesta versió</td></tr></tbody></table><p>Els pulsadors genèrics poden controlar persianes: a Programació tria el DPT de cada tecla, selecciona el valor 0/1 i associa-la al grup corresponent de l’actuador. En aquest prototip, cada tecla genèrica envia un únic objecte; per fer pujada, baixada i aturada amb tecles diferents, se’n necessiten tres. El pulsador específic de persiana manté els seus objectes de moviment i aturada. El DPT 1.007 s’utilitza aquí per aturar el motor, sense simulació de pas de lamel·les.</p><p>El recorregut es pot configurar entre 5 i 60 segons. Els finals de carrera aturen el desplaçament als valors 0 % (oberta) i 100 % (tancada). La posició és una estimació didàctica basada en el temps, no una lectura real del motor.</p><p>El conductor PE no és una sortida del relé. Va separat cap a la carcassa del motor. La simulació impedeix moure la persiana si falta el PE o el neutre.</p><p class="muted">Aquesta versió representa el comportament didàctic del bus, no trames de baix nivell, fallades de curtcircuit reals o un sistema ETS.</p></section></div>`;}
+function help(){return `<div class="learning"><section class="panel"><h2>Ajuda · LAB-013 v0.3.1-r6</h2><details open><summary>Afegir i col·locar equips</summary><p>La caixa de material està ordenada per funció: alimentació i proteccions, comandament, actuadors i receptors. Pots afegir més d'un pulsador, actuador o lluminària amb «Afegeix» o arrossegant-los al plànol. L'origen 230 V, les dues proteccions i la font KNX són únics en aquest prototip.</p></details><details><summary>Moure, seleccionar i retirar dispositius</summary><p>Prem «Moure equips» i arrossega el cos de cada dispositiu. Els equips de carril DIN queden a una de les dues guies, els elements murals a l'estança. Selecciona un equip tocant la carcassa, amb qualsevol eina activa: apareix una paperera vermella al costat. Prem-la per tornar-lo a la caixa de material. Si té cables connectats, cal confirmar-ho i aquests cables també s'eliminaran. També pots usar la tecla Suprimir amb l'equip seleccionat.</p></details><details><summary>Connectar, identificar i eliminar cables</summary><p>Prem «Connectar cables». Arrossega d'un born fins a un altre, o selecciona dos borns consecutivament. Clica una corba per ressaltar el conductor i els dos borns on està connectat i veure el botó flotant «Desconnecta». Amb el punt circular de la corba en pots canviar el recorregut.</p></details><details><summary>Parametritzar cada pulsador i actuador</summary><p>Alimenta el bus, escriu una adreça física única, prem el botó vermell PROG i descarrega l'adreça. Després escriu l'adreça de grup i prem «Descarrega aplicació». La configuració del projecte i la carregada són independents.</p></details><details><summary>Provar més d'un dispositiu</summary><p>Prova el pulsador de dues o quatre tecles i l'actuador de quatre canals. Una única adreça física identifica tot l'equip, però cada tecla i cada canal poden utilitzar grups diferents. Assigna un grup compartit a dos pulsadors i a dos actuadors, amb les seves adreces físiques diferents. Els telegrames d'un pulsador arribaran als actuadors compatibles i alimentats. Pots connectar diversos receptors als contactes dels actuadors.</p></details><details><summary>Programar els DPT de persiana als pulsadors genèrics</summary><p>En un pulsador d’1, 2 o 4 tecles, entra a Programació. Per a cada tecla, tria 1.001 (llum), 1.008 (moviment ↑/↓) o 1.007 (pas/aturada). Per a 1.008 assigna valor 0 a pujar i valor 1 a baixar. Per a 1.007, els valors 0/1 indiquen el sentit de pas; el simulador tracta tots dos com una aturada i no simula lamel·les. Assigna el mateix grup de moviment o aturada que a l’actuador KNX de persiana i prem «Descarrega aplicació» per aplicar-lo.</p><p>Exemple amb un pulsador de quatre tecles: A = 1.008 (0, ↑), B = 1.008 (1, ↓), C = 1.007 (aturar) i D = 1.001 (llum). Les tecles no configurades no envien ordres.</p></details><details><summary>Programar diversos canals</summary><p>Descarrega una única adreça física a l'equip i després assigna les adreces de grup a les tecles o canals que vulguis utilitzar. Deixa els altres grups en blanc. Prem «Descarrega aplicació» per activar els canvis. Els borns L i N alimenten l’actuador de quatre canals i els contactes IN1/OUT1, IN2/OUT2, IN3/OUT3 i IN4/OUT4 corresponen als canals A, B, C i D.</p></details><details><summary>Manual ràpid de connexions</summary><p>Prem el botó «?» de cada dispositiu, o el «?» de la caixa de material, per veure què vol dir cada born i l'esquema recomanat. En un portalàmpades E27, connecta L al contacte central i N a la rosca exterior; la inversió pot encendre la bombeta, però no és segura. L'actuador de quatre canals té alimentació auxiliar L/N i quatre contactes IN/OUT independents.</p></details><details><summary>Instal·lar una persiana KNX</summary><p>Afegeix «Pulsador KNX · persiana», «Actuador KNX · persiana» i «Motor i persiana · 230 V». Porta la fase protegida al born IN de l’actuador; connecta ↑ amb ↑ del motor i ↓ amb ↓. Porta N des de la protecció fins al motor i PE directament des de la presa de protecció de la xarxa. Connecta +/− del bus al pulsador i a l’actuador. Prem «?» per veure els borns detallats.</p><p>Descarrega una adreça física diferent a cada dispositiu. A l’objecte de moviment DPT 1.008 assigna, per exemple, el grup 2/0/1 als dos dispositius. A l’objecte d’aturada DPT 1.007, assigna 2/0/2. Descarrega les aplicacions i prova ↑, ↓ i ■ a Simulació.</p></details><details><summary>Vista de l’estança durant la simulació</summary><p>Les persianes, els pulsadors i les bombetes es mostren a la mateixa posició de l’estança que has triat a Muntatge. A Simulació el dibuix es representa com una estança real, sense els borns ni els cables visibles. Pots accionar els pulsadors directament sobre la paret i veure com es mou la persiana o s’encén la llum. A sota tens una fitxa de control per cada dispositiu, amb l’estat, els grups KNX i el temps de recorregut quan correspon. Per moure els equips, torna a Muntatge.</p><p>El botó PROG dels equips és vermell fosc quan està apagat i vermell lluminós quan el dispositiu entra en programació.</p></details><details><summary>Guardar i recuperar</summary><p>«Exporta JSON» conserva models, instàncies, connexions, posicions, adreces i estat dels equips. «Importa projecte» admet projectes v0.2 i intenta migrar els arxius de la sèrie v0.1.</p></details><p class="muted">Limitacions: una línia TP, relés de commutació d'un i quatre canals, bus i tensions simplificats, amb una persiana motoritzada genèrica, sense posicionament KNX percentual, lamel·les ni acobladors.</p></section></div>`;}
+function guideColor(port){return port.kind==='bus-p'?'#cb3d40':port.kind==='bus-m'?'#4c5860':port.kind==='ac-n'?'#2473ad':port.kind==='ac-pe'?'#608037':'#ad6630';}
+function terminalManual(model){
+ if(model==='index')return `<div class="manual-backdrop" data-manual-backdrop><section class="manual-dialog" role="dialog" aria-modal="true" aria-labelledby="manual-title"><header class="manual-header"><div><small>LAB-013 · Consulta ràpida</small><h2 id="manual-title">Manuals de connexions</h2></div><button type="button" class="manual-close" data-manual-close aria-label="Tanca els manuals">✕</button></header><div class="manual-content"><p>Selecciona un dispositiu per consultar els borns i el seu esquema de connexió.</p>${MODEL_GROUPS.map(group=>`<h3>${esc(group.label)}</h3><div class="guide-chooser">${group.models.map(key=>`<button type="button" class="btn" data-manual="${key}">${esc(CATALOG[key].title)} <span aria-hidden="true">›</span></button>`).join('')}</div>`).join('')}</div></section></div>`;
+ const m=CATALOG[model],guide=DEVICE_GUIDES[model];if(!m||!guide)return '';
+ const rows=m.ports.map(port=>`<tr><td><span class="guide-terminal" style="border-left:4px solid ${guideColor(port)}">${esc(port.name)}</span></td><td>${esc(guide.terms[port.id]||port.name)}</td></tr>`).join('');
+ const diagram=model==='act4'?`<div class="guide-channels">${['A','B','C','D'].map((channel,i)=>`<div><strong>Canal ${esc(channel)}</strong><div class="guide-pair"><span>IN${i+1}</span><svg viewBox="0 0 54 32" role="img" aria-label="Contacte de relé normalment obert"><g stroke="#356776" stroke-width="2" stroke-linecap="round" fill="none"><path d="M 2 21 H 10 M 44 21 H 52"/><circle cx="12" cy="21" r="3"/><circle cx="42" cy="21" r="3"/><path d="M 15 19 L 37 11"/></g></svg><span>OUT${i+1}</span></div></div>`).join('')}</div><p class="guide-mini">Els borns <strong>IN i OUT de cada canal estan junts a la part inferior</strong>. El símbol sobre la carcassa representa un contacte de relé normalment obert. L/N alimenten el dispositiu; cada IN ha de rebre fase protegida i cada OUT la transmet quan el seu relé es tanca. El bus KNX controla els quatre relés.</p>`:model==='blindAct'?`<div class="guide-connection"><span>Fase protegida → L / COM</span><span>Sortida ↑ → motor PUJAR</span><span>Sortida ↓ → motor BAIXAR</span><span>N i PE → motor directament</span></div><div class="guide-actuator-schematic"><svg viewBox="0 0 530 144" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Esquema: fase L comuna, dos contactes de relé enclavats i sortides de pujar i baixar, alimentació de control pel bus KNX"><rect x="8" y="20" width="508" height="118" rx="9" fill="#f6fafb" stroke="#a8c5cb"/><g stroke="#346371" stroke-width="2.6" fill="none" stroke-linecap="round"><path d="M38 72H106V47H167 M106 72V107H167"/><circle cx="169" cy="47" r="3.5"/><circle cx="169" cy="107" r="3.5"/><circle cx="231" cy="47" r="3.5"/><circle cx="231" cy="107" r="3.5"/><path d="M173 44L225 32 M173 104L225 92 M235 47H337 M235 107H337"/></g><g fill="#235668" font-family="sans-serif" font-weight="700" font-size="14"><text x="18" y="64">L/COM</text><text x="351" y="52">↑ PUJAR</text><text x="351" y="112">↓ BAIXAR</text><text x="176" y="17" font-size="11">CONTACTES ENCLAVATS</text></g></svg><p>Model alimentat pel bus KNX: no requereix N auxiliar. El motor rep neutre i protecció directament.</p></div>`:model==='shutter'?`<div class="guide-connection"><span>↑ PUJAR</span><span>Sortida ↑ de l’actuador</span><span>↓ BAIXAR</span><span>Sortida ↓ de l’actuador</span><span>N (neutre)</span><span>Neutre 230 V del quadre</span><span>PE (protecció)</span><span>Conductor de protecció de terra</span></div>`:model==='lamp'?`<div class="guide-connection"><span>L · fase commutada</span><span>→ contacte central E27</span><span>N · neutre</span><span>→ rosca exterior E27</span></div>`:`<div class="guide-flow">${esc(guide.flow)}</div>`;
+ return `<div class="manual-backdrop" data-manual-backdrop><section class="manual-dialog" role="dialog" aria-modal="true" aria-labelledby="manual-title" aria-describedby="manual-description"><header class="manual-header"><div><small>LAB-013 · Consulta ràpida de borns</small><h2 id="manual-title">${esc(m.title)}</h2></div><button type="button" class="manual-close" data-manual-close aria-label="Tanca el manual">✕</button></header><div class="manual-content"><p id="manual-description">${esc(guide.summary)}</p>${diagram}<div class="guide-back"><button class="btn" type="button" data-manual="index">‹ Tots els equips</button></div><h3>Funció dels terminals</h3><table class="guide-table"><thead><tr><th>Born</th><th>Connexió</th></tr></thead><tbody>${rows}</tbody></table><p class="guide-tip"><strong>Atenció:</strong> ${esc(guide.tip)}</p><p class="guide-disclaimer">Esquema didàctic del model genèric TecLab. Per a equips comercials cal seguir sempre l'esquema i la documentació del fabricant.</p></div></section></div>`;
+}
+function syncLabSticky(){const nav=root.querySelector('.subtabs');if(nav)root.style.setProperty('--lab-subtabs-height',`${Math.ceil(nav.getBoundingClientRect().height)+8}px`);}
+window.addEventListener('resize',syncLabSticky);
+function render(){const e=evaluate(state);document.querySelectorAll('[data-major]').forEach(b=>b.classList.toggle('active',b.dataset.major===section));if(section!=='laboratori'){root.innerHTML='<div class="quick-manual-inline"><button class="btn" data-manual="index">? Manuals de connexió dels dispositius</button></div>'+(section==='fonaments'?foundations():help())+(manualModel?terminalManual(manualModel):'');return;}const content=tab==='muntatge'?wiring(e):tab==='programacio'?programming(e):tab==='simulacio'?simulation(e):diagnostics(e);root.innerHTML=`<nav class="subtabs" aria-label="Espais de treball"><button data-tab="muntatge" class="${tab==='muntatge'?'active':''}">01 · Muntatge</button><button data-tab="programacio" class="${tab==='programacio'?'active':''}">02 · Programació</button><button data-tab="simulacio" class="${tab==='simulacio'?'active':''}">03 · Simulació</button><button data-tab="diagnosi" class="${tab==='diagnosi'?'active':''}">04 · Diagnosi</button><button class="quick-manual-button" data-manual="index">? Manuals de connexió</button></nav><div class="workspace"><div class="workspace-main">${content}</div>${aside(e)}</div>${manualModel?terminalManual(manualModel):''}`;root.querySelector('#knx-board')?.classList.toggle('move-mode',mode==='move');syncLabSticky();}
+function coord(svg,event){const pt=svg.createSVGPoint();pt.x=event.clientX;pt.y=event.clientY;return pt.matrixTransform(svg.getScreenCTM().inverse());}
+function boardAt(clientX,clientY){const board=document.querySelector('#knx-board');if(!board)return null;const r=board.getBoundingClientRect();if(clientX<r.left||clientX>r.right||clientY<r.top||clientY>r.bottom)return null;return coord(board,{clientX,clientY});}
+function placeModel(model,point=null){const r=addDevice(state,model,point);if(r.ok){selectedDevice=r.id;selectedWire=-1;mode='move';}show(r.msg,r.ok?'success':'error');}
+function retireDevice(id){
+ const device=state.devices[id];if(!device)return;
+ const connected=state.wires.filter(w=>w.a.startsWith(id+':')||w.b.startsWith(id+':')).length;
+ if(connected&&!confirm(`Vols retirar ${label(id)}?\n\nS'eliminaran també ${connected} conductor${connected===1?'':'s'} connectat${connected===1?'':'s'} i la seva configuració. `))return;
+ removeDevice(state,id);selectedDevice='';selectedWire=-1;firstPort='';dragging=null;
+ show(`${CATALOG[device.model].title} retirat de la instal·lació${connected?` amb ${connected} conductors`:''}. Pots tornar-lo a afegir des de la caixa de material.`,'success');
+}
+function applyDeviceMove(ev){if(!dragging)return;const pt=coord(root.querySelector('#knx-board'),ev);const d=state.devices[dragging.id],m=CATALOG[d.model];moveDevice(state,d.id,{x:pt.x-dragging.dx+m.w/2,y:pt.y-dragging.dy+m.h/2});const g=root.querySelector(`[data-device="${d.id}"]`);if(g)g.setAttribute('transform',`translate(${d.position.x} ${d.position.y})`);const layer=root.querySelector('#wire-layer');if(layer)layer.innerHTML=wireMarkup();}
+root.addEventListener('pointerdown',ev=>{
+ if(section!=='laboratori'||tab!=='muntatge')return;
+ const h=ev.target.closest('[data-route-handle]');if(h){const i=Number(h.dataset.routeHandle),svg=root.querySelector('#knx-board');if(!state.wires[i])return;const g=routeInfo(state.wires[i],i);routing={pointer:ev.pointerId,index:i,origin:coord(svg,ev),axis:g.axis,offset:state.wires[i].offset||0};svg.setPointerCapture(ev.pointerId);ev.preventDefault();ev.stopPropagation();return;}
+ const port=ev.target.closest('[data-port]');if(port&&mode==='wire'){const svg=root.querySelector('#knx-board');wireDrag={start:port.dataset.port,pointer:ev.pointerId,point:coord(svg,ev),moved:false};svg.setPointerCapture(ev.pointerId);ev.preventDefault();return;}
+ if(mode==='move'){const g=ev.target.closest('.unit');if(g&&!ev.target.closest('[data-protect],[data-program],[data-press],[data-port],[data-manual],[data-device-remove]')){const svg=root.querySelector('#knx-board'),pt=coord(svg,ev),d=state.devices[g.dataset.device];dragging={pointer:ev.pointerId,id:d.id,dx:pt.x-d.position.x,dy:pt.y-d.position.y};selectedDevice=d.id;svg.setPointerCapture(ev.pointerId);ev.preventDefault();return;}}
+ const tray=ev.target.closest('[data-tray]');if(tray&&!ev.target.closest('button')){const model=tray.dataset.tray;if(CATALOG[model]?.single&&installed(state,model).length)return;trayDrag={pointer:ev.pointerId,model,x:ev.clientX,y:ev.clientY};ghost=document.createElement('div');ghost.className='material-ghost';ghost.textContent=CATALOG[model].title;document.body.append(ghost);ghost.style.transform=`translate(${ev.clientX+10}px,${ev.clientY+10}px)`;ev.preventDefault();return;}
+});
+root.addEventListener('pointermove',ev=>{
+ if(routing&&ev.pointerId===routing.pointer){const svg=root.querySelector('#knx-board'),pt=coord(svg,ev);state.wires[routing.index].offset=Math.round(Math.max(-240,Math.min(240,routing.offset+pt[routing.axis]-routing.origin[routing.axis])));const layer=svg.querySelector('#wire-layer');if(layer)layer.innerHTML=wireMarkup();return;}
+ if(wireDrag&&ev.pointerId===wireDrag.pointer){const svg=root.querySelector('#knx-board');wireDrag.point=coord(svg,ev);const a=portPoint(wireDrag.start);if(a&&Math.hypot(wireDrag.point.x-a.x,wireDrag.point.y-a.y)>12)wireDrag.moved=true;const layer=svg.querySelector('#drag-wire-layer');if(layer)layer.innerHTML=previewWire();return;}
+ if(dragging&&ev.pointerId===dragging.pointer){applyDeviceMove(ev);return;}
+});
+root.addEventListener('pointerup',ev=>{
+ if(routing&&ev.pointerId===routing.pointer){routing=null;show('Recorregut ajustat.','success');return;}
+ if(wireDrag&&ev.pointerId===wireDrag.pointer){const w=wireDrag;wireDrag=null;const end=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('[data-port]')?.dataset.port;if(w.moved){skipPortClick=true;requestAnimationFrame(()=>{skipPortClick=false;});if(end&&end!==w.start){const r=connect(state,w.start,end);selectedWire=-1;firstPort='';show(r.msg,r.ok?'success':'error');}else{firstPort='';show('El cable no s’ha connectat: selecciona un born de destí.','error');}}else if(firstPort&&firstPort!==w.start){const r=connect(state,firstPort,w.start);firstPort='';selectedWire=-1;show(r.msg,r.ok?'success':'error');}else{firstPort=firstPort===w.start?'':w.start;render();}return;}
+ if(dragging&&ev.pointerId===dragging.pointer){dragging=null;show('Equip posicionat.','success');}
+});
+root.addEventListener('pointercancel',()=>{routing=null;wireDrag=null;dragging=null;});
+document.addEventListener('pointermove',ev=>{if(trayDrag&&trayDrag.pointer===ev.pointerId&&ghost)ghost.style.transform=`translate(${ev.clientX+10}px,${ev.clientY+10}px)`;});
+document.addEventListener('pointerup',ev=>{if(!trayDrag||trayDrag.pointer!==ev.pointerId)return;const {model}=trayDrag;trayDrag=null;ghost?.remove();ghost=null;const pt=boardAt(ev.clientX,ev.clientY);if(pt)placeModel(model,pt);});
+root.addEventListener('click',ev=>{
+ if(ev.target.matches('[data-manual-backdrop]')){manualModel='';render();return;}
+ const t=ev.target.closest('[data-device-remove],[data-manual-close],[data-manual],[data-tab],[data-mode],[data-add],[data-protect],[data-program],[data-port],[data-wire-index],[data-wire-remove],[data-wire-list],[data-address],[data-app],[data-press],[data-shutter],[data-cmd],[data-zoom]');
+ if(t?.hasAttribute('data-device-remove')){retireDevice(t.dataset.deviceRemove);return;}
+ if(!t){const equipment=ev.target.closest('.unit[data-device]');if(equipment&&section==='laboratori'&&tab==='muntatge'){
+  selectedDevice=equipment.dataset.device;selectedWire=-1;firstPort='';render();
+ }else if(ev.target.closest('#knx-board')&&selectedDevice){selectedDevice='';render();}
+ return;}
+ if(t.hasAttribute('data-manual-close')){manualModel='';render();manualFocus?.focus();manualFocus=null;return;}
+ if(t.dataset.manual){manualFocus=document.activeElement;manualModel=t.dataset.manual;render();root.querySelector('[data-manual-close]')?.focus();return;}
+ if(t.dataset.tab){const changed=tab!==t.dataset.tab;tab=t.dataset.tab;selectedWire=-1;notice='';render();if(changed)root.querySelector('.subtabs')?.scrollIntoView({block:'start',behavior:'auto'});return;}
+ if(t.dataset.mode){mode=t.dataset.mode;selectedWire=-1;firstPort='';render();return;}
+ if(t.dataset.add){placeModel(t.dataset.add);return;}
+ if(t.dataset.protect){toggleProtection(state,t.dataset.protect);show('Protecció accionada.');return;}
+ if(t.dataset.program){const r=toggleProgram(state,t.dataset.program);show(r.msg,r.ok?'success':'error');return;}
+ if(t.dataset.port){if(skipPortClick){skipPortClick=false;return;}if(mode!=='wire')return;const ref=t.dataset.port;if(firstPort&&firstPort!==ref){const r=connect(state,firstPort,ref);firstPort='';selectedWire=-1;show(r.msg,r.ok?'success':'error');}else {firstPort=firstPort===ref?'':ref;render();}return;}
+ if(t.dataset.wireIndex!==undefined||t.dataset.wireList!==undefined){selectedDevice='';selectedWire=Number(t.dataset.wireIndex??t.dataset.wireList);render();return;}
+ if(t.dataset.wireRemove!==undefined){disconnect(state,Number(t.dataset.wireRemove));selectedWire=-1;show('Conductor desconnectat.','success');return;}
+ if(t.dataset.address){const r=downloadAddress(state,t.dataset.address);show(r.msg,r.ok?'success':'error');return;}
+ if(t.dataset.app){const r=downloadApplication(state,t.dataset.app);show(r.msg,r.ok?'success':'error');return;}
+ if(t.dataset.shutter){const [id,action]=t.dataset.shutter.split(':');const r=pressShutter(state,id,action);show(r.msg,r.ok?'success':'error');return;}
+ if(t.dataset.press){const [id,ch]=t.dataset.press.split(':');const r=pressButton(state,id,Number(ch||0));show(r.msg,r.ok?'success':'error');return;}
+ if(t.dataset.zoom){zoom=t.dataset.zoom==='fit'?1:t.dataset.zoom==='in'?Math.min(2,zoom+.15):Math.max(.65,zoom-.15);render();return;}
+ const cmd=t.dataset.cmd;if(!cmd)return;
+ if(cmd==='toggle-tray'){materialOpen=!materialOpen;render();}
+ else if(cmd==='quick-add'){placeModel(root.querySelector('#quick-model')?.value||'button');}
+ else if(cmd==='cancel'){firstPort='';selectedWire=-1;selectedDevice='';render();}
+ else if(cmd==='remove-device'){if(selectedDevice)retireDevice(selectedDevice);}
+ else if(cmd==='verify'){const e=evaluate(state),i=issues(state,e);show(e.ready?'Instal·lació preparada per a la prova funcional.':i[0]?.text||'Revisa el projecte.',e.ready?'success':'error');}
+ else if(cmd==='clear-logs'){state.logs=[];show('Monitor netejat.');}
+ else if(cmd==='reset'){if(confirm('Reiniciar tot el projecte, retirant dispositius, cablejat i programació?')){state=createProject();selectedWire=-1;selectedDevice='';firstPort='';materialOpen=true;mode='wire';show('Projecte nou i buit.');}}
+ else if(cmd==='export'){const data=JSON.stringify(saveProject(state),null,2),url=URL.createObjectURL(new Blob([data],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='TecLab-KNX-LAB-013-projecte-v0.3.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);show('Projecte exportat a JSON.','success');}
+ else if(cmd==='import'){root.querySelector('#project-file')?.click();}
+});
+root.addEventListener('input',ev=>{const f=ev.target.dataset?.field;if(ev.target.hasAttribute('data-travel')){const d=state.devices[ev.target.dataset.travel];if(d?.model==='shutter'){const v=Number(ev.target.value);if(Number.isFinite(v)&&v>=5&&v<=60)d.travelSec=v;}return;}if(!f)return;const [id,key,property]=f.split('.'),d=state.devices[id];if(!d?.config)return;if(key?.startsWith('ch')&&['ga','dpt','value'].includes(property)){const cfg=objectConfig(d,Number(key.slice(2)));if(cfg)cfg.draft[property]=ev.target.value;}else if(['address','ga','dpt','value'].includes(key))d.config.draft[key]=ev.target.value;if((property==='dpt'||key==='dpt')&&GENERIC_BUTTONS.has(d.model))render();});
+root.addEventListener('change',async ev=>{if(ev.target.id!=='project-file')return;const file=ev.target.files?.[0];if(!file)return;try{state=loadProject(JSON.parse(await file.text()));selectedDevice='';selectedWire=-1;firstPort='';mode='wire';show('Projecte importat. Comprova les connexions i les adreces.','success');}catch(error){show('No es pot importar el projecte: '+error.message,'error');}});
+root.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&manualModel){manualModel='';render();manualFocus?.focus();manualFocus=null;ev.preventDefault();return;} if((ev.key==='Delete'||ev.key==='Backspace')&&!ev.target.closest('input,textarea,select')){
+ if(selectedWire>=0){ev.preventDefault();disconnect(state,selectedWire);selectedWire=-1;show('Conductor desconnectat.');}
+ else if(selectedDevice&&state.devices[selectedDevice]){ev.preventDefault();retireDevice(selectedDevice);}
+}
+if((ev.key==='Enter'||ev.key===' ')&&ev.target.matches('[data-device-remove],[data-protect],[data-program],[data-press],[data-shutter],[data-wire-remove],[data-port],[data-manual]')){ev.preventDefault();ev.target.click();}});
+// Animació en temps real: actualitza el model i només les zones visuals de les persianes.
+let previousTick=performance.now();
+setInterval(()=>{
+ const now=performance.now(),dt=Math.min(.3,(now-previousTick)/1000);previousTick=now;
+ if(!installed(state,'shutter').length||!advanceShutters(state,dt))return;
+ if(section==='laboratori'&&tab==='simulacio'){
+  const e=evaluate(state);
+  for(const d of installed(state,'shutter')){const box=root.querySelector(`[data-shutter-receiver="${d.id}"]`),room=root.querySelector(`[data-room-device="${d.id}"]`),s=e.status[d.id];if(!s)continue;const pct=Math.round(s.position);const shade=room?.querySelector('.room-shutter-blind');if(shade)shade.setAttribute('height',String((174*s.position/100).toFixed(2)));const roomLabel=room?.querySelector('.room-shutter-label');if(roomLabel)roomLabel.textContent=`${pct} % tancada`;if(box){box.querySelector('.shutter-meta strong').textContent=`${pct} % tancada`;box.querySelector('.shutter-meta span').textContent=s.moving?(s.direction==='up'?'↑ Pujant':'↓ Baixant'):'Aturada';}}
+ }
+ if(section==='laboratori'&&tab==='muntatge'){
+  const e=evaluate(state);for(const d of installed(state,'shutter')){const g=root.querySelector(`[data-device="${d.id}"]`);if(g){const s=e.status[d.id];const shade=g.querySelector('.shutter-shade');if(shade)shade.setAttribute('height',String(105*s.position/100));const t=g.querySelector('.shutter-position');if(t)t.textContent=`${Math.round(s.position)} % tancada · ${s.moving?s.direction==='up'?'PUJANT':'BAIXANT':'ATURADA'}`;}}
+ }
+},200);
+document.querySelectorAll('[data-major]').forEach(b=>b.addEventListener('click',()=>{section=b.dataset.major;selectedWire=-1;notice='';render();}));
+render();
+
+</script></body></html>
