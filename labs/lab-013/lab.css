@@ -1,0 +1,228 @@
+
+:root{color-scheme:light;--ink:#142d3b;--muted:#58717e;--line:#d9e5e9;--pale:#f3f8f9;--white:#fff;--teal:#096a6b;--teal-dark:#064b50;--amber:#ad7008;--red:#b62d3c;--green:#167648;--shadow:0 12px 32px #163b4812}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f8fbfb;color:var(--ink);font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}a{color:var(--teal-dark)}.skip-link{position:absolute;top:-100px;left:10px;padding:10px;background:#fff;z-index:99}.skip-link:focus{top:10px}.topbar{height:78px;background:#102e3c;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 max(28px,calc((100vw - 1320px)/2));gap:14px}.brand{display:flex;align-items:center;color:#fff;text-decoration:none;gap:12px;font-size:22px;font-weight:750;letter-spacing:-.6px}.brand svg{width:46px;height:46px;fill:none;stroke:#7dd3cf;stroke-width:5}.brand small{display:block;font-size:10px;font-weight:500;letter-spacing:.5px;color:#a8c8d0}.version{font-size:12px;color:#b9d6de;display:flex;gap:12px}.version em{font-style:normal;color:#f1b96b}main{max-width:1320px;margin:auto;padding:16px 28px 60px}.back{display:inline-block;text-decoration:none;font-size:13px;color:#496879;margin:3px 0 15px}.hero{display:grid;grid-template-columns:1fr 295px;align-items:center;background:linear-gradient(120deg,#e8f5f4,#f6fafa);border:1px solid #d9eeec;border-radius:16px;padding:24px 28px 24px 30px;overflow:hidden}.eyebrow{text-transform:uppercase;letter-spacing:1.8px;color:#137778;font-size:10px;font-weight:800;margin:0 0 8px}h1{font-size:clamp(25px,2.7vw,36px);letter-spacing:-1px;line-height:1.15;margin:0 0 10px}h2{font-size:20px;line-height:1.3;letter-spacing:-.3px;margin:0 0 10px}h3{font-size:16px;margin:14px 0 5px}.intro{color:#4a6672;max-width:720px;line-height:1.65;margin:0}.hero-notes{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.hero-notes span{border:1px solid #d0e6e2;background:#ffffffa3;border-radius:20px;padding:4px 9px;font-size:11px;color:#366f70;font-weight:650}.hero-visual svg{width:100%;height:auto;filter:drop-shadow(0 9px 14px #143a4720)}.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:21px 0 16px}.tabs button{background:transparent;border:0;border-bottom:3px solid transparent;padding:11px 19px;color:#66818b;font-weight:700}.tabs button.active{border-bottom-color:#0b8481;color:#09676b}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:15px}.workspace-main{min-width:0}.subtabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:13px}.subtabs button{border:1px solid #d8e6e7;border-radius:8px;background:white;color:#536d78;padding:8px 13px;font-size:12px;font-weight:700}.subtabs button.active{background:#0b6668;color:white;border-color:#0b6668}.panel{background:white;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:18px}.panel + .panel{margin-top:14px}.panel p{color:#4b6571}.panel h2{margin-bottom:6px}.muted,.hint{color:var(--muted);font-size:12px}.tiny{font-size:11px}.statusline{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}.pill{font-size:11px;border-radius:30px;padding:4px 10px;background:#eef3f4;color:#60737e;border:1px solid #e0e8eb;font-weight:650}.pill.ok{background:#e4f7eb;color:#186d45;border-color:#b6e7cb}.pill.warn{background:#fcf1dd;color:#975e0b;border-color:#f4d6a4}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}.section-heading h2{margin:0}.button-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.btn{background:#fff;color:#194958;border:1px solid #bfced3;border-radius:8px;padding:9px 13px;font-weight:650;font-size:12px}.btn:hover{border-color:#0e8384;background:#f0f8f7}.btn.primary{background:#0b696c;border-color:#0b696c;color:#fff}.btn.primary:hover{background:#064f52}.btn.danger{color:#9e3142;border-color:#e7c5cd}.btn.active{background:#e1f3f1;color:#0b696c;border-color:#0b8383}.control-label{display:block;font-size:11px;font-weight:760;letter-spacing:.25px;color:#4d6873;margin:7px 0 5px}.field{width:100%;border:1px solid #cbdce2;border-radius:7px;padding:9px 10px;background:#fff;color:#183641;font-size:13px}.field:focus,.btn:focus-visible,.tabs button:focus-visible,.subtabs button:focus-visible{outline:3px solid #7ad4ce;outline-offset:2px}.canvas-wrap{overflow-x:auto;border-radius:9px;border:1px solid #d5e2e5;background:#edf3f4}.canvas-wrap svg{display:block;width:100%;min-width:860px;height:auto;touch-action:pan-y;user-select:none}.unit{cursor:default}.move-mode .unit{cursor:grab}.move-mode .unit:active{cursor:grabbing}.port-hit{cursor:crosshair}.port-hit:hover+.port-dot{stroke:#0a8985;stroke-width:5}.wire-hit{cursor:pointer;stroke:transparent;stroke-width:14;fill:none}.wire-hit:hover+.wire-visible{stroke-width:6}.selected-port .port-dot{stroke:#ffb02e;stroke-width:6}.board-tag{font-size:14px;font-weight:800;fill:#1a3f4c}.board-sub{font-size:11px;fill:#52717b}.help-note{background:#f1f8fa;border-left:3px solid #4eaba7;border-radius:4px;padding:10px 13px;color:#3d5f6b;font-size:12px;margin:11px 0}.notice{font-size:12px;line-height:1.55;padding:10px 12px;background:#eff6f7;border-radius:8px;color:#325969;border:1px solid #cfe3e6}.notice.error{background:#fff1f1;border-color:#f5cbcd;color:#962c40}.notice.success{background:#edf9ef;border-color:#c1e9cc;color:#186c41}.checklist{display:grid;gap:10px;margin-top:12px}.check{display:flex;align-items:flex-start;gap:9px;font-size:12px;padding:9px 10px;background:#f6f9fa;border-radius:8px}.dot{flex:0 0 auto;border-radius:50%;width:11px;height:11px;margin-top:3px;background:#aebfc6}.dot.ok{background:#29a46d}.dot.bad{background:#d69c3b}.wires-list{max-height:240px;overflow:auto;display:grid;gap:6px}.wire-item{display:flex;align-items:center;gap:8px;justify-content:space-between;font-size:11px;background:#f5f9f9;border-radius:7px;padding:6px 8px}.wire-item button{border:none;background:transparent;color:#b12f43;font-weight:700;font-size:15px}.krow{display:grid;grid-template-columns:1fr 1fr;gap:9px}.device-config{padding:16px;border:1px solid #dbe6ea;border-radius:10px;background:#fbfdfd;margin-top:14px}.device-config h3{margin:0}.config-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.readout{display:flex;gap:7px;flex-wrap:wrap;font-size:11px;color:#617784;margin:8px 0 0}.readout code{color:#075c5b;background:#e4f3f1;padding:2px 5px;border-radius:4px}.switch-line{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f4f8f8;padding:11px;border-radius:8px;margin:10px 0}.switch-line strong{font-size:12px}.switch-line button{min-width:90px}.scene{position:relative;min-height:235px;display:grid;grid-template-columns:1fr 1fr;gap:18px;background:linear-gradient(180deg,#e2f1f6,#f8f6ed 70%,#e4ded0 70%);border:1px solid #d0e3e7;border-radius:11px;padding:22px;overflow:hidden}.scene .bulb{width:80px;height:80px;border-radius:50%;background:#c3d3d7;box-shadow:inset 0 0 0 7px #ffffff50;margin:20px auto 0;display:grid;place-items:center;font-size:44px;filter:grayscale(1);transition:background .2s}.scene .bulb.lit{background:#ffdf68;box-shadow:0 0 27px 15px #ffe28275,inset 0 0 0 7px #fff7bc;filter:none}.scene .wall-switch{margin:auto;padding:17px;background:#fff;border-radius:9px;box-shadow:0 4px 14px #15334520;border:2px solid #c0d2d6;font-size:13px;font-weight:700;color:#355f6a;max-width:140px}.scene-box{text-align:center}.scene-box p{font-size:12px;color:#46616b}.monitor{width:100%;border-collapse:collapse;font-size:11px}.monitor th{text-align:left;color:#647e8a;background:#f1f6f7;font-size:10px;letter-spacing:.3px}.monitor td,.monitor th{padding:9px 8px;border-bottom:1px solid #e5eded;white-space:nowrap}.monitor-wrap{overflow:auto}.monitor .good{color:var(--green)}.monitor .bad{color:var(--red)}.issues{display:grid;gap:7px}.issue{border-radius:8px;padding:9px 11px;background:#f4f7f8;color:#546b74;font-size:12px;border-left:3px solid #9fb3b9}.issue.danger{border-color:#bb3045;background:#fff1f1;color:#8c2940}.issue.error{border-color:#d09a30;background:#fff5e2;color:#81601f}.issue.success{border-color:#279468;background:#eaf7ef;color:#176d48}.learning{max-width:1000px;display:grid;grid-template-columns:minmax(0,1fr);gap:13px}.learning p,.learning li{font-size:14px;line-height:1.7;color:#4b6671}.learning ul,.learning ol{padding-left:22px}.learning table{width:100%;border-collapse:collapse;font-size:13px}.learning td,.learning th{padding:9px;border-bottom:1px solid #dce7e8;text-align:left}.illustration{background:#eef5f6;border-radius:10px;padding:15px;margin:14px 0}.illustration svg{max-width:100%;height:auto;display:block;margin:auto}.learning details{border:1px solid #d9e6e7;padding:12px 15px;border-radius:9px;margin:9px 0}.learning summary{cursor:pointer;font-weight:750;color:#225865}.alert-intro{background:#fffaef;border:1px solid #f2dfad;border-radius:9px;padding:13px;margin:10px 0;font-size:13px;color:#7b6328}footer{background:#102e3c;color:#acc5ce;padding:25px max(28px,calc((100vw - 1320px)/2));display:flex;justify-content:space-between;gap:20px;font-size:11px}footer a{color:#a9dad6}@media(max-width:940px){.workspace{grid-template-columns:minmax(0,1fr)}.hero{grid-template-columns:1fr 210px}.config-grid{grid-template-columns:1fr 1fr}}@media(max-width:620px){main{padding:12px 14px 35px}.topbar{padding:8px 15px;height:auto;min-height:72px}.version{flex-direction:column;gap:0;text-align:right}.version em{font-size:10px}.hero{display:block;padding:21px}.hero-visual{display:none}.tabs button{padding:9px 12px}.config-grid{grid-template-columns:1fr}.scene{grid-template-columns:1fr}footer{padding:22px 16px;display:grid}.section-heading h2{font-size:17px}}
+
+
+/* LAB-013 v0.1.1 · carril DIN, borns, cablejat assistit */
+.canvas-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:8px 0}
+.zoom-controls{display:flex;align-items:center;gap:5px}.zoom-controls .btn{padding:4px 10px;font-size:12px}.zoom-controls strong{font-size:12px;min-width:44px;text-align:center}
+.canvas-wrap{max-height:690px;overflow:auto;background:#e6eef0;overscroll-behavior:contain}
+.canvas-wrap svg{max-width:none;min-width:0;touch-action:pan-y;user-select:none}
+.port-hit{cursor:crosshair;touch-action:none}.port-hit:focus-visible{outline:none;filter:drop-shadow(0 0 5px #edb635)}
+.selected-port{filter:drop-shadow(0 0 6px #f5ac24)}.selected-port rect,.selected-port circle{stroke:#ffb72e;stroke-width:3}
+.port-hit:hover{filter:drop-shadow(0 0 5px #2bbca8)}
+.wire-preview{stroke-width:3.4;stroke-dasharray:7 5;fill:none;pointer-events:none;stroke-linecap:round}
+.wire-group.wire-selected .wire-visible{filter:drop-shadow(0 0 3px #146d73)}
+.wire-group:hover .wire-visible{stroke-width:6}.wire-group .wire-hit{stroke-width:15}
+.wire-group{cursor:pointer}
+.wire-item.is-selected{background:#e0f4f1;border:1px solid #7ebdb2}
+.wire-item .wire-identify{background:none;border:0;text-align:left;font:inherit;color:#28545c;cursor:pointer;min-width:0;flex:1;padding:3px}
+.wire-tools{display:flex;gap:3px;align-items:center;flex-shrink:0}
+.wire-tools button{border:1px solid #c2d4d8;border-radius:4px;background:white;color:#23646b;cursor:pointer;font-size:16px;min-width:27px}
+.wire-tools button:last-child{color:#bb3845}
+.drag-grip{cursor:grab}.move-mode .unit{cursor:grab}.move-mode .unit:active{cursor:grabbing}
+.move-mode [data-protect]{cursor:pointer}.unit-wall{filter:drop-shadow(0 5px 7px #31485315)}
+@media(max-width:620px){.canvas-wrap{max-height:560px}.zoom-controls strong{font-size:11px}.canvas-toolbar{align-items:flex-start}}
+
+/* v0.1.3 · material, rutes seleccionables, etiquetes visibles */
+.material-box{background:#edf5f6;border:1.5px solid #aacbd0;border-radius:12px;padding:15px;margin:14px 0 16px}
+.material-box .section-heading h3{margin:0;font-size:17px}.material-box .section-heading p{margin:4px 0 0;font-size:13px}
+.material-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px;margin-top:12px}
+.material-item{background:#fff;border:1px solid #bfd2d7;display:flex;align-items:center;gap:8px;border-radius:9px;padding:9px;min-width:0}
+.material-item:not(.is-installed){cursor:grab;touch-action:none}.material-item:not(.is-installed):active{cursor:grabbing}
+.material-item.is-installed{background:#f4f7f7;border-color:#d4e2e5}
+.material-icon{border-radius:7px;background:#dcebee;min-width:29px;height:33px;display:grid;place-items:center;font-size:19px;color:#145762}
+.material-info{min-width:0;flex:1;display:flex;flex-direction:column}.material-info strong{font-size:12px;line-height:1.3}.material-info small{color:#597681;font-size:11px;line-height:1.35}
+.material-item .btn{padding:6px 8px;font-size:11px;white-space:nowrap}
+.wire-halo{stroke:#fff;stroke-width:7.5;fill:none;pointer-events:none;stroke-linecap:round;stroke-linejoin:round}
+#wire-layer.with-selection .wire-other{opacity:.18}#wire-layer.with-selection .wire-selected{opacity:1;filter:drop-shadow(0 0 2px #fff)}
+.route-handle{cursor:ns-resize;touch-action:none;filter:drop-shadow(0 1px 3px #2a586d70)}
+.wire-selected .wire-halo{stroke:#fff;stroke-width:10}
+.wires-list{max-height:410px;overflow:auto}
+.wire-tools button{min-width:31px;min-height:30px}
+.material-ghost{position:fixed;z-index:9999;top:0;left:0;background:#0c5961;color:white;border:1px solid #9bdbd6;border-radius:8px;padding:9px 13px;box-shadow:0 10px 24px #1a3d5360;white-space:nowrap;font-size:13px;font-weight:750;pointer-events:none;}
+@media(max-width:750px){.material-grid{grid-template-columns:repeat(auto-fit,minmax(158px,1fr))}.material-box{padding:10px}.material-item{padding:7px}}
+
+/* v0.1.3 · corbes Bézier i eines de muntatge a tocar del quadre */
+.board-dock{position:sticky;top:6px;z-index:12;margin:10px 0 7px;padding:9px;display:flex;gap:9px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#e8f4f3f5;border:1px solid #a9d0cb;border-radius:10px;box-shadow:0 6px 12px #183c4617;backdrop-filter:blur(8px)}
+.dock-mode,.dock-placement{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.board-dock .btn{padding:8px 10px;white-space:nowrap}
+.dock-placement label{font-size:12px;font-weight:700;color:#305460}
+.dock-placement select{max-width:150px;min-width:110px;padding:7px 6px;border:1px solid #b5cdd0;border-radius:7px;background:white;color:#164354;font-size:12px}
+#material-drawer{margin-bottom:8px;max-height:280px;overflow:auto;border-radius:12px}
+#material-drawer .material-box{margin:0 0 4px}
+.wire-floating-action{cursor:pointer;filter:drop-shadow(0 3px 6px #24414e44)}
+.wire-floating-action:hover rect,.wire-floating-action:focus rect{fill:#fdf0f1;stroke-width:3}
+.wire-floating-action:focus-visible{outline:none;filter:drop-shadow(0 0 5px #d84a62)}
+.wire-overlay{pointer-events:none}.wire-overlay [data-wire-remove],.wire-overlay [data-route-handle]{pointer-events:all}
+.wires-details{margin:0}.wires-details summary{cursor:pointer;color:#244955;padding:3px 0}.wires-details .wires-list{margin-top:12px}
+.wire-group .wire-halo{stroke-width:8}.wire-group .wire-visible{filter:drop-shadow(0 1px 1px #34526130)}
+@media(max-width:660px){.board-dock{top:0;padding:7px}.dock-mode,.dock-placement{width:100%}.dock-placement select{flex:1}.board-dock .btn{font-size:11px}}
+
+/* LAB-013 v0.2.0 - catàleg dinàmic */
+.sim-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:18px}
+.sim-device{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border:1px solid #c7d8dd;border-radius:8px;background:#f8fbfb;margin:9px 0;padding:12px}
+.sim-device strong{font-size:13px}.sim-device small{color:#54737e}
+.sim-device .btn{margin-left:auto}
+.unit-focused{filter:drop-shadow(0 0 5px #218d8c70)}
+.material-item:not(.is-installed){cursor:grab}
+.material-box{background:#f5fafa;border:1px solid #bfd8dd;border-radius:10px;padding:13px}
+@media(max-width:820px){.sim-grid{grid-template-columns:1fr}}
+/* Els borns han de quedar visibles quan la vista els desplaça sota la barra d'eines. */
+#knx-board [data-port]{scroll-margin-top:120px;scroll-margin-bottom:45px}
+
+/* Selecció de conductor: remarcar els dos terminals, sense alterar-ne les connexions. */
+.port-hit.wire-endpoint{filter:drop-shadow(0 0 5px #0b7a85a6)}
+.port-hit.wire-endpoint .wire-end-mark{pointer-events:none}
+.port-hit.wire-endpoint .wire-end-ring{stroke-linejoin:round}
+.port-hit.wire-endpoint:focus-visible{filter:drop-shadow(0 0 7px #0c8087)}
+
+/* LAB-013 v0.2.1 · Dispositius KNX multicanal */
+.channel-configs{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:14px 0}
+.channel-config{padding:12px;border:1px solid #bed5d9;background:#f4fafb;border-radius:9px}
+.channel-config .section-heading{margin-bottom:7px;gap:8px;flex-wrap:wrap}
+.channel-config .section-heading strong{font-size:13px}
+.channel-config .pill{font-size:11px}
+.channel-config .config-grid{grid-template-columns:1fr 1fr;gap:8px}
+.channel-config .control-label{font-size:11px}
+.sim-device.sim-multi{display:block}
+.sim-device.sim-multi>strong{display:block;margin-bottom:4px}
+.sim-channels{display:grid;gap:7px;margin-top:10px}
+.sim-channel{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid #d7e5e9;background:white;padding:8px;border-radius:7px}
+.sim-channel span:first-child{font-size:12px;font-weight:700}.sim-channel small{display:block;font-weight:400}
+#knx-board [data-press]{cursor:pointer}
+#knx-board [data-press]:focus-visible{filter:drop-shadow(0 0 5px #0f9c8c)}
+@media(max-width:620px){.channel-config .config-grid{grid-template-columns:1fr}}
+
+/* Catàleg v0.2.1 completament visible; nous models identificables */
+#material-drawer{max-height:none;overflow:visible}
+.material-item.material-new{border-color:#8ac7bd;background:#f5fffc}
+.new-model-mark{display:inline-block;font-style:normal;font-weight:800;font-size:9px;background:#096a6b;color:white;padding:1px 5px;border-radius:4px;margin-right:4px;vertical-align:baseline}
+
+/* Catàleg estable per funció: els models nous van dins de la família corresponent. */
+.material-sections{display:grid;gap:13px;margin-top:13px}
+.material-section{padding:12px;border:1px solid #c6dade;border-radius:9px;background:#fff}
+.material-group-heading{display:flex;gap:6px 14px;align-items:baseline;flex-wrap:wrap;margin-bottom:9px}
+.material-group-heading h4{margin:0;font-size:14px;color:#194453}
+.material-group-heading span{font-size:12px;color:#597681}
+.material-section .material-grid{margin-top:0}
+@media(max-width:650px){.material-section{padding:9px}.material-group-heading{display:block}.material-group-heading span{display:block;margin-top:2px}}
+
+/* v0.2.2 - manuals de borns accessibles des del dispositiu o la caixa */
+.device-manual-button{cursor:help;outline:none}.device-manual-button:hover circle,.device-manual-button:focus-visible circle{fill:#fff0ce;stroke:#d3932a;stroke-width:3}
+.material-help{min-width:34px!important;min-height:33px;padding:4px!important;font-size:18px!important;font-weight:850!important;color:#166d6f!important}
+.manual-backdrop{position:fixed;inset:0;background:#102e3cbc;z-index:1000;display:flex;align-items:center;justify-content:center;padding:18px}
+.manual-dialog{background:#fff;color:#173846;border-radius:14px;width:min(690px,100%);max-height:min(88vh,820px);overflow:auto;box-shadow:0 22px 75px #071f2988;border:1px solid #bad2d6}
+.manual-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 22px;background:#e9f4f4;border-bottom:1px solid #c6dcde}
+.manual-header h2{font-size:20px;margin:3px 0 0}.manual-header small{font-size:11px;letter-spacing:.02em;color:#547a84}
+.manual-close{border:1px solid #aacacf;background:white;border-radius:8px;font-size:20px;color:#194653;min-width:40px;min-height:40px}
+.manual-content{padding:17px 22px 22px;font-size:14px}.manual-content>p:first-child{margin:0 0 14px}.manual-content h3{font-size:15px;margin:17px 0 8px}
+.guide-flow{padding:12px;border-radius:8px;background:#eef6f6;color:#23515b;font-weight:650;text-align:center}
+.guide-channels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}
+.guide-channels>div{border:1px solid #b2cdd3;background:#eef5f6;border-radius:8px;display:flex;align-items:center;flex-direction:column;gap:5px;padding:9px 3px;font-weight:700;color:#30515f;font-size:13px}
+.guide-channels strong{color:#0b656b}.guide-channels span:nth-of-type(2){font-size:19px;color:#577583;letter-spacing:-2px}
+.guide-mini{font-size:13px;color:#3b5b64;margin:7px 0}.guide-connection{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#eff5f5;border-radius:8px;padding:10px;font-size:13px;font-weight:600}
+.guide-table{width:100%;border-collapse:collapse;font-size:13px}.guide-table th{text-align:left;color:#3c6871;background:#eef6f6}.guide-table td,.guide-table th{padding:7px 9px;border-bottom:1px solid #dfebed}.guide-table td:first-child{width:90px;white-space:nowrap}
+.guide-terminal{display:inline-block;border-radius:4px;background:#f4f7f7;padding:4px 7px;font-weight:800}
+.guide-tip{background:#fff8e9;border-left:3px solid #d39b37;margin:16px 0 9px;padding:10px 12px;font-size:13px}
+.guide-disclaimer{font-size:11px;color:#657b83;margin:6px 0}
+@media(max-width:480px){.manual-backdrop{padding:7px}.manual-content{padding:12px}.manual-header{padding:11px}.guide-channels{gap:3px}.guide-channels>div{font-size:11px;padding:6px 1px}.guide-table{font-size:12px}}
+
+.guide-chooser{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:7px}.guide-chooser .btn{text-align:left;white-space:normal;padding:8px 11px}.guide-chooser span{float:right}.guide-back{margin:8px 0}.guide-back .btn{padding:5px 10px;font-size:12px}.quick-manual-button{font-weight:700;color:#0b6473!important;border:1px solid #a6cad0!important;border-radius:7px}.quick-manual-inline{display:flex;justify-content:flex-end;margin:5px 0 12px}
+
+/* LAB-013 v0.2.3 · contactes d'actuador en parelles als borns inferiors */
+.relay-channel{pointer-events:none}
+.guide-pair{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;margin:8px 0 3px}
+.guide-pair span{font-weight:800;font-size:12px;letter-spacing:.1px;color:#234d5b}
+.guide-pair svg{display:block;width:54px;max-width:36%;height:30px;flex-shrink:1}
+@media(max-width:520px){.guide-channels{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.guide-pair span{font-size:11px}.guide-pair svg{max-width:35%}}
+
+.guide-pair span:nth-of-type(2){font-size:12px;letter-spacing:.1px;color:#234d5b}
+@media(max-width:520px){.guide-pair span:nth-of-type(2){font-size:11px}}
+
+/* LAB-013 v0.3.0: pràctica de persianes */
+.shutter-lab{margin:22px 0;padding:20px;border:1px solid #c3d7dc;border-radius:12px;background:#f4f8f9}
+.shutter-layout{display:grid;grid-template-columns:1fr 1.15fr;gap:20px}
+.shutter-layout h4{margin:14px 0 8px}
+.shutter-control,.shutter-receiver{border:1px solid #cbdbdf;border-radius:9px;padding:13px;margin:10px 0;background:#fff}
+.shutter-control strong,.shutter-control small,.shutter-receiver strong{display:block}
+.shutter-control small{font-size:12px;color:#607986}
+.shutter-control .button-row{margin-top:9px}
+.shutter-window{position:relative;margin:12px auto 8px;width:175px;height:160px;border:8px solid #f0f2f3;background:#a6d5eb;box-shadow:inset 0 0 0 3px #7799a7,0 6px 16px #22384b20;overflow:hidden;border-radius:3px}
+.shutter-sky{position:absolute;inset:0;background:linear-gradient(#82c7ed,#dff5ff 60%,#9ac79e)}
+.shutter-blind{position:absolute;top:0;left:0;right:0;background:repeating-linear-gradient(to bottom,#b9cbd1 0px,#cdd8db 10px,#839da6 12px,#e2e9eb 14px);box-shadow:0 3px 4px #385e6a40;transition:height .18s linear}
+.shutter-muntin{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#f1f6f6;pointer-events:none}
+.shutter-meta{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:#345e69}
+.shutter-time{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;font-size:12px;color:#4c6973}
+.shutter-time input{width:72px;padding:5px;border:1px solid #aebfc8;border-radius:5px}
+@media(max-width:880px){.shutter-layout{grid-template-columns:1fr}.shutter-lab{padding:12px}}
+
+/* Revisió v0.3.1 · esquema d'actuador i noms del motor */
+.guide-actuator-schematic{margin:12px 0;padding:8px;background:#eef6f7;border:1px solid #b6d0d3;border-radius:8px}
+.guide-actuator-schematic svg{width:100%;height:auto;display:block}
+.guide-actuator-schematic p{margin:3px 8px 6px;color:#355761;font-size:12px}
+
+/* v0.3.1-r1 · Retirada contextual d'equips */
+.device-floating-remove{cursor:pointer;filter:drop-shadow(0 3px 7px #48293650);touch-action:manipulation}
+.device-floating-remove:hover circle,.device-floating-remove:focus-visible circle{fill:#ffe2e6;stroke:#92273a;stroke-width:3.4}
+.device-floating-remove:focus-visible{outline:none;filter:drop-shadow(0 0 5px #d34b60)}
+.unit-focused{filter:drop-shadow(0 0 6px #168b8370)}
+
+/* LAB-013 v0.3.1-r2: navegació fixa i controls KNX de programació */
+#knx-app .subtabs{position:sticky;top:0;z-index:40;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 13px;padding:9px 8px;background:#f8fbfbf7;border:1px solid #d5e6e8;border-radius:9px;box-shadow:0 4px 12px #183c4617;backdrop-filter:blur(9px);scroll-margin-top:0}
+#knx-app .subtabs button{min-height:37px}
+#knx-app .subtabs button.active{background:#0b6668;color:#fff;border-color:#0b6668}
+#knx-app .board-dock{top:var(--lab-subtabs-height,65px);z-index:25}
+#knx-app .knx-prog-control{color:#a92335;border:1.5px solid #d7959f;background:#fff6f7}
+#knx-app .knx-prog-control::before{content:'';display:inline-block;width:9px;height:9px;background:#c33444;border-radius:50%;margin-right:5px;vertical-align:middle;box-shadow:inset 0 0 0 1px #942638}
+#knx-app .knx-prog-control.is-programming{color:#fff;background:#ba293b;border-color:#9f1f32}
+#knx-app .knx-prog-control.is-programming::before{background:#ff293b;box-shadow:0 0 0 2px #fff7,0 0 8px #ff4c60}
+#knx-app [data-program]{cursor:pointer}
+#knx-app [data-program]:focus-visible{outline:3px solid #ff7587;outline-offset:3px}
+@media(max-width:600px){#knx-app .subtabs{gap:5px;padding:6px 5px}#knx-app .subtabs button{font-size:11px;padding:7px 8px;min-height:34px}#knx-app .board-dock{top:var(--lab-subtabs-height,95px)}}
+
+/* LAB-013 v0.3.1-r4: estança física de la simulació i fitxes per equip */
+.room-scene-block{margin:18px 0 24px;padding:13px;background:#f7f9f8;border:1px solid #d3dfdd;border-radius:12px}
+.room-scene-heading{display:flex;gap:15px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin:2px 0 11px}
+.room-scene-heading h3{margin:0 0 4px;font-size:17px;color:#244c57}
+.room-scene-heading p{margin:0;font-size:12.5px;color:#57737a;max-width:660px}
+.room-sim-scroll{width:100%;overflow-x:auto;overflow-y:hidden;border-radius:9px;box-shadow:0 5px 16px #304f5922;border:1px solid #d2d8d2;background:#f4f0e8;overscroll-behavior-inline:contain}
+#room-sim-board{display:block;width:100%;min-width:870px;height:auto;min-height:280px}
+.room-fixture{filter:drop-shadow(2px 4px 4px #3c46433b)}
+.room-rocker{cursor:pointer;outline:none}
+.room-rocker:hover rect,.room-rocker:focus-visible rect{stroke:#138b8b;stroke-width:3;filter:brightness(1.025)}
+.room-rocker:active rect{filter:brightness(.94)}
+.room-scene-note{font-size:11.5px;color:#688087;margin:8px 2px 0}
+.room-control-section{margin:18px 0}
+.room-control-section>h3{margin:0 0 13px;font-size:18px}
+.room-device-category{margin-bottom:19px}
+.room-device-category>h4{font-size:14px;font-weight:800;letter-spacing:.2px;color:#315a61;margin:0 0 9px}
+.room-control-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:11px}
+.room-control-card{min-width:0;border:1px solid #cadadd;background:white;border-radius:11px;padding:13px 14px;box-shadow:0 3px 12px #244b5810}
+.room-control-card>header{display:flex;justify-content:space-between;align-items:flex-start;gap:9px;margin-bottom:11px}
+.room-control-card>header strong,.room-control-card>header small{display:block}
+.room-control-card>header strong{font-size:13.5px;line-height:1.35;color:#234a57}
+.room-control-card>header small{font-size:11px;color:#64818b;margin-top:2px}
+.room-control-card .shutter-meta{margin:8px 0 10px}
+.room-control-card .shutter-time{margin:13px 0 0}
+.room-control-card .button-row{gap:6px;flex-wrap:wrap}
+.room-control-card .button-row .btn{font-size:12px;padding:6px 8px}
+.room-card-description{font-size:12px;line-height:1.5;color:#5b7580;margin:0 0 10px}
+.room-control-card .sim-channel{padding:7px 0;border-bottom:1px solid #e9f0f2}
+.room-control-card .sim-channel:last-child{border:0}
+.room-control-card .sim-channel small{font-size:11px;color:#627c85;display:block}
+@media(max-width:620px){.room-scene-block{padding:8px}.room-scene-heading h3{font-size:15px}#room-sim-board{min-width:850px}.room-control-grid{grid-template-columns:1fr}}
+
+/* v0.3.1-r6: tres accions en una única fila compacta, també en mòbil */
+#knx-app .prog-compact-block{width:fit-content;max-width:100%;margin:11px 0 3px;padding:8px;border:1px solid #cddde0;border-radius:9px;background:#f5f9f9}
+#knx-app .prog-action-row{display:grid;grid-template-columns:66px 151px 129px;align-items:stretch;gap:6px;max-width:100%}
+#knx-app .prog-linked-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;min-width:0;min-height:44px;padding:4px;border:1.5px solid #9caeb4;background:#edf2f3;border-radius:7px;color:#334e57;font-size:10px;font-weight:800;cursor:pointer;line-height:1.1}
+#knx-app .prog-linked-lens{display:block;width:18px;height:18px;border:4px solid #e1d8d8;border-radius:50%;background:#87484e;box-shadow:inset 0 0 0 1px #5c3b40,0 0 0 1px #a49a9d}
+#knx-app .prog-linked-button.is-active .prog-linked-lens{background:#f12e45;border-color:#ffe5e6;box-shadow:inset 0 0 0 1px #b3162e,0 0 0 3px #f5324566,0 0 10px #f12e4580}
+#knx-app .prog-linked-button.is-active{border-color:#d66c7a;background:#fff6f7}
+#knx-app .prog-compact-action{display:flex;align-items:center;justify-content:center;min-width:0;margin:0;padding:5px 8px;font-size:11.5px;line-height:1.2;text-align:center;white-space:normal}
+#knx-app .prog-compact-status{display:flex;flex-wrap:wrap;align-items:center;gap:3px 9px;padding:6px 2px 0;font-size:10.5px;line-height:1.35;color:#607781}
+#knx-app .prog-compact-status strong{font-size:10.5px;color:#4d6670;white-space:nowrap}
+#knx-app .prog-compact-status [data-state="on"]{color:#b7253a}
+#knx-app .prog-linked-button:focus-visible{outline:3px solid #e86d80;outline-offset:2px}
+@media(max-width:520px){#knx-app .prog-compact-block{width:100%;padding:6px}#knx-app .prog-action-row{grid-template-columns:53px minmax(0,1.15fr) minmax(0,1fr);gap:5px}#knx-app .prog-compact-action{font-size:11px;padding:5px 5px}#knx-app .prog-compact-status span{font-size:10px}}

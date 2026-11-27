@@ -4,7 +4,7 @@ export function renderCatalog(app, metadata, visuals) {
     {id:'circuits', number:'02', title:'Anàlisi de circuits', short:'Circuits', desc:'Circuits resistius, components reactius i corrent altern.', labs:['LAB-002','LAB-003','LAB-005'], symbol:'⌁'},
     {id:'instruments', number:'03', title:'Instrumentació i mesures', short:'Instrumentació', desc:'Multímetre, oscil·loscopi i generadors de funcions.', labs:['LAB-006','LAB-007','LAB-008'], symbol:'◉'},
     {id:'signals', number:'04', title:'Senyals i aplicacions', short:'Senyals', desc:'Generació, modulació i aplicacions de senyals.', labs:['LAB-004','LAB-012'], symbol:'∿'},
-    {id:'practices', number:'05', title:'Laboratoris de pràctiques', short:'Pràctiques', desc:'Pràctiques integrades amb equips virtuals, adquisicions i anàlisi de mesures.', labs:['LAB-011'], symbol:'⚙'}
+    {id:'practices', number:'05', title:'Laboratoris de pràctiques', short:'Pràctiques', desc:'Pràctiques integrades amb equips virtuals, adquisicions i anàlisi de mesures.', labs:['LAB-011','LAB-013'], symbol:'⚙'}
   ];
   const esc = value=>String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const byId=new Map(metadata.map(m=>[m.id,m]));

@@ -5,6 +5,6 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build-catalog.js",
-    "test": "node --test scripts/*.test.js"
+    "test": "node --test scripts/*.test.js labs/lab-013/engine.test.js"
   }
 }

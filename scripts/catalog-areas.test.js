@@ -10,7 +10,7 @@ test('el catàleg inclou cinc àrees i LAB-011 a pràctiques',async()=>{
  const entries=[...catalog.matchAll(/\{id:'(components|circuits|instruments|signals|practices)', number:'\d\d'/g)].map(m=>m[1]);
  assert.deepEqual(entries,['components','circuits','instruments','signals','practices']);
  assert.match(catalog,/title:'Laboratoris de pràctiques'/);
- assert.match(catalog,/labs:\['LAB-011'\]/);
+ assert.match(catalog,/labs:\['LAB-011','LAB-013'\]/);
 });
 test('LAB-011 és accessible des de la portada i el catàleg generat',async()=>{
  const [app,db,raw]=await Promise.all([
@@ -26,4 +26,13 @@ test('LAB-011 és accessible des de la portada i el catàleg generat',async()=>{
  assert.equal(entry.entry,'labs/lab-011/');
  assert.match(app,/['"]lab-011['"]/);
  assert.match(app,/labs\/['"]\+id\+['"]\/index\.html/);
+});
+
+test('LAB-013 està publicat al catàleg i té ruta directa',async()=>{
+ const [app,db,raw]=await Promise.all([source('shared/components/app.js'),source('data/laboratories.json'),source('labs/lab-013/metadata.json')]);
+ const lab=JSON.parse(db).find(l=>l.id==='LAB-013');
+ assert.deepEqual(lab,JSON.parse(raw));
+ assert.equal(lab.status,'published');
+ assert.equal(lab.entry,'labs/lab-013/');
+ assert.match(app,/['"]lab-013['"]/);
 });

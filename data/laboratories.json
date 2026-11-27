@@ -497,5 +497,51 @@
       "two-point-live-measurement",
       "enhanced-catalog-visual"
     ]
+  },
+  {
+    "id": "LAB-013",
+    "title": "Laboratori de sistemes KNX",
+    "description": "Muntatge i simulació d'instal·lacions KNX TP: cablejat, proteccions, programació d'adreces, actuadors multicanal, il·luminació i persianes, amb diagnosi i manuals de connexió.",
+    "courses": [
+      "EEB0",
+      "EE30",
+      "Enginyeria"
+    ],
+    "iconPath": "M5 34h19V13h20v21h19V13h17M24 34v23m20-23v23m19-23v23M5 57h75",
+    "version": "0.3.1",
+    "status": "published",
+    "access": "public",
+    "entry": "labs/lab-013/",
+    "tabs": [
+      "laboratori",
+      "fonaments",
+      "ajuda"
+    ],
+    "tags": [
+      "KNX",
+      "domòtica",
+      "bus TP",
+      "adreces físiques",
+      "adreces de grup",
+      "actuadors",
+      "persianes",
+      "programació",
+      "simulació"
+    ],
+    "features": [
+      "interactive-wiring",
+      "din-rail-layout",
+      "dynamic-device-catalog",
+      "multi-unit-projects",
+      "group-telegrams",
+      "multi-channel-actuators",
+      "roller-shutters",
+      "individual-programming",
+      "red-program-button",
+      "connection-manuals",
+      "animated-room",
+      "project-json-import-export",
+      "diagnostics"
+    ]
   }
 ]
